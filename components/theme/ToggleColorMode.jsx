@@ -20,6 +20,7 @@ export default function ToggleColorMode() {
         setColorScheme(computedColorScheme === "light" ? "dark" : "light")
       }
       variant="transparent"
+      color="dark"
       size="md"
       aria-label="Toggle color scheme"
     >
