@@ -22,6 +22,7 @@ import React from "react";
 const Note = ({ note }) => {
   const theme = useMantineTheme();
   const archive = useMutation(api.notes.archive);
+  const restore = useMutation(api.notes.restore);
   const changeColor = useMutation(api.notes.changeColor);
 
   const onArchiveNote = async () => {
@@ -38,6 +39,30 @@ const Note = ({ note }) => {
         notifications.update({
           id,
           title: "Note archived!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onRestoreNote = async () => {
+    if (!note?._id) return;
+    const id = notifications.show({
+      title: "Restoring a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await restore({ _id: note?._id })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note restored!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -98,7 +123,7 @@ const Note = ({ note }) => {
       <Text>{note?.note}</Text>
       <Group mt="md" justify="space-between">
         {note?.isArchived ? (
-          <ActionIcon onClick={onArchiveNote} variant="transparent">
+          <ActionIcon onClick={onRestoreNote} variant="transparent">
             <IconRestore />
           </ActionIcon>
         ) : (

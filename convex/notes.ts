@@ -109,3 +109,28 @@ export const changeColor = mutation({
     return note;
   },
 });
+
+export const restore = mutation({
+  args: { _id: v.id("notes") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingNote = await ctx.db.get(args._id);
+    if (!existingNote) {
+      throw new Error("Not found");
+    }
+
+    if (existingNote.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const note = await ctx.db.patch(args._id, {
+      isArchived: false,
+    });
+    return note;
+  },
+});
