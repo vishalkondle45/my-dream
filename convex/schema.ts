@@ -6,6 +6,7 @@ export default defineSchema({
     note: v.string(),
     color: v.optional(v.string()),
     isArchived: v.boolean(),
+    isPinned: v.boolean(),
     category: v.optional(v.string()),
     userId: v.string(),
   }).index("by_user", ["userId"]),

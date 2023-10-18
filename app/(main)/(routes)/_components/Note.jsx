@@ -13,6 +13,7 @@ import {
   IconCheck,
   IconPencil,
   IconPinned,
+  IconPinnedFilled,
   IconRestore,
   IconTrash,
 } from "@tabler/icons-react";
@@ -25,6 +26,8 @@ const Note = ({ note }) => {
   const restore = useMutation(api.notes.restore);
   const remove = useMutation(api.notes.remove);
   const changeColor = useMutation(api.notes.changeColor);
+  const pin = useMutation(api.notes.pin);
+  const unpin = useMutation(api.notes.unpin);
 
   const onArchiveNote = async () => {
     if (!note?._id) return;
@@ -122,6 +125,54 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
+  const onPinNote = async () => {
+    if (!note?._id) return;
+    const id = notifications.show({
+      title: "Pinning a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await pin({ _id: note?._id })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note pinned!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onUnPinNote = async () => {
+    if (!note?._id) return;
+    const id = notifications.show({
+      title: "Unpinning a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await unpin({ _id: note?._id })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note unpinned!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
   const swatches = Object.keys(theme.colors).map((color) => (
     <ActionIcon
       key={color}
@@ -140,8 +191,11 @@ const Note = ({ note }) => {
       <Group justify="space-between">
         <Text fw={700}>{note?.title}</Text>
         {note?.isArchived || (
-          <ActionIcon variant="transparent">
-            <IconPinned />
+          <ActionIcon
+            onClick={note?.isPinned ? onUnPinNote : onPinNote}
+            variant="transparent"
+          >
+            {note?.isPinned ? <IconPinnedFilled /> : <IconPinned />}
           </ActionIcon>
         )}
       </Group>

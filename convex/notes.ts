@@ -19,6 +19,7 @@ export const create = mutation({
       title: args.title,
       note: args.note,
       isArchived: false,
+      isPinned: false,
       userId,
     });
     return document;
@@ -179,5 +180,55 @@ export const empty = mutation({
     }
 
     return notes;
+  },
+});
+
+export const pin = mutation({
+  args: { _id: v.id("notes") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingNote = await ctx.db.get(args._id);
+    if (!existingNote) {
+      throw new Error("Not found");
+    }
+
+    if (existingNote.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const note = await ctx.db.patch(args._id, {
+      isPinned: true,
+    });
+    return note;
+  },
+});
+
+export const unpin = mutation({
+  args: { _id: v.id("notes") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingNote = await ctx.db.get(args._id);
+    if (!existingNote) {
+      throw new Error("Not found");
+    }
+
+    if (existingNote.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const note = await ctx.db.patch(args._id, {
+      isPinned: false,
+    });
+    return note;
   },
 });
