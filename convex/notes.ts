@@ -157,3 +157,27 @@ export const remove = mutation({
     return note;
   },
 });
+
+export const empty = mutation({
+  args: {},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const notes = await ctx.db
+      .query("notes")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .order("desc")
+      .collect();
+
+    for (const child of notes) {
+      await ctx.db.delete(child._id);
+    }
+
+    return notes;
+  },
+});

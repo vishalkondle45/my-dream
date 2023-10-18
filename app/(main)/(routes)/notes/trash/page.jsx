@@ -9,24 +9,21 @@ import Note from "../../_components/Note";
 
 const Page = () => {
   let notes = useQuery(api.notes.getTrash);
-  const create = useMutation(api.notes.create);
+  const empty = useMutation(api.notes.empty);
 
-  const onCreateNote = async () => {
+  const onEmpty = async (color) => {
     const id = notifications.show({
-      title: "Creating a new note...",
+      title: "Deleting all notes in archive...",
       loading: true,
       withBorder: true,
       autoClose: false,
       withCloseButton: false,
     });
-    await create({
-      note: "sdklafjasj fklasj dfkljasd klfjklasdj fkljasd fklfjklasdj fklasdj fklj asdklfjasdkl fj klasdjdf l",
-      title: "Title 1",
-    })
+    await empty()
       .then((res) => {
         notifications.update({
           id,
-          title: "New note created!",
+          title: "All archive notes deleted!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -39,11 +36,7 @@ const Page = () => {
 
   return (
     <div>
-      <Button
-        onClick={onCreateNote}
-        mb="md"
-        leftSection={<IconTrash size={16} />}
-      >
+      <Button onClick={onEmpty} mb="md" leftSection={<IconTrash size={16} />}>
         Delete all
       </Button>
       <SimpleGrid cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 3, xl: 4 }}>
