@@ -23,6 +23,7 @@ const Note = ({ note }) => {
   const theme = useMantineTheme();
   const archive = useMutation(api.notes.archive);
   const restore = useMutation(api.notes.restore);
+  const remove = useMutation(api.notes.remove);
   const changeColor = useMutation(api.notes.changeColor);
 
   const onArchiveNote = async () => {
@@ -63,6 +64,30 @@ const Note = ({ note }) => {
         notifications.update({
           id,
           title: "Note restored!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onRemoveNote = async () => {
+    if (!note?._id) return;
+    const id = notifications.show({
+      title: "Removing a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await remove({ _id: note?._id })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note removed!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -153,7 +178,10 @@ const Note = ({ note }) => {
             </Popover.Dropdown>
           </Popover>
         )}
-        <ActionIcon onClick={onArchiveNote} variant="transparent">
+        <ActionIcon
+          onClick={note?.isArchived ? onRemoveNote : onArchiveNote}
+          variant="transparent"
+        >
           <IconTrash />
         </ActionIcon>
       </Group>
