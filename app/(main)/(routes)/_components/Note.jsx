@@ -11,6 +11,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
+  IconColorSwatch,
   IconPencil,
   IconPinned,
   IconPinnedFilled,
@@ -187,13 +188,15 @@ const Note = ({ note }) => {
   ));
 
   return (
-    <Paper bg={`${note?.color}.9`} p="md" radius="md" withBorder>
+    <Paper bg={`${note?.color}.9`} c="white" p="md" radius="md" withBorder>
       <Group justify="space-between">
         <Text fw={700}>{note?.title}</Text>
         {note?.isArchived || (
           <ActionIcon
             onClick={note?.isPinned ? onUnPinNote : onPinNote}
-            variant="transparent"
+            radius="xl"
+            variant="subtle"
+            color="white"
           >
             {note?.isPinned ? <IconPinnedFilled /> : <IconPinned />}
           </ActionIcon>
@@ -202,12 +205,17 @@ const Note = ({ note }) => {
       <Text>{note?.note}</Text>
       <Group mt="md" justify="space-between">
         {note?.isArchived ? (
-          <ActionIcon onClick={onRestoreNote} variant="transparent">
+          <ActionIcon
+            color="white"
+            radius="xl"
+            onClick={onRestoreNote}
+            variant="subtle"
+          >
             <IconRestore />
           </ActionIcon>
         ) : (
           <>
-            <ActionIcon variant="transparent">
+            <ActionIcon color="white" radius="xl" variant="subtle">
               <IconPencil />
             </ActionIcon>
           </>
@@ -215,17 +223,9 @@ const Note = ({ note }) => {
         {!note?.isArchived && (
           <Popover width={285} position="bottom" withArrow shadow="md">
             <Popover.Target>
-              <ActionIcon
-                color={note?.color}
-                size="sm"
-                radius="xl"
-                styles={{
-                  root: {
-                    borderColor: "white",
-                    borderWidth: 2,
-                  },
-                }}
-              ></ActionIcon>
+              <ActionIcon color="white" radius="xl" variant="subtle">
+                <IconColorSwatch />
+              </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
               <Group>{swatches}</Group>
@@ -233,8 +233,10 @@ const Note = ({ note }) => {
           </Popover>
         )}
         <ActionIcon
+          radius="xl"
+          variant="subtle"
+          color="white"
           onClick={note?.isArchived ? onRemoveNote : onArchiveNote}
-          variant="transparent"
         >
           <IconTrash />
         </ActionIcon>
