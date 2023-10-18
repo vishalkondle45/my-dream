@@ -31,7 +31,14 @@ export const get = query({
     if (!identity) {
       return null;
     }
-    const notes = await ctx.db.query("notes").collect();
+    const userId = identity.subject;
+
+    const notes = await ctx.db
+      .query("notes")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
     return notes;
   },
 });
@@ -56,6 +63,48 @@ export const archive = mutation({
 
     const note = await ctx.db.patch(args._id, {
       isArchived: true,
+    });
+    return note;
+  },
+});
+
+export const getTrash = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+    const notes = await ctx.db
+      .query("notes")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .order("desc")
+      .collect();
+    return notes;
+  },
+});
+
+export const changeColor = mutation({
+  args: { _id: v.id("notes"), color: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingNote = await ctx.db.get(args._id);
+    if (!existingNote) {
+      throw new Error("Not found");
+    }
+
+    if (existingNote.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const note = await ctx.db.patch(args._id, {
+      color: args.color,
     });
     return note;
   },

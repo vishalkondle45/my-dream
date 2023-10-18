@@ -2,13 +2,13 @@
 import { api } from "@/convex/_generated/api";
 import { Button, SimpleGrid } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconCheck, IconPlus } from "@tabler/icons-react";
+import { IconCheck, IconTrash } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
-import Note from "../_components/Note";
+import Note from "../../_components/Note";
 
 const Page = () => {
-  let notes = useQuery(api.notes.get);
+  let notes = useQuery(api.notes.getTrash);
   const create = useMutation(api.notes.create);
 
   const onCreateNote = async () => {
@@ -40,13 +40,13 @@ const Page = () => {
   return (
     <div>
       <Button
-        leftSection={<IconPlus size={16} />}
         onClick={onCreateNote}
         mb="md"
+        leftSection={<IconTrash size={16} />}
       >
-        Create Note
+        Delete all
       </Button>
-      <SimpleGrid cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}>
+      <SimpleGrid cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 3, xl: 4 }}>
         {notes?.map((note) => (
           <Note key={note._id} note={note} />
         ))}
