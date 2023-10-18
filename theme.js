@@ -7,7 +7,7 @@ export const theme = createTheme({
   headings: { fontFamily: "Inter, Verdana, sans-serif" },
   primaryColor: "dark",
   primaryShade: {
-    dark: 0,
+    dark: 5,
     light: 9,
   },
 });

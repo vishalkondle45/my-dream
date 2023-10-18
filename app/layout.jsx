@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "@mantine/core/styles.css";
 import { theme } from "@/theme";
 import { ConvexClientProvider } from "@/components/providers/ConvexProvider";
+import "@mantine/notifications/styles.css";
+import { Notifications } from "@mantine/notifications";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,10 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className}>
         <ConvexClientProvider>
-          <MantineProvider theme={theme}>{children}</MantineProvider>
+          <MantineProvider theme={theme}>
+            <Notifications />
+            {children}
+          </MantineProvider>
         </ConvexClientProvider>
       </body>
     </html>
