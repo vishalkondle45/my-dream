@@ -1,6 +1,7 @@
 import { api } from "@/convex/_generated/api";
 import {
   ActionIcon,
+  Box,
   CheckIcon,
   Group,
   Paper,
@@ -8,6 +9,7 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
+import { useHover } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
@@ -24,6 +26,7 @@ import React from "react";
 
 const Note = ({ note, setEdit, edit, open, close }) => {
   const theme = useMantineTheme();
+  const { hovered, ref } = useHover();
 
   const archive = useMutation(api.notes.archive);
   const restore = useMutation(api.notes.restore);
@@ -230,10 +233,15 @@ const Note = ({ note, setEdit, edit, open, close }) => {
       p="md"
       radius="md"
       withBorder
+      ref={ref}
+      shadow={hovered && "xl"}
     >
-      <Group justify="space-between">
-        <Text fw={700}>{note?.title}</Text>
-        {note?.isArchived || (
+      <Group justify="space-between" align="flex-start" wrap="nowrap">
+        <Box mih={80}>
+          <Text fw={700}>{note?.title}</Text>
+          <Text>{note?.note}</Text>
+        </Box>
+        {hovered && !note?.isArchived && (
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}
             radius="xl"
@@ -244,56 +252,57 @@ const Note = ({ note, setEdit, edit, open, close }) => {
           </ActionIcon>
         )}
       </Group>
-      <Text>{note?.note}</Text>
-      <Group mt="md" justify="space-between">
-        {note?.isArchived ? (
+      {hovered && (
+        <Group mt="md" justify="space-between">
+          {note?.isArchived ? (
+            <ActionIcon
+              color="white"
+              radius="xl"
+              onClick={onRestore}
+              variant="subtle"
+            >
+              <IconRestore />
+            </ActionIcon>
+          ) : (
+            <>
+              <ActionIcon
+                onClick={onEdit}
+                color="white"
+                radius="xl"
+                variant="subtle"
+              >
+                <IconPencil />
+              </ActionIcon>
+              <ActionIcon
+                onClick={() => onClone(note?.title, note?.note, note?.color)}
+                color="white"
+                radius="xl"
+                variant="subtle"
+              >
+                <IconCopy />
+              </ActionIcon>
+              <Popover width={285} position="bottom" withArrow shadow="md">
+                <Popover.Target>
+                  <ActionIcon color="white" radius="xl" variant="subtle">
+                    <IconColorSwatch />
+                  </ActionIcon>
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <Group>{swatches}</Group>
+                </Popover.Dropdown>
+              </Popover>
+            </>
+          )}
           <ActionIcon
-            color="white"
             radius="xl"
-            onClick={onRestore}
             variant="subtle"
+            color="white"
+            onClick={note?.isArchived ? onRemove : onArchive}
           >
-            <IconRestore />
+            <IconTrash />
           </ActionIcon>
-        ) : (
-          <>
-            <ActionIcon
-              onClick={onEdit}
-              color="white"
-              radius="xl"
-              variant="subtle"
-            >
-              <IconPencil />
-            </ActionIcon>
-            <ActionIcon
-              onClick={() => onClone(note?.title, note?.note, note?.color)}
-              color="white"
-              radius="xl"
-              variant="subtle"
-            >
-              <IconCopy />
-            </ActionIcon>
-            <Popover width={285} position="bottom" withArrow shadow="md">
-              <Popover.Target>
-                <ActionIcon color="white" radius="xl" variant="subtle">
-                  <IconColorSwatch />
-                </ActionIcon>
-              </Popover.Target>
-              <Popover.Dropdown>
-                <Group>{swatches}</Group>
-              </Popover.Dropdown>
-            </Popover>
-          </>
-        )}
-        <ActionIcon
-          radius="xl"
-          variant="subtle"
-          color="white"
-          onClick={note?.isArchived ? onRemove : onArchive}
-        >
-          <IconTrash />
-        </ActionIcon>
-      </Group>
+        </Group>
+      )}
     </Paper>
   );
 };

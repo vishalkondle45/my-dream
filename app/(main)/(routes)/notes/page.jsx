@@ -32,7 +32,14 @@ const Page = () => {
       >
         Create Note
       </Button>
-      <SimpleGrid cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}>
+      <SimpleGrid
+        cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}
+        styles={{
+          root: {
+            alignItems: "flex-start",
+          },
+        }}
+      >
         {notes?.map((note) => (
           <Note
             open={open}
