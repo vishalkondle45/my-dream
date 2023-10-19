@@ -12,12 +12,12 @@ import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
   IconColorSwatch,
+  IconCopy,
   IconPencil,
   IconPinned,
   IconPinnedFilled,
   IconRestore,
   IconTrash,
-  IconX,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
 import React from "react";
@@ -31,6 +31,30 @@ const Note = ({ note, setEdit, edit, open, close }) => {
   const changeColor = useMutation(api.notes.changeColor);
   const pin = useMutation(api.notes.pin);
   const unpin = useMutation(api.notes.unpin);
+  const create = useMutation(api.notes.create);
+
+  const onClone = async (title, note, color) => {
+    const id = notifications.show({
+      title: "Cloning a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await create({ title, note, color })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note cloned!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
 
   const onArchive = async () => {
     if (!note?._id) return;
@@ -235,7 +259,14 @@ const Note = ({ note, setEdit, edit, open, close }) => {
             >
               <IconPencil />
             </ActionIcon>
-
+            <ActionIcon
+              onClick={() => onClone(note?.title, note?.note, note?.color)}
+              color="white"
+              radius="xl"
+              variant="subtle"
+            >
+              <IconCopy />
+            </ActionIcon>
             <Popover width={285} position="bottom" withArrow shadow="md">
               <Popover.Target>
                 <ActionIcon color="white" radius="xl" variant="subtle">

@@ -44,7 +44,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await create({ _id: edit._id, title: edit.title, note: edit.note })
+    await create({ title: edit.title, note: edit.note })
       .then((res) => {
         notifications.update({
           id,

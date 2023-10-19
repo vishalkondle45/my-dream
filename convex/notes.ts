@@ -10,6 +10,7 @@ export const create = mutation({
     note: v.string(),
   },
   handler: async (ctx, args) => {
+    console.log(args);
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
