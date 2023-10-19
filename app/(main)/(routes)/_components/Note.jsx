@@ -232,7 +232,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
       withBorder
     >
       <Group justify="space-between">
-        <Text fw={700}>{note?.color}</Text>
+        <Text fw={700}>{note?.title}</Text>
         {note?.isArchived || (
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}
