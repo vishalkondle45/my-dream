@@ -41,6 +41,7 @@ const Page = () => {
       </Button>
       <SimpleGrid
         cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 3, xl: 4 }}
+        mb="xl"
         styles={{
           root: {
             alignItems: "flex-start",

@@ -67,7 +67,8 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
       styles={{
         body: {
           padding: 0,
-          backgroundColor: getThemeColor(`${edit?.color}.6`, theme),
+          backgroundColor:
+            edit?.color && getThemeColor(`${edit?.color}.6`, theme),
         },
       }}
       onClose={() => setEdit({ title: "", note: "" })}
@@ -75,9 +76,11 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
       <TextInput
         value={edit?.title}
         onChange={(e) => setEdit({ ...edit, title: e.currentTarget.value })}
+        placeholder="Title"
         styles={{
           input: {
-            backgroundColor: getThemeColor(`${edit?.color}.6`, theme),
+            backgroundColor:
+              edit?.color && getThemeColor(`${edit?.color}.6`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
@@ -86,7 +89,8 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
             fontSize: rem(16),
           },
           wrapper: {
-            backgroundColor: getThemeColor(`${edit?.color}.6`, theme),
+            backgroundColor:
+              edit?.color && getThemeColor(`${edit?.color}.6`, theme),
           },
         }}
       />
@@ -108,53 +112,39 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
           },
         }}
       />
-      <Group justify="space-between" px="md" pb="xs">
+
+      <Group justify="flex-start" px="md">
+        {Object.keys(theme.colors).map((color) => (
+          <ActionIcon
+            key={color}
+            color={`${color}`}
+            size="sm"
+            radius="xl"
+            variant="filled"
+            onClick={() =>
+              edit?.color === color
+                ? setEdit({ ...edit, color: "" })
+                : setEdit({ ...edit, color })
+            }
+            styles={{
+              root: {
+                borderWidth: 1,
+                borderColor: "white",
+              },
+            }}
+          >
+            {edit?.color == color && <CheckIcon size={12} />}
+          </ActionIcon>
+        ))}
+      </Group>
+      <Group justify="space-between" px="md" py="xs">
         <Button
-          onClick={() => setEdit({ title: "", note: "" })}
+          onClick={() => setEdit({ title: "", note: "", color: "" })}
           leftSection={<IconX />}
           variant="white"
         >
           Cancel
         </Button>
-
-        <Popover width={285} position="top" withArrow shadow="md">
-          <Popover.Target>
-            <ActionIcon
-              color="white"
-              radius="xl"
-              variant="subtle"
-              title="Color"
-            >
-              <IconColorSwatch />
-            </ActionIcon>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Group>
-              {Object.keys(theme.colors).map((color) => (
-                <ActionIcon
-                  key={color}
-                  color={`${color}`}
-                  size="sm"
-                  radius="xl"
-                  variant="filled"
-                  onClick={() =>
-                    edit?.color === color
-                      ? setEdit({ ...edit, color: "" })
-                      : setEdit({ ...edit, color })
-                  }
-                  styles={{
-                    root: {
-                      borderWidth: 1,
-                      borderColor: "white",
-                    },
-                  }}
-                >
-                  {edit?.color == color && <CheckIcon size={12} />}
-                </ActionIcon>
-              ))}
-            </Group>
-          </Popover.Dropdown>
-        </Popover>
         <Button
           onClick={onUpdate}
           leftSection={<IconCloudUpload />}
