@@ -8,8 +8,16 @@ import {
   Group,
   useMantineTheme,
   Button,
+  ActionIcon,
+  CheckIcon,
+  Popover,
 } from "@mantine/core";
-import { IconCheck, IconCloudUpload, IconX } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconCloudUpload,
+  IconColorSwatch,
+  IconX,
+} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -27,7 +35,12 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await update({ _id: edit._id, title: edit.title, note: edit.note })
+    await update({
+      _id: edit._id,
+      title: edit.title,
+      note: edit.note,
+      color: edit.color,
+    })
       .then((res) => {
         notifications.update({
           id,
@@ -78,7 +91,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         }}
       />
       <Textarea
-        rows={5}
+        rows={10}
         value={edit?.note}
         onChange={(e) => setEdit({ ...edit, note: e.currentTarget.value })}
         styles={{
@@ -103,6 +116,45 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         >
           Cancel
         </Button>
+
+        <Popover width={285} position="top" withArrow shadow="md">
+          <Popover.Target>
+            <ActionIcon
+              color="white"
+              radius="xl"
+              variant="subtle"
+              title="Color"
+            >
+              <IconColorSwatch />
+            </ActionIcon>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Group>
+              {Object.keys(theme.colors).map((color) => (
+                <ActionIcon
+                  key={color}
+                  color={`${color}`}
+                  size="sm"
+                  radius="xl"
+                  variant="filled"
+                  onClick={() =>
+                    edit?.color === color
+                      ? setEdit({ ...edit, color: "" })
+                      : setEdit({ ...edit, color })
+                  }
+                  styles={{
+                    root: {
+                      borderWidth: 1,
+                      borderColor: "white",
+                    },
+                  }}
+                >
+                  {edit?.color == color && <CheckIcon size={12} />}
+                </ActionIcon>
+              ))}
+            </Group>
+          </Popover.Dropdown>
+        </Popover>
         <Button
           onClick={onUpdate}
           leftSection={<IconCloudUpload />}

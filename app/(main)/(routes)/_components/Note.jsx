@@ -1,20 +1,11 @@
 import { api } from "@/convex/_generated/api";
-import {
-  ActionIcon,
-  Box,
-  CheckIcon,
-  Group,
-  Paper,
-  Popover,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { ActionIcon, Box, Group, Paper, Text } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
-  IconColorSwatch,
   IconCopy,
+  IconFileText,
   IconPencil,
   IconPinned,
   IconPinnedFilled,
@@ -25,7 +16,6 @@ import { useMutation } from "convex/react";
 import React from "react";
 
 const Note = ({ note, setEdit, edit, open, close }) => {
-  const theme = useMantineTheme();
   const { hovered, ref } = useHover();
 
   const archive = useMutation(api.notes.archive);
@@ -131,30 +121,6 @@ const Note = ({ note, setEdit, edit, open, close }) => {
       .catch((error) => console.log(error));
   };
 
-  const onColorChange = async (color) => {
-    if (!note?._id) return;
-    const id = notifications.show({
-      title: "coloring a note?...",
-      loading: true,
-      withBorder: true,
-      autoClose: false,
-      withCloseButton: false,
-    });
-    await changeColor({ _id: note?._id, color })
-      .then((res) => {
-        notifications.update({
-          id,
-          title: "Note colored!",
-          icon: <IconCheck size={16} />,
-          color: "green",
-          withBorder: true,
-          loading: false,
-          autoClose: 2000,
-        });
-      })
-      .catch((error) => console.log(error));
-  };
-
   const onPin = async () => {
     if (!note?._id) return;
     const id = notifications.show({
@@ -213,19 +179,6 @@ const Note = ({ note, setEdit, edit, open, close }) => {
     }
   };
 
-  const swatches = Object.keys(theme.colors).map((color) => (
-    <ActionIcon
-      key={color}
-      color={`${color}`}
-      size="sm"
-      radius="xl"
-      variant="filled"
-      onClick={() => onColorChange(color)}
-    >
-      {note?.color == color ? <CheckIcon size={12} /> : <></>}
-    </ActionIcon>
-  ));
-
   return (
     <Paper
       bg={`${note?.color || "dark"}.6`}
@@ -247,6 +200,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
             radius="xl"
             variant="subtle"
             color="white"
+            title={note?.isPinned ? "Unpin" : "Pin"}
           >
             {note?.isPinned ? <IconPinnedFilled /> : <IconPinned />}
           </ActionIcon>
@@ -260,6 +214,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
               radius="xl"
               onClick={onRestore}
               variant="subtle"
+              title="Restore"
             >
               <IconRestore />
             </ActionIcon>
@@ -270,6 +225,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
                 color="white"
                 radius="xl"
                 variant="subtle"
+                title="Edit"
               >
                 <IconPencil />
               </ActionIcon>
@@ -278,19 +234,19 @@ const Note = ({ note, setEdit, edit, open, close }) => {
                 color="white"
                 radius="xl"
                 variant="subtle"
+                title="Clone"
               >
                 <IconCopy />
               </ActionIcon>
-              <Popover width={285} position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <ActionIcon color="white" radius="xl" variant="subtle">
-                    <IconColorSwatch />
-                  </ActionIcon>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Group>{swatches}</Group>
-                </Popover.Dropdown>
-              </Popover>
+              <ActionIcon
+                onClick={() => {}}
+                color="white"
+                radius="xl"
+                variant="subtle"
+                title="Copy to docs"
+              >
+                <IconFileText />
+              </ActionIcon>
             </>
           )}
           <ActionIcon

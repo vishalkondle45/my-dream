@@ -88,31 +88,6 @@ export const getTrash = query({
   },
 });
 
-export const changeColor = mutation({
-  args: { _id: v.id("notes"), color: v.string() },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      return null;
-    }
-    const userId = identity.subject;
-
-    const existingNote = await ctx.db.get(args._id);
-    if (!existingNote) {
-      throw new Error("Not found");
-    }
-
-    if (existingNote.userId !== userId) {
-      throw new Error("Unauthorized");
-    }
-
-    const note = await ctx.db.patch(args._id, {
-      color: args.color,
-    });
-    return note;
-  },
-});
-
 export const restore = mutation({
   args: { _id: v.id("notes") },
   handler: async (ctx, args) => {
@@ -240,6 +215,7 @@ export const update = mutation({
     _id: v.id("notes"),
     title: v.optional(v.string()),
     note: v.optional(v.string()),
+    color: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
