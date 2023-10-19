@@ -17,12 +17,14 @@ import {
   IconPinnedFilled,
   IconRestore,
   IconTrash,
+  IconX,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
 import React from "react";
 
-const Note = ({ note }) => {
+const Note = ({ note, setEdit, edit, open, close }) => {
   const theme = useMantineTheme();
+
   const archive = useMutation(api.notes.archive);
   const restore = useMutation(api.notes.restore);
   const remove = useMutation(api.notes.remove);
@@ -30,7 +32,7 @@ const Note = ({ note }) => {
   const pin = useMutation(api.notes.pin);
   const unpin = useMutation(api.notes.unpin);
 
-  const onArchiveNote = async () => {
+  const onArchive = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Archiving a note?...",
@@ -54,7 +56,7 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
-  const onRestoreNote = async () => {
+  const onRestore = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Restoring a note?...",
@@ -78,7 +80,7 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
-  const onRemoveNote = async () => {
+  const onRemove = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Removing a note?...",
@@ -126,7 +128,7 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
-  const onPinNote = async () => {
+  const onPin = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Pinning a note?...",
@@ -150,7 +152,7 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
-  const onUnPinNote = async () => {
+  const onUnPin = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Unpinning a note?...",
@@ -174,6 +176,16 @@ const Note = ({ note }) => {
       .catch((error) => console.log(error));
   };
 
+  const onEdit = () => {
+    if (edit?._id !== note?._id) {
+      setEdit(note);
+      open();
+    } else {
+      setEdit({ title: "", note: "" });
+      close();
+    }
+  };
+
   const swatches = Object.keys(theme.colors).map((color) => (
     <ActionIcon
       key={color}
@@ -188,12 +200,12 @@ const Note = ({ note }) => {
   ));
 
   return (
-    <Paper bg={`${note?.color}.9`} c="white" p="md" radius="md" withBorder>
+    <Paper bg={`${note?.color}.6`} c="white" p="md" radius="md" withBorder>
       <Group justify="space-between">
         <Text fw={700}>{note?.title}</Text>
         {note?.isArchived || (
           <ActionIcon
-            onClick={note?.isPinned ? onUnPinNote : onPinNote}
+            onClick={note?.isPinned ? onUnPin : onPin}
             radius="xl"
             variant="subtle"
             color="white"
@@ -208,35 +220,39 @@ const Note = ({ note }) => {
           <ActionIcon
             color="white"
             radius="xl"
-            onClick={onRestoreNote}
+            onClick={onRestore}
             variant="subtle"
           >
             <IconRestore />
           </ActionIcon>
         ) : (
           <>
-            <ActionIcon color="white" radius="xl" variant="subtle">
+            <ActionIcon
+              onClick={onEdit}
+              color="white"
+              radius="xl"
+              variant="subtle"
+            >
               <IconPencil />
             </ActionIcon>
+
+            <Popover width={285} position="bottom" withArrow shadow="md">
+              <Popover.Target>
+                <ActionIcon color="white" radius="xl" variant="subtle">
+                  <IconColorSwatch />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Group>{swatches}</Group>
+              </Popover.Dropdown>
+            </Popover>
           </>
-        )}
-        {!note?.isArchived && (
-          <Popover width={285} position="bottom" withArrow shadow="md">
-            <Popover.Target>
-              <ActionIcon color="white" radius="xl" variant="subtle">
-                <IconColorSwatch />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Group>{swatches}</Group>
-            </Popover.Dropdown>
-          </Popover>
         )}
         <ActionIcon
           radius="xl"
           variant="subtle"
           color="white"
-          onClick={note?.isArchived ? onRemoveNote : onArchiveNote}
+          onClick={note?.isArchived ? onRemove : onArchive}
         >
           <IconTrash />
         </ActionIcon>

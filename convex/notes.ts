@@ -233,3 +233,30 @@ export const unpin = mutation({
     return note;
   },
 });
+
+export const update = mutation({
+  args: {
+    _id: v.id("notes"),
+    title: v.optional(v.string()),
+    note: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingNote = await ctx.db.get(args._id);
+    if (!existingNote) {
+      throw new Error("Not found");
+    }
+
+    if (existingNote.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const note = await ctx.db.patch(args._id, args);
+    return note;
+  },
+});
