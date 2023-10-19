@@ -19,7 +19,7 @@ export const create = mutation({
     const document = await ctx.db.insert("notes", {
       title: args.title,
       note: args.note,
-      color: "dark",
+      color: args.color,
       isArchived: false,
       isPinned: false,
       userId,

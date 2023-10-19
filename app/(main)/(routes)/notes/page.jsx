@@ -11,7 +11,11 @@ import NewNote from "../_components/NewNote";
 
 const Page = () => {
   const [edit, setEdit] = useState({ title: "", note: "" });
-  const [newNote, setNewNote] = useState({ title: "", note: "", color: "" });
+  const [newNote, setNewNote] = useState({
+    title: "",
+    note: "",
+    color: "dark",
+  });
   const [opened, { open, close }] = useDisclosure(false);
   const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
 

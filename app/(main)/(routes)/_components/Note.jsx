@@ -224,9 +224,15 @@ const Note = ({ note, setEdit, edit, open, close }) => {
   ));
 
   return (
-    <Paper bg={`${note?.color}.6`} c="white" p="md" radius="md" withBorder>
+    <Paper
+      bg={`${note?.color || "dark"}.6`}
+      c="white"
+      p="md"
+      radius="md"
+      withBorder
+    >
       <Group justify="space-between">
-        <Text fw={700}>{note?.title}</Text>
+        <Text fw={700}>{note?.color}</Text>
         {note?.isArchived || (
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}

@@ -44,7 +44,11 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await create({ title: edit.title, note: edit.note })
+    await create({
+      title: newNote?.title,
+      note: newNote?.note,
+      color: newNote?.color,
+    })
       .then((res) => {
         notifications.update({
           id,
@@ -55,11 +59,11 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           loading: false,
           autoClose: 2000,
         });
-        setNewNote({ title: "", note: "" });
+        setNewNote({ title: "", note: "", color: "dark" });
       })
       .catch((error) => console.log(error))
       .finally(() => {
-        setNewNote({ title: "", note: "" });
+        setNewNote({ title: "", note: "", color: "dark" });
         close();
       });
   };
@@ -75,7 +79,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
         },
       }}
-      onClose={() => setNewNote({ title: "", note: "" })}
+      onClose={() => setNewNote({ title: "", note: "", color: "dark" })}
     >
       <TextInput
         value={newNote?.title}
@@ -132,7 +136,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             radius="xl"
             variant="filled"
             onClick={() =>
-              newNote.color === color
+              newNote?.color === color
                 ? setNewNote({ ...newNote, color: "" })
                 : setNewNote({ ...newNote, color })
             }
@@ -151,7 +155,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
         <Button
           onClick={() => {
             close();
-            setNewNote({ title: "", note: "", color: "" });
+            setNewNote({ title: "", note: "", color: "dark" });
           }}
           leftSection={<IconX />}
           variant="default"
