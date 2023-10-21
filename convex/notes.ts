@@ -349,3 +349,41 @@ export const restoreAll = mutation({
     return notes;
   },
 });
+
+export const cloneSelected = mutation({
+  args: {
+    notes: v.array(v.id("notes")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    let notes: any[] = [];
+    args.notes.forEach(async (element) => {
+      const existingNote = await ctx.db.get(element);
+      if (!existingNote) {
+        throw new Error("Not found");
+      }
+
+      if (existingNote.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+
+      const note = await ctx.db.insert("notes", {
+        title: existingNote.title,
+        note: existingNote.note,
+        color: existingNote.color,
+        isArchived: false,
+        isPinned: false,
+        userId,
+      });
+      notes.push(note);
+    });
+
+    console.log(notes);
+    return notes;
+  },
+});

@@ -48,6 +48,7 @@ const Page = () => {
   let colorSelected = useMutation(api.notes.colorSelected);
   let pinSelected = useMutation(api.notes.pinSelected);
   let archiveSelected = useMutation(api.notes.archiveSelected);
+  let cloneSelected = useMutation(api.notes.cloneSelected);
 
   const onPinSelected = async () => {
     if (!value.length) return;
@@ -131,6 +132,29 @@ const Page = () => {
       })
       .catch((error) => console.log(error));
   };
+  const onCloneSelected = async () => {
+    const id = notifications.show({
+      title: "Cloning a note?...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await cloneSelected({ notes: value })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Note cloned!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 2000,
+        });
+        setValue([]);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const swatches = Object.keys(theme.colors).map((color) => (
     <ActionIcon
@@ -187,7 +211,12 @@ const Page = () => {
               <ActionIcon variant="transparent" onClick={onArchiveSelected}>
                 <IconTrash />
               </ActionIcon>
-              <ActionIcon radius="xl" title="Clone" variant="transparent">
+              <ActionIcon
+                radius="xl"
+                title="Clone"
+                variant="transparent"
+                onClick={onCloneSelected}
+              >
                 <IconCopy />
               </ActionIcon>
               <ActionIcon
