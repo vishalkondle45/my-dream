@@ -196,7 +196,9 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       )}
       <Group justify="space-between" align="flex-start" wrap="nowrap">
         <Box mih={80}>
-          <Text fw={700}>{note?.title}</Text>
+          <Text fw={700} fz="lg">
+            {note?.title}
+          </Text>
           <Text opacity={Boolean(hovered)}>{note?.note}</Text>
         </Box>
         {hovered && !note?.isArchived && (

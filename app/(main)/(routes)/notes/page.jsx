@@ -230,6 +230,9 @@ const Page = () => {
         )}
       </Group>
       <Checkbox.Group value={value} onChange={setValue}>
+        <Text tt="uppercase" fw={700} mb="xs" fz="xs">
+          Pinned
+        </Text>
         <SimpleGrid
           cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}
           styles={{
@@ -238,17 +241,44 @@ const Page = () => {
             },
           }}
         >
-          {notes?.map((note) => (
-            <Note
-              open={open}
-              close={close}
-              edit={edit}
-              setEdit={setEdit}
-              key={note._id}
-              note={note}
-              value={value}
-            />
-          ))}
+          {notes
+            ?.filter(({ isPinned }) => isPinned)
+            .map((note) => (
+              <Note
+                open={open}
+                close={close}
+                edit={edit}
+                setEdit={setEdit}
+                key={note._id}
+                note={note}
+                value={value}
+              />
+            ))}
+        </SimpleGrid>
+        <Text tt="uppercase" fw={700} fz="xs" mb="xs" mt="xl">
+          Others
+        </Text>
+        <SimpleGrid
+          cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}
+          styles={{
+            root: {
+              alignItems: "flex-start",
+            },
+          }}
+        >
+          {notes
+            ?.filter(({ isPinned }) => !isPinned)
+            .map((note) => (
+              <Note
+                open={open}
+                close={close}
+                edit={edit}
+                setEdit={setEdit}
+                key={note._id}
+                note={note}
+                value={value}
+              />
+            ))}
         </SimpleGrid>
       </Checkbox.Group>
       {edit?._id && (
