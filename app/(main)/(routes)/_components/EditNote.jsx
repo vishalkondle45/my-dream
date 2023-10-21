@@ -1,26 +1,19 @@
-import React from "react";
+import { api } from "@/convex/_generated/api";
 import {
+  ActionIcon,
+  Button,
+  CheckIcon,
+  Group,
   Modal,
   TextInput,
   Textarea,
   getThemeColor,
   rem,
-  Group,
   useMantineTheme,
-  Button,
-  ActionIcon,
-  CheckIcon,
-  Popover,
 } from "@mantine/core";
-import {
-  IconCheck,
-  IconCloudUpload,
-  IconColorSwatch,
-  IconX,
-} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
+import { IconCheck, IconCloudUpload, IconX } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 const EditNote = ({ edit, setEdit, close, opened }) => {
   const theme = useMantineTheme();
@@ -77,6 +70,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         value={edit?.title}
         onChange={(e) => setEdit({ ...edit, title: e.currentTarget.value })}
         placeholder="Title"
+        radius={0}
         styles={{
           input: {
             backgroundColor:
@@ -85,7 +79,6 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
             border: 0,
             borderStyle: "none",
             fontWeight: 700,
-            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
@@ -98,58 +91,56 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         rows={10}
         value={edit?.note}
         onChange={(e) => setEdit({ ...edit, note: e.currentTarget.value })}
+        radius={0}
         styles={{
           input: {
-            backgroundColor: getThemeColor(`${edit?.color}`, theme),
+            backgroundColor:
+              edit?.color && getThemeColor(`${edit?.color}`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
-            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
-            backgroundColor: getThemeColor(`${edit?.color}`, theme),
+            backgroundColor:
+              edit?.color && getThemeColor(`${edit?.color}`, theme),
           },
         }}
       />
-
-      <Group justify="flex-start" px="md">
-        {Object.keys(theme.colors).map((color) => (
-          <ActionIcon
-            key={color}
-            color={`${color}`}
-            size="sm"
-            radius="xl"
-            variant="filled"
-            onClick={() =>
-              edit?.color === color
-                ? setEdit({ ...edit, color: "" })
-                : setEdit({ ...edit, color })
-            }
-            styles={{
-              root: {
-                borderWidth: 1,
-                borderColor: "white",
-              },
-            }}
-          >
-            {edit?.color == color && <CheckIcon size={12} />}
-          </ActionIcon>
-        ))}
+      <Group justify="flex-start" p="md">
+        {Object.keys(theme.colors)
+          .filter((color) => color !== "dark")
+          .map((color) => (
+            <ActionIcon
+              key={color}
+              color={`${color}`}
+              size="sm"
+              radius="xl"
+              variant="filled"
+              onClick={() =>
+                edit?.color === color
+                  ? setEdit({ ...edit, color: undefined })
+                  : setEdit({ ...edit, color })
+              }
+              styles={{
+                root: {
+                  borderWidth: 1,
+                  borderColor: "white",
+                },
+              }}
+            >
+              {edit?.color == color && <CheckIcon size={12} />}
+            </ActionIcon>
+          ))}
       </Group>
       <Group justify="space-between" px="md" py="xs">
         <Button
-          onClick={() => setEdit({ title: "", note: "", color: "" })}
+          onClick={() => setEdit({ title: "", note: "" })}
           leftSection={<IconX />}
-          variant="white"
         >
           Cancel
         </Button>
-        <Button
-          onClick={onUpdate}
-          leftSection={<IconCloudUpload />}
-          variant="white"
-        >
+        <Button onClick={onUpdate} leftSection={<IconCloudUpload />}>
           Update
         </Button>
       </Group>

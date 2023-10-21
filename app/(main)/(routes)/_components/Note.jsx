@@ -13,7 +13,6 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
-import React from "react";
 
 const Note = ({ note, setEdit, edit, open, close, value }) => {
   const { hovered, ref } = useHover();
@@ -129,7 +128,7 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await pin({ value: [note?._id] })
+    await pin({ _id: note?._id })
       .then((res) => {
         notifications.update({
           id,
@@ -180,8 +179,7 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
 
   return (
     <Paper
-      bg={`${note?.color || "dark"}`}
-      c="white"
+      bg={`${note?.color}`}
       p="md"
       radius="md"
       withBorder
@@ -199,28 +197,28 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       <Group justify="space-between" align="flex-start" wrap="nowrap">
         <Box mih={80}>
           <Text fw={700}>{note?.title}</Text>
-          <Text>{note?.note}</Text>
+          <Text opacity={Boolean(hovered)}>{note?.note}</Text>
         </Box>
         {hovered && !note?.isArchived && (
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}
             radius="xl"
-            variant="subtle"
-            color="white"
+            variant={note.color ? "filled" : "transparent"}
+            color={note.color}
             title={note?.isPinned ? "Unpin" : "Pin"}
           >
             {note?.isPinned ? <IconPinnedFilled /> : <IconPinned />}
           </ActionIcon>
         )}
       </Group>
-      {hovered && (
-        <Group mt="md" justify="space-between">
+      {
+        <Group justify="space-between" opacity={Number(hovered)}>
           {note?.isArchived ? (
             <ActionIcon
-              color="white"
               radius="xl"
               onClick={onRestore}
-              variant="subtle"
+              variant={note.color ? "filled" : "transparent"}
+              color={note.color}
               title="Restore"
             >
               <IconRestore />
@@ -229,27 +227,27 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
             <>
               <ActionIcon
                 onClick={onEdit}
-                color="white"
                 radius="xl"
-                variant="subtle"
+                variant={note.color ? "filled" : "transparent"}
+                color={note.color}
                 title="Edit"
               >
                 <IconPencil />
               </ActionIcon>
               <ActionIcon
                 onClick={() => onClone(note?.title, note?.note, note?.color)}
-                color="white"
                 radius="xl"
-                variant="subtle"
+                variant={note.color ? "filled" : "transparent"}
+                color={note.color}
                 title="Clone"
               >
                 <IconCopy />
               </ActionIcon>
               <ActionIcon
                 onClick={() => {}}
-                color="white"
                 radius="xl"
-                variant="subtle"
+                variant={note.color ? "filled" : "transparent"}
+                color={note.color}
                 title="Copy to docs"
               >
                 <IconFileText />
@@ -258,14 +256,15 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
           )}
           <ActionIcon
             radius="xl"
-            variant="subtle"
-            color="white"
+            variant={note.color ? "filled" : "transparent"}
+            color={note.color}
+            title={note?.isArchived ? "Delete permanently" : "Move to trash"}
             onClick={note?.isArchived ? onRemove : onArchive}
           >
             <IconTrash />
           </ActionIcon>
         </Group>
-      )}
+      }
     </Paper>
   );
 };

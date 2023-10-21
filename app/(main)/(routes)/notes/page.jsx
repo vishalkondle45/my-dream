@@ -3,7 +3,6 @@ import { api } from "@/convex/_generated/api";
 import {
   ActionIcon,
   Button,
-  CheckIcon,
   Checkbox,
   Flex,
   Group,
@@ -12,25 +11,23 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
-  IconColorSwatch,
+  IconCopy,
+  IconFileText,
   IconPalette,
-  IconPinFilled,
   IconPinnedFilled,
   IconPlus,
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
-import React, { useState } from "react";
-import Note from "../_components/Note";
-import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 import EditNote from "../_components/EditNote";
 import NewNote from "../_components/NewNote";
-import { IconCopy } from "@tabler/icons-react";
-import { IconFileText } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
+import Note from "../_components/Note";
 
 const Page = () => {
   const theme = useMantineTheme();
@@ -39,7 +36,6 @@ const Page = () => {
   const [newNote, setNewNote] = useState({
     title: "",
     note: "",
-    color: "dark",
   });
   const [opened, { open, close }] = useDisclosure(false);
   const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
@@ -156,16 +152,18 @@ const Page = () => {
       .catch((error) => console.log(error));
   };
 
-  const swatches = Object.keys(theme.colors).map((color) => (
-    <ActionIcon
-      color={color}
-      key={color}
-      size="sm"
-      radius="xl"
-      variant="filled"
-      onClick={() => onColorSelected(color)}
-    ></ActionIcon>
-  ));
+  const swatches = Object.keys(theme.colors)
+    .filter((color) => color !== "dark")
+    .map((color) => (
+      <ActionIcon
+        color={color}
+        key={color}
+        size="sm"
+        radius="xl"
+        variant="filled"
+        onClick={() => onColorSelected(color)}
+      ></ActionIcon>
+    ));
 
   return (
     <div>

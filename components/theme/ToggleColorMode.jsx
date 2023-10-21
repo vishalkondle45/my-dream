@@ -1,10 +1,10 @@
 "use client";
 import {
   ActionIcon,
-  useMantineColorScheme,
   useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
-import { IconSun, IconMoon } from "@tabler/icons-react";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import cx from "clsx";
 import classes from "./ToggleColorMode.module.css";
 
@@ -19,8 +19,7 @@ export default function ToggleColorMode() {
       onClick={() =>
         setColorScheme(computedColorScheme === "light" ? "dark" : "light")
       }
-      variant="transparent"
-      color="dark"
+      variant="default"
       size="md"
       aria-label="Toggle color scheme"
     >

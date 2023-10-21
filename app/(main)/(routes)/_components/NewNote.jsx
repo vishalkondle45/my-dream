@@ -1,25 +1,24 @@
-import React from "react";
+import { api } from "@/convex/_generated/api";
 import {
+  ActionIcon,
+  Button,
+  CheckIcon,
+  Group,
   Modal,
   TextInput,
   Textarea,
   getThemeColor,
   rem,
-  Group,
   useMantineTheme,
-  Button,
-  ActionIcon,
-  CheckIcon,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import {
   IconAsteriskSimple,
   IconCheck,
   IconCloudUpload,
   IconX,
 } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 const NewNote = ({ newNote, setNewNote, close, opened }) => {
   const theme = useMantineTheme();
@@ -59,11 +58,11 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           loading: false,
           autoClose: 2000,
         });
-        setNewNote({ title: "", note: "", color: "dark" });
+        setNewNote({ title: "", note: "" });
       })
       .catch((error) => console.log(error))
       .finally(() => {
-        setNewNote({ title: "", note: "", color: "dark" });
+        setNewNote({ title: "", note: "" });
         close();
       });
   };
@@ -79,7 +78,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             newNote?.color && getThemeColor(`${newNote?.color}`, theme),
         },
       }}
-      onClose={() => setNewNote({ title: "", note: "", color: "dark" })}
+      onClose={() => setNewNote({ title: "", note: "" })}
     >
       <TextInput
         value={newNote?.title}
@@ -87,6 +86,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           setNewNote({ ...newNote, title: e.currentTarget.value })
         }
         placeholder="Title"
+        radius={0}
         styles={{
           input: {
             backgroundColor:
@@ -95,7 +95,6 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             border: 0,
             borderStyle: "none",
             fontWeight: 700,
-            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
@@ -110,6 +109,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
         onChange={(e) =>
           setNewNote({ ...newNote, note: e.currentTarget.value })
         }
+        radius={0}
         placeholder="Note"
         styles={{
           input: {
@@ -118,7 +118,6 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             outline: 0,
             border: 0,
             borderStyle: "none",
-            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
@@ -127,46 +126,43 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           },
         }}
       />
-      <Group justify="flex-start" px="md">
-        {Object.keys(theme.colors).map((color) => (
-          <ActionIcon
-            key={color}
-            color={`${color}`}
-            size="sm"
-            radius="xl"
-            variant="filled"
-            onClick={() =>
-              newNote?.color === color
-                ? setNewNote({ ...newNote, color: "" })
-                : setNewNote({ ...newNote, color })
-            }
-            styles={{
-              root: {
-                borderWidth: 1,
-                borderColor: "white",
-              },
-            }}
-          >
-            {newNote?.color == color && <CheckIcon size={12} />}
-          </ActionIcon>
-        ))}
+      <Group justify="flex-start" p="md">
+        {Object.keys(theme.colors)
+          .filter((color) => color !== "dark")
+          .map((color) => (
+            <ActionIcon
+              key={color}
+              color={`${color}`}
+              size="sm"
+              radius="xl"
+              variant="filled"
+              onClick={() =>
+                newNote?.color === color
+                  ? setNewNote({ ...newNote, color: undefined })
+                  : setNewNote({ ...newNote, color })
+              }
+              styles={{
+                root: {
+                  borderWidth: 1,
+                  borderColor: "white",
+                },
+              }}
+            >
+              {newNote?.color == color && <CheckIcon size={12} />}
+            </ActionIcon>
+          ))}
       </Group>
       <Group justify="space-between" px="md" py="xs">
         <Button
           onClick={() => {
             close();
-            setNewNote({ title: "", note: "", color: "dark" });
+            setNewNote({ title: "", note: "" });
           }}
           leftSection={<IconX />}
-          variant="default"
         >
           Cancel
         </Button>
-        <Button
-          onClick={onCreate}
-          leftSection={<IconCloudUpload />}
-          variant="default"
-        >
+        <Button onClick={onCreate} leftSection={<IconCloudUpload />}>
           Create
         </Button>
       </Group>

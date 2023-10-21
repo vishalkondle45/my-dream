@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
 
 export const create = mutation({
   args: {
@@ -10,7 +9,6 @@ export const create = mutation({
     note: v.string(),
   },
   handler: async (ctx, args) => {
-    console.log(args);
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
@@ -382,8 +380,6 @@ export const cloneSelected = mutation({
       });
       notes.push(note);
     });
-
-    console.log(notes);
     return notes;
   },
 });
