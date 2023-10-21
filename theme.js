@@ -1,13 +1,20 @@
 "use client";
 
-import { createTheme } from "@mantine/core";
+import { createTheme, TextInput } from "@mantine/core";
 
 export const theme = createTheme({
   fontFamily: "Inter, Verdana, sans-serif",
   headings: { fontFamily: "Inter, Verdana, sans-serif" },
   primaryColor: "dark",
-  // primaryShade: {
-  //   dark: 5,
-  //   light: 9,
-  // },
+  primaryShade: {
+    dark: 9,
+    light: 5,
+  },
+  components: {
+    TextInput: TextInput.extend({
+      defaultProps: {
+        color: "white",
+      },
+    }),
+  },
 });

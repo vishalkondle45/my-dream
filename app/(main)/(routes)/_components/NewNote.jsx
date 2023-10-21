@@ -95,7 +95,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             border: 0,
             borderStyle: "none",
             fontWeight: 700,
-            color: "black",
+            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
@@ -118,7 +118,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
             outline: 0,
             border: 0,
             borderStyle: "none",
-            color: "black",
+            color: "white",
             fontSize: rem(16),
           },
           wrapper: {
