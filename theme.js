@@ -6,8 +6,8 @@ export const theme = createTheme({
   fontFamily: "Inter, Verdana, sans-serif",
   headings: { fontFamily: "Inter, Verdana, sans-serif" },
   primaryColor: "dark",
-  primaryShade: {
-    dark: 5,
-    light: 9,
-  },
+  // primaryShade: {
+  //   dark: 5,
+  //   light: 9,
+  // },
 });

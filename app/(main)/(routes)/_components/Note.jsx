@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { ActionIcon, Box, Group, Paper, Text } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Group, Paper, Text } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
@@ -15,13 +15,12 @@ import {
 import { useMutation } from "convex/react";
 import React from "react";
 
-const Note = ({ note, setEdit, edit, open, close }) => {
+const Note = ({ note, setEdit, edit, open, close, value }) => {
   const { hovered, ref } = useHover();
 
   const archive = useMutation(api.notes.archive);
   const restore = useMutation(api.notes.restore);
   const remove = useMutation(api.notes.remove);
-  const changeColor = useMutation(api.notes.changeColor);
   const pin = useMutation(api.notes.pin);
   const unpin = useMutation(api.notes.unpin);
   const create = useMutation(api.notes.create);
@@ -130,7 +129,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await pin({ _id: note?._id })
+    await pin({ value: [note?._id] })
       .then((res) => {
         notifications.update({
           id,
@@ -181,7 +180,7 @@ const Note = ({ note, setEdit, edit, open, close }) => {
 
   return (
     <Paper
-      bg={`${note?.color || "dark"}.6`}
+      bg={`${note?.color || "dark"}`}
       c="white"
       p="md"
       radius="md"
@@ -189,6 +188,14 @@ const Note = ({ note, setEdit, edit, open, close }) => {
       ref={ref}
       shadow={hovered && "xl"}
     >
+      {(hovered || value?.includes(note._id)) && value && (
+        <Checkbox
+          key={note._id}
+          styles={{ root: { position: "relative", left: -24, top: -24 } }}
+          value={note._id}
+          mb={"-lg"}
+        />
+      )}
       <Group justify="space-between" align="flex-start" wrap="nowrap">
         <Box mih={80}>
           <Text fw={700}>{note?.title}</Text>

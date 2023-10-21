@@ -68,7 +68,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         body: {
           padding: 0,
           backgroundColor:
-            edit?.color && getThemeColor(`${edit?.color}.6`, theme),
+            edit?.color && getThemeColor(`${edit?.color}`, theme),
         },
       }}
       onClose={() => setEdit({ title: "", note: "" })}
@@ -80,7 +80,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         styles={{
           input: {
             backgroundColor:
-              edit?.color && getThemeColor(`${edit?.color}.6`, theme),
+              edit?.color && getThemeColor(`${edit?.color}`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
@@ -90,7 +90,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
           },
           wrapper: {
             backgroundColor:
-              edit?.color && getThemeColor(`${edit?.color}.6`, theme),
+              edit?.color && getThemeColor(`${edit?.color}`, theme),
           },
         }}
       />
@@ -100,7 +100,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
         onChange={(e) => setEdit({ ...edit, note: e.currentTarget.value })}
         styles={{
           input: {
-            backgroundColor: getThemeColor(`${edit?.color}.6`, theme),
+            backgroundColor: getThemeColor(`${edit?.color}`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
@@ -108,7 +108,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
             fontSize: rem(16),
           },
           wrapper: {
-            backgroundColor: getThemeColor(`${edit?.color}.6`, theme),
+            backgroundColor: getThemeColor(`${edit?.color}`, theme),
           },
         }}
       />

@@ -237,3 +237,115 @@ export const update = mutation({
     return note;
   },
 });
+
+export const colorSelected = mutation({
+  args: { notes: v.array(v.id("notes")), color: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+    let notes: any[] = [];
+    args.notes.forEach(async (element) => {
+      const existingNote = await ctx.db.get(element);
+      if (!existingNote) {
+        throw new Error("Not found");
+      }
+      if (existingNote.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+      const note = await ctx.db.patch(element, {
+        color: args.color,
+      });
+      notes.push(note);
+    });
+
+    return notes;
+  },
+});
+
+export const pinSelected = mutation({
+  args: { notes: v.array(v.id("notes")) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+    let notes: any[] = [];
+    args.notes.forEach(async (element) => {
+      const existingNote = await ctx.db.get(element);
+      if (!existingNote) {
+        throw new Error("Not found");
+      }
+
+      if (existingNote.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+
+      const note = await ctx.db.patch(element, {
+        isPinned: true,
+      });
+      notes.push(note);
+    });
+
+    return notes;
+  },
+});
+
+export const archiveSelected = mutation({
+  args: { notes: v.array(v.id("notes")) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    let notes: any[] = [];
+    args.notes.forEach(async (element) => {
+      const existingNote = await ctx.db.get(element);
+      if (!existingNote) {
+        throw new Error("Not found");
+      }
+
+      if (existingNote.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+
+      const note = await ctx.db.patch(element, {
+        isArchived: true,
+      });
+      notes.push(note);
+    });
+
+    return notes;
+  },
+});
+
+export const restoreAll = mutation({
+  args: {},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const notes = await ctx.db
+      .query("notes")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .order("desc")
+      .collect();
+
+    for (const child of notes) {
+      await ctx.db.patch(child._id, {
+        isArchived: false,
+      });
+    }
+
+    return notes;
+  },
+});

@@ -76,7 +76,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
         body: {
           padding: 0,
           backgroundColor:
-            newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
+            newNote?.color && getThemeColor(`${newNote?.color}`, theme),
         },
       }}
       onClose={() => setNewNote({ title: "", note: "", color: "dark" })}
@@ -90,7 +90,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
         styles={{
           input: {
             backgroundColor:
-              newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
+              newNote?.color && getThemeColor(`${newNote?.color}`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
@@ -100,7 +100,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           },
           wrapper: {
             backgroundColor:
-              newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
+              newNote?.color && getThemeColor(`${newNote?.color}`, theme),
           },
         }}
       />
@@ -114,7 +114,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
         styles={{
           input: {
             backgroundColor:
-              newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
+              newNote?.color && getThemeColor(`${newNote?.color}`, theme),
             outline: 0,
             border: 0,
             borderStyle: "none",
@@ -123,7 +123,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
           },
           wrapper: {
             backgroundColor:
-              newNote?.color && getThemeColor(`${newNote?.color}.6`, theme),
+              newNote?.color && getThemeColor(`${newNote?.color}`, theme),
           },
         }}
       />
