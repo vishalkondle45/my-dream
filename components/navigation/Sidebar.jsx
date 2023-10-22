@@ -15,7 +15,12 @@ const Sidebar = ({ data }) => {
       w={rem(200)}
     >
       {data.map((item) => (
-        <SidebarItem icon={item.icon} text={item.text} route={item.route} />
+        <SidebarItem
+          icon={item.icon}
+          text={item.text}
+          route={item.route}
+          key={item.route}
+        />
       ))}
     </Box>
   );
