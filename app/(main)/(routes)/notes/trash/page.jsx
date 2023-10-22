@@ -1,6 +1,6 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { Button, Group, SimpleGrid } from "@mantine/core";
+import { Button, Group, SimpleGrid, Text, rem } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconRestore, IconTrash, IconX } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
@@ -95,19 +95,21 @@ const Page = () => {
           Restore all
         </Button>
       </Group>
-      <SimpleGrid
-        cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 3, xl: 4 }}
-        mb="xl"
-        styles={{
-          root: {
-            alignItems: "flex-start",
-          },
-        }}
-      >
-        {notes?.map((note) => (
-          <Note key={note._id} note={note} />
-        ))}
-      </SimpleGrid>
+      {notes?.length > 0 ? (
+        <SimpleGrid
+          cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 3, xl: 4 }}
+          mb="xl"
+          styles={{ root: { alignItems: "flex-start" } }}
+        >
+          {notes?.map((note) => (
+            <Note key={note._id} note={note} />
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Text fz={rem(32)} fw={700}>
+          No Notes Found!!!
+        </Text>
+      )}
     </div>
   );
 };
