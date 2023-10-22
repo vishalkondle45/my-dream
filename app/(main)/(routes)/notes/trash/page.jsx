@@ -26,7 +26,7 @@ const Page = () => {
       return;
     }
     const id = notifications.show({
-      title: "Deleting all notes in archive...",
+      title: "Deleting all notes in trash...",
       loading: true,
       withBorder: true,
       autoClose: false,
@@ -36,7 +36,7 @@ const Page = () => {
       .then((res) => {
         notifications.update({
           id,
-          title: "All archive notes deleted!",
+          title: "All trash notes deleted!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -60,7 +60,7 @@ const Page = () => {
       return;
     }
     const id = notifications.show({
-      title: "Restoring all notes in archive...",
+      title: "Restoring all notes in trash...",
       loading: true,
       withBorder: true,
       autoClose: false,

@@ -1,4 +1,4 @@
-import { Container } from "@mantine/core";
+import { Box, Container } from "@mantine/core";
 import "@mantine/core/styles.css";
 import LandingPageNavbar from "@/app/(marketing)/_components/Navbar";
 
@@ -9,9 +9,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Container size="xl">
+    <Box>
       <LandingPageNavbar />
-      {children}
-    </Container>
+      <Box px="lg">{children}</Box>
+    </Box>
   );
 }

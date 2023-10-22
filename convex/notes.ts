@@ -18,7 +18,7 @@ export const create = mutation({
       title: args.title,
       note: args.note,
       color: args.color,
-      isArchived: false,
+      isTrashed: false,
       isPinned: false,
       userId,
     });
@@ -37,14 +37,14 @@ export const get = query({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchived"), false))
+      .filter((q) => q.eq(q.field("isTrashed"), false))
       .order("desc")
       .collect();
     return notes;
   },
 });
 
-export const archive = mutation({
+export const trash = mutation({
   args: { _id: v.id("notes") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -63,7 +63,7 @@ export const archive = mutation({
     }
 
     const note = await ctx.db.patch(args._id, {
-      isArchived: true,
+      isTrashed: true,
     });
     return note;
   },
@@ -79,7 +79,7 @@ export const getTrash = query({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchived"), true))
+      .filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
     return notes;
@@ -105,7 +105,7 @@ export const restore = mutation({
     }
 
     const note = await ctx.db.patch(args._id, {
-      isArchived: false,
+      isTrashed: false,
     });
     return note;
   },
@@ -146,7 +146,7 @@ export const empty = mutation({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchived"), true))
+      .filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
 
@@ -292,7 +292,7 @@ export const pinSelected = mutation({
   },
 });
 
-export const archiveSelected = mutation({
+export const trashSelected = mutation({
   args: { notes: v.array(v.id("notes")) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -313,7 +313,7 @@ export const archiveSelected = mutation({
       }
 
       const note = await ctx.db.patch(element, {
-        isArchived: true,
+        isTrashed: true,
       });
       notes.push(note);
     });
@@ -334,13 +334,13 @@ export const restoreAll = mutation({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchived"), true))
+      .filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
 
     for (const child of notes) {
       await ctx.db.patch(child._id, {
-        isArchived: false,
+        isTrashed: false,
       });
     }
 
@@ -374,7 +374,7 @@ export const cloneSelected = mutation({
         title: existingNote.title,
         note: existingNote.note,
         color: existingNote.color,
-        isArchived: false,
+        isTrashed: false,
         isPinned: false,
         userId,
       });

@@ -2,6 +2,7 @@
 import { api } from "@/convex/_generated/api";
 import {
   ActionIcon,
+  Box,
   Button,
   Checkbox,
   Flex,
@@ -43,7 +44,7 @@ const Page = () => {
   let notes = useQuery(api.notes.get);
   let colorSelected = useMutation(api.notes.colorSelected);
   let pinSelected = useMutation(api.notes.pinSelected);
-  let archiveSelected = useMutation(api.notes.archiveSelected);
+  let trashSelected = useMutation(api.notes.trashSelected);
   let cloneSelected = useMutation(api.notes.cloneSelected);
 
   const onPinSelected = async () => {
@@ -104,7 +105,7 @@ const Page = () => {
         })
       );
   };
-  const onArchiveSelected = async () => {
+  const onTrashSelected = async () => {
     if (!value.length) return;
     const id = notifications.show({
       title: "Archiving notes...",
@@ -113,11 +114,11 @@ const Page = () => {
       autoClose: false,
       withCloseButton: false,
     });
-    await archiveSelected({ notes: value })
+    await trashSelected({ notes: value })
       .then((res) => {
         notifications.update({
           id,
-          title: "Notes Archived!",
+          title: "Notes trashed!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -166,7 +167,7 @@ const Page = () => {
     ));
 
   return (
-    <div>
+    <Box>
       <Group justify="space-between" mb="md">
         {value.length === 0 ? (
           <Button
@@ -206,7 +207,7 @@ const Page = () => {
                   </Flex>
                 </Popover.Dropdown>
               </Popover>
-              <ActionIcon variant="transparent" onClick={onArchiveSelected}>
+              <ActionIcon variant="transparent" onClick={onTrashSelected}>
                 <IconTrash />
               </ActionIcon>
               <ActionIcon
@@ -238,6 +239,7 @@ const Page = () => {
           styles={{
             root: {
               alignItems: "flex-start",
+              justifyContent: "space-between",
             },
           }}
         >
@@ -261,9 +263,7 @@ const Page = () => {
         <SimpleGrid
           cols={{ base: 1, xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }}
           styles={{
-            root: {
-              alignItems: "flex-start",
-            },
+            root: { alignItems: "flex-start", justifyContent: "space-between" },
           }}
         >
           {notes
@@ -303,7 +303,7 @@ const Page = () => {
           />
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

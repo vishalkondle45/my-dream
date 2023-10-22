@@ -5,7 +5,7 @@ export default defineSchema({
     title: v.optional(v.string()),
     note: v.string(),
     color: v.optional(v.string()),
-    isArchived: v.boolean(),
+    isTrashed: v.boolean(),
     isPinned: v.boolean(),
     category: v.optional(v.string()),
     userId: v.string(),

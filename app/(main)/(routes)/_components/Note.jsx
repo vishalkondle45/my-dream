@@ -17,7 +17,7 @@ import { useMutation } from "convex/react";
 const Note = ({ note, setEdit, edit, open, close, value }) => {
   const { hovered, ref } = useHover();
 
-  const archive = useMutation(api.notes.archive);
+  const trash = useMutation(api.notes.trash);
   const restore = useMutation(api.notes.restore);
   const remove = useMutation(api.notes.remove);
   const pin = useMutation(api.notes.pin);
@@ -47,7 +47,7 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       .catch((error) => console.log(error));
   };
 
-  const onArchive = async () => {
+  const onTrash = async () => {
     if (!note?._id) return;
     const id = notifications.show({
       title: "Archiving a note?...",
@@ -56,11 +56,11 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       autoClose: false,
       withCloseButton: false,
     });
-    await archive({ _id: note?._id })
+    await trash({ _id: note?._id })
       .then((res) => {
         notifications.update({
           id,
-          title: "Note archived!",
+          title: "Note trashed!",
           icon: <IconCheck size={16} />,
           color: "green",
           withBorder: true,
@@ -201,7 +201,7 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
           </Text>
           <Text opacity={Boolean(hovered)}>{note?.note}</Text>
         </Box>
-        {hovered && !note?.isArchived && (
+        {hovered && !note?.isTrashed && (
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}
             radius="xl"
@@ -215,7 +215,7 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       </Group>
       {
         <Group justify="space-between" opacity={Number(hovered)}>
-          {note?.isArchived ? (
+          {note?.isTrashed ? (
             <ActionIcon
               radius="xl"
               onClick={onRestore}
@@ -260,8 +260,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
             radius="xl"
             variant={note.color ? "filled" : "transparent"}
             color={note.color}
-            title={note?.isArchived ? "Delete permanently" : "Move to trash"}
-            onClick={note?.isArchived ? onRemove : onArchive}
+            title={note?.isTrashed ? "Delete permanently" : "Move to trash"}
+            onClick={note?.isTrashed ? onRemove : onTrash}
           >
             <IconTrash />
           </ActionIcon>

@@ -8,7 +8,7 @@ import ToggleColorMode from "../../../components/theme/ToggleColorMode";
 const Navbar = () => {
   const { isLoading, isAuthenticated } = useConvexAuth();
   return (
-    <Group py="md" justify="space-between">
+    <Group p="md" justify="space-between">
       <Text fw={700} ff={"cursive"}>
         Dream
       </Text>
