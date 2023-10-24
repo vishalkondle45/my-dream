@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as notes from "../notes";
+import type * as todos from "../todos";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,6 +27,7 @@ import type * as notes from "../notes";
  */
 declare const fullApi: ApiFromModules<{
   notes: typeof notes;
+  todos: typeof todos;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

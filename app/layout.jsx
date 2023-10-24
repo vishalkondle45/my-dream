@@ -1,10 +1,11 @@
-import { MantineProvider, ColorSchemeScript } from "@mantine/core";
-import { Inter } from "next/font/google";
-import "@mantine/core/styles.css";
-import { theme } from "@/theme";
 import { ConvexClientProvider } from "@/components/providers/ConvexProvider";
-import "@mantine/notifications/styles.css";
+import { theme } from "@/theme";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 

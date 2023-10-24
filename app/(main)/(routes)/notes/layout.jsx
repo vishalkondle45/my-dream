@@ -1,7 +1,7 @@
 import Sidebar from "@/components/navigation/Sidebar";
 import { Box, Group } from "@mantine/core";
 import "@mantine/core/styles.css";
-import { IconNote, IconSettings, IconTrash } from "@tabler/icons-react";
+import { IconNote, IconTrash } from "@tabler/icons-react";
 
 export const metadata = {
   title: "My Dream",
@@ -11,12 +11,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const sidebarData = [
     {
-      icon: <IconNote />,
+      icon: <IconNote size={18} />,
       text: "Notes",
       route: "/notes",
     },
     {
-      icon: <IconTrash />,
+      icon: <IconTrash size={18} />,
       text: "Trash",
       route: "/notes/trash",
     },
