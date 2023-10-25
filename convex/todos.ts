@@ -125,3 +125,78 @@ export const get = query({
     return todos;
   },
 });
+
+export const move = mutation({
+  args: {
+    _id: v.id("todos"),
+    list: v.id("lists"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingTodo = await ctx.db.get(args._id);
+    if (!existingTodo) {
+      throw new Error("Not found");
+    }
+
+    if (existingTodo.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const todo = await ctx.db.patch(args._id, {
+      title: args.list,
+    });
+    return todo;
+  },
+});
+
+export const copy = mutation({
+  args: {
+    _id: v.id("todos"),
+    list: v.id("lists"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingTodo = await ctx.db.get(args._id);
+    if (!existingTodo) {
+      throw new Error("Not found");
+    }
+
+    if (existingTodo.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const {
+      todo,
+      title,
+      completedOn,
+      isAddedToMyDay,
+      isImportant,
+      date,
+      notes,
+      category,
+    } = existingTodo;
+
+    const document = await ctx.db.insert("todos", {
+      todo,
+      title,
+      completedOn,
+      isAddedToMyDay,
+      isImportant,
+      date,
+      notes,
+      category,
+      userId,
+    });
+    return document;
+  },
+});

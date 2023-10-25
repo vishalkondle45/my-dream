@@ -22,4 +22,10 @@ export default defineSchema({
     category: v.optional(v.array(v.string())),
     userId: v.string(),
   }).index("by_user", ["userId"]),
+
+  lists: defineTable({
+    title: v.string(),
+    userId: v.string(),
+    access: v.array(v.string()),
+  }).index("by_user", ["userId"]),
 });

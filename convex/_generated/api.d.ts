@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as lists from "../lists";
 import type * as notes from "../notes";
 import type * as todos from "../todos";
 
@@ -26,6 +27,7 @@ import type * as todos from "../todos";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  lists: typeof lists;
   notes: typeof notes;
   todos: typeof todos;
 }>;

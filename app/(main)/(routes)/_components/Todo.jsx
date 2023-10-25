@@ -34,12 +34,64 @@ import {
   IconSunOff,
   IconTrash,
 } from "@tabler/icons-react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 
 const Todo = ({ todo, setEdit, edit }) => {
   const update = useMutation(api.todos.update);
   const remove = useMutation(api.todos.remove);
+  const lists = useQuery(api.lists.get);
+  const move = useMutation(api.todos.move);
+  const copy = useMutation(api.todos.copy);
+
+  const onCopy = async (list) => {
+    console.log(list);
+    if (!todo?._id) return;
+    const id = notifications.show({
+      title: "Processing...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await copy({ _id: todo?._id, list })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Completed!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 400,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onMove = async (list) => {
+    if (!todo?._id) return;
+    const id = notifications.show({
+      title: "Processing...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await move({ _id: todo?._id, list })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Completed!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 400,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
 
   const onUpdate = async (object) => {
     if (!todo?._id) return;
@@ -112,7 +164,7 @@ const Todo = ({ todo, setEdit, edit }) => {
             <Group justify="left" gap="xs" c="gray">
               {todo?.title && (
                 <Text size="xs" title="List">
-                  {todo?.title}
+                  {lists?.find((list) => list?._id === todo?.title).title}
                 </Text>
               )}
               {todo?.isAddedToMyDay && (
@@ -251,21 +303,47 @@ const Todo = ({ todo, setEdit, edit }) => {
                 </Menu.Item>
               )}
               <Menu.Divider />
+
               <Menu.Item leftSection={<IconPlaylistAdd size={20} stroke={1} />}>
                 Create new list from this task
               </Menu.Item>
-              <Menu.Item
-                leftSection={<IconListSearch size={20} stroke={1} />}
-                rightSection={<IconChevronRight size={20} stroke={1} />}
-              >
-                Move task to...
-              </Menu.Item>
-              <Menu.Item
-                leftSection={<IconCopy size={20} stroke={1} />}
-                rightSection={<IconChevronRight size={20} stroke={1} />}
-              >
-                Copy task to...
-              </Menu.Item>
+
+              <Menu trigger="hover" position="left" shadow="md">
+                <Menu.Target>
+                  <Menu.Item
+                    leftSection={<IconListSearch size={20} stroke={1} />}
+                    rightSection={<IconChevronRight size={20} stroke={1} />}
+                  >
+                    Move task to...
+                  </Menu.Item>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {lists?.map((list) => (
+                    <Menu.Item key={list._id} onClick={() => onMove(list?._id)}>
+                      {list?.title}
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
+
+              <Menu trigger="hover" position="left" shadow="md">
+                <Menu.Target>
+                  <Menu.Item
+                    leftSection={<IconListSearch size={20} stroke={1} />}
+                    rightSection={<IconChevronRight size={20} stroke={1} />}
+                  >
+                    Copy task to...
+                  </Menu.Item>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {lists?.map((list) => (
+                    <Menu.Item key={list._id} onClick={() => onCopy(list?._id)}>
+                      {list?.title}
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
+
               <Menu.Divider />
               <Menu.Item
                 c="red"
