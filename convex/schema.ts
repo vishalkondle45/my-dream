@@ -19,7 +19,7 @@ export default defineSchema({
     isImportant: v.boolean(),
     date: v.optional(v.string()),
     notes: v.optional(v.string()),
-    category: v.optional(v.string()),
+    category: v.optional(v.array(v.string())),
     userId: v.string(),
   }).index("by_user", ["userId"]),
 });

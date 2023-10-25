@@ -10,7 +10,7 @@ export const create = mutation({
     isImportant: v.optional(v.boolean()),
     date: v.optional(v.string()),
     notes: v.optional(v.string()),
-    category: v.optional(v.string()),
+    category: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -26,7 +26,7 @@ export const create = mutation({
       isImportant: args?.isImportant || false,
       date: args?.date,
       notes: args?.notes || "",
-      category: args?.category || "",
+      category: args?.category || [],
       userId,
     });
     return document;
@@ -43,7 +43,7 @@ export const update = mutation({
     isImportant: v.optional(v.boolean()),
     date: v.optional(v.string()),
     notes: v.optional(v.string()),
-    category: v.optional(v.string()),
+    category: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

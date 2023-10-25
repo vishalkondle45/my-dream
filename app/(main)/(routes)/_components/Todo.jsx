@@ -37,7 +37,7 @@ import {
 import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 
-const Todo = ({ todo }) => {
+const Todo = ({ todo, setEdit, edit }) => {
   const update = useMutation(api.todos.update);
   const remove = useMutation(api.todos.remove);
 
@@ -95,7 +95,13 @@ const Todo = ({ todo }) => {
         <Group wrap="nowrap" gap="xs">
           <Checkbox
             checked={todo?.completedOn}
-            onChange={() => {}}
+            onChange={() =>
+              onUpdate({
+                completedOn: todo?.completedOn
+                  ? ""
+                  : dayjs().format("MM-DD-YYYY"),
+              })
+            }
             size="xs"
             radius="xl"
           />
@@ -104,9 +110,13 @@ const Todo = ({ todo }) => {
               {todo?.todo}
             </Text>
             <Group justify="left" gap="xs" c="gray">
-              {todo?.title && <Text size="xs">{todo?.title}</Text>}
+              {todo?.title && (
+                <Text size="xs" title="List">
+                  {todo?.title}
+                </Text>
+              )}
               {todo?.isAddedToMyDay && (
-                <Group gap={2}>
+                <Group gap={2} title="My Day">
                   <ThemeIcon size="xs" variant="transparent">
                     <IconSun />
                   </ThemeIcon>
@@ -114,7 +124,7 @@ const Todo = ({ todo }) => {
                 </Group>
               )}
               {todo?.date && (
-                <Group gap={2}>
+                <Group gap={2} title="Due date">
                   <ThemeIcon size="xs" variant="transparent">
                     <IconCalendarEvent />
                   </ThemeIcon>
@@ -124,27 +134,40 @@ const Todo = ({ todo }) => {
                 </Group>
               )}
               {todo?.notes && (
-                <ThemeIcon size="xs" variant="transparent">
+                <ThemeIcon title="Notes" size="xs" variant="transparent">
                   <IconNote />
                 </ThemeIcon>
               )}
-              {todo?.category && (
-                <ThemeIcon
-                  variant="light"
-                  size="xs"
-                  radius="xl"
-                  c={todo?.category}
-                >
-                  <IconCircleFilled />
-                </ThemeIcon>
+              {todo?.category.length && (
+                <>
+                  {todo?.category.map((category) => (
+                    <ThemeIcon
+                      variant="light"
+                      size="xs"
+                      radius="xl"
+                      c={category}
+                      key={category}
+                      title={
+                        category.charAt(0).toUpperCase() +
+                        category.slice(1) +
+                        " category"
+                      }
+                    >
+                      <IconCircleFilled />
+                    </ThemeIcon>
+                  ))}
+                </>
               )}
             </Group>
           </Box>
         </Group>
-        <Group>
-          <ActionIcon size="xs" variant="transparent">
+        <Group wrap="nowrap">
+          <ActionIcon
+            size="xs"
+            variant="transparent"
+            onClick={() => setEdit(edit?._id === todo?._id ? null : todo)}
+          >
             <IconEye />
-            {/* <IconLayoutSidebarRightExpand /> */}
           </ActionIcon>
           <ActionIcon
             size="xs"
