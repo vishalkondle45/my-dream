@@ -23,7 +23,7 @@ import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 
-const NewTodo = () => {
+const NewTodo = ({ list }) => {
   const create = useMutation(api.todos.create);
   const [opened, setOpened] = useState(false);
 

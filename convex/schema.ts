@@ -13,7 +13,7 @@ export default defineSchema({
 
   todos: defineTable({
     todo: v.string(),
-    title: v.optional(v.string()),
+    list: v.optional(v.string()),
     completedOn: v.optional(v.string()),
     isAddedToMyDay: v.boolean(),
     isImportant: v.boolean(),
@@ -26,6 +26,7 @@ export default defineSchema({
   lists: defineTable({
     title: v.string(),
     userId: v.string(),
+    color: v.optional(v.string()),
     access: v.array(v.string()),
   }).index("by_user", ["userId"]),
 });

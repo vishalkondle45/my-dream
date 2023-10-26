@@ -4,7 +4,7 @@ import { mutation, query } from "./_generated/server";
 export const create = mutation({
   args: {
     todo: v.string(),
-    title: v.optional(v.string()),
+    list: v.optional(v.string()),
     completedOn: v.optional(v.string()),
     isAddedToMyDay: v.optional(v.boolean()),
     isImportant: v.optional(v.boolean()),
@@ -20,7 +20,7 @@ export const create = mutation({
     const userId = identity.subject;
     const document = await ctx.db.insert("todos", {
       todo: args?.todo,
-      title: args?.title || "",
+      list: args?.list || "",
       completedOn: "",
       isAddedToMyDay: args?.isAddedToMyDay || false,
       isImportant: args?.isImportant || false,
@@ -37,7 +37,7 @@ export const update = mutation({
   args: {
     _id: v.id("todos"),
     todo: v.optional(v.string()),
-    title: v.optional(v.string()),
+    list: v.optional(v.string()),
     completedOn: v.optional(v.string()),
     isAddedToMyDay: v.optional(v.boolean()),
     isImportant: v.optional(v.boolean()),
@@ -63,7 +63,7 @@ export const update = mutation({
 
     const todo = await ctx.db.patch(args._id, {
       todo: args?.todo !== undefined ? args?.todo : existingTodo.todo,
-      title: args?.title !== undefined ? args?.title : existingTodo.title,
+      list: args?.list !== undefined ? args?.list : existingTodo.list,
       completedOn:
         args?.completedOn !== undefined
           ? args?.completedOn
@@ -109,7 +109,11 @@ export const remove = mutation({
 });
 
 export const get = query({
-  handler: async (ctx) => {
+  args: {
+    sortBy: v.string(),
+    reverse: v.boolean(),
+  },
+  handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       return null;
@@ -119,9 +123,25 @@ export const get = query({
     const todos = await ctx.db
       .query("todos")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      // .filter((q) => q.eq(q.field("isTrashed"), false))
+      .filter((q) => q.eq(q.field("list"), ""))
       .order("desc")
       .collect();
+
+    if (args?.sortBy) {
+      todos.sort((a, b) =>
+        String(a[args.sortBy])?.toLowerCase() <
+        String(b[args.sortBy])?.toLowerCase()
+          ? -1
+          : String(b[args.sortBy])?.toLowerCase() >
+            String(a[args.sortBy])?.toLowerCase()
+          ? 1
+          : 0
+      );
+    }
+    if (args.reverse) {
+      todos.reverse();
+    }
+
     return todos;
   },
 });
@@ -129,7 +149,7 @@ export const get = query({
 export const move = mutation({
   args: {
     _id: v.id("todos"),
-    list: v.id("lists"),
+    list: v.optional(v.id("lists")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -148,7 +168,7 @@ export const move = mutation({
     }
 
     const todo = await ctx.db.patch(args._id, {
-      title: args.list,
+      list: args.list,
     });
     return todo;
   },
@@ -157,7 +177,7 @@ export const move = mutation({
 export const copy = mutation({
   args: {
     _id: v.id("todos"),
-    list: v.id("lists"),
+    list: v.optional(v.id("lists")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -177,7 +197,6 @@ export const copy = mutation({
 
     const {
       todo,
-      title,
       completedOn,
       isAddedToMyDay,
       isImportant,
@@ -188,7 +207,7 @@ export const copy = mutation({
 
     const document = await ctx.db.insert("todos", {
       todo,
-      title,
+      list: args.list,
       completedOn,
       isAddedToMyDay,
       isImportant,
@@ -198,5 +217,54 @@ export const copy = mutation({
       userId,
     });
     return document;
+  },
+});
+
+export const getByList = query({
+  args: {
+    list: v.optional(v.id("lists")),
+    sortBy: v.string(),
+    reverse: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    if (args?.list) {
+      const existingTodo = await ctx.db.get(args?.list);
+      if (!existingTodo) {
+        throw new Error("Not found");
+      }
+
+      if (existingTodo.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+    }
+    const todos = await ctx.db
+      .query("todos")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("list"), args.list))
+      .order("desc")
+      .collect();
+
+    if (args?.sortBy) {
+      todos.sort((a, b) =>
+        String(a[args.sortBy])?.toLowerCase() <
+        String(b[args.sortBy])?.toLowerCase()
+          ? -1
+          : String(b[args.sortBy])?.toLowerCase() >
+            String(a[args.sortBy])?.toLowerCase()
+          ? 1
+          : 0
+      );
+    }
+    if (args.reverse) {
+      todos.reverse();
+    }
+
+    return todos;
   },
 });

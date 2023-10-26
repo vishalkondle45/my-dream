@@ -44,6 +44,43 @@ export const create = mutation({
 //   },
 // });
 
+export const update = mutation({
+  args: {
+    _id: v.id("lists"),
+    access: v.optional(v.array(v.string())),
+    title: v.optional(v.string()),
+    color: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingList = await ctx.db.get(args._id);
+    if (!existingList) {
+      throw new Error("Not found");
+    }
+
+    if (existingList.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const todo = await ctx.db.patch(args._id, {
+      title: args?.title !== undefined ? args?.title : existingList.title,
+      access: args?.access !== undefined ? args?.access : existingList.access,
+      color:
+        args?.color !== undefined
+          ? args?.color === existingList.color
+            ? ""
+            : args?.color
+          : existingList.color,
+    });
+    return todo;
+  },
+});
+
 export const get = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -55,7 +92,7 @@ export const get = query({
     const lists = await ctx.db
       .query("lists")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .order("desc")
+      // .order("desc")
       .collect();
     return lists;
   },

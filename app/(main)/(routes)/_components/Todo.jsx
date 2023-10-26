@@ -37,7 +37,7 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 
-const Todo = ({ todo, setEdit, edit }) => {
+const Todo = ({ todo, setEdit, edit, color }) => {
   const update = useMutation(api.todos.update);
   const remove = useMutation(api.todos.remove);
   const lists = useQuery(api.lists.get);
@@ -146,6 +146,7 @@ const Todo = ({ todo, setEdit, edit }) => {
       <Group mih={rem(32)} justify="space-between" wrap="nowrap" align="center">
         <Group wrap="nowrap" gap="xs">
           <Checkbox
+            color={color}
             checked={todo?.completedOn}
             onChange={() =>
               onUpdate({
@@ -162,9 +163,9 @@ const Todo = ({ todo, setEdit, edit }) => {
               {todo?.todo}
             </Text>
             <Group justify="left" gap="xs" c="gray">
-              {todo?.title && (
+              {todo?.list && (
                 <Text size="xs" title="List">
-                  {lists?.find((list) => list?._id === todo?.title).title}
+                  {lists?.find((list) => list?._id === todo?.list)?.list}
                 </Text>
               )}
               {todo?.isAddedToMyDay && (
@@ -318,6 +319,7 @@ const Todo = ({ todo, setEdit, edit }) => {
                   </Menu.Item>
                 </Menu.Target>
                 <Menu.Dropdown>
+                  <Menu.Item onClick={() => onMove("")}>Todos</Menu.Item>
                   {lists?.map((list) => (
                     <Menu.Item key={list._id} onClick={() => onMove(list?._id)}>
                       {list?.title}

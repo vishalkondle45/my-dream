@@ -1,18 +1,27 @@
 "use client";
-import Sidebar from "@/components/navigation/Sidebar";
 import { api } from "@/convex/_generated/api";
-import { Box, Group, LoadingOverlay } from "@mantine/core";
+import { Box, Center, Group, Loader } from "@mantine/core";
 import "@mantine/core/styles.css";
 import {
   IconCalendarEvent,
   IconHome,
+  IconList,
   IconStar,
   IconSun,
 } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
+import TodoSidebar from "../_components/TodoSidebar";
 
 export default function RootLayout({ children }) {
-  let notes = useQuery(api.notes.get);
+  let lists = useQuery(api.lists.get);
+
+  if (!lists) {
+    return (
+      <Center>
+        <Loader type="bars" />
+      </Center>
+    );
+  }
 
   const sidebarData = [
     {
@@ -37,19 +46,18 @@ export default function RootLayout({ children }) {
     },
   ];
 
-  if (!notes) {
-    return (
-      <LoadingOverlay
-        visible={true}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-    );
+  if (lists) {
+    lists?.forEach((list) => {
+      sidebarData.push({
+        icon: <IconList size={18} />,
+        text: list?.title,
+        route: `/todos/${list?._id}`,
+      });
+    });
   }
-
   return (
     <Box style={{ display: "flex", flexDirection: "row" }}>
-      <Sidebar data={sidebarData} />
+      <TodoSidebar data={sidebarData} />
       <Group style={{ flexGrow: 4, alignItems: "baseline" }} grow>
         {children}
       </Group>
