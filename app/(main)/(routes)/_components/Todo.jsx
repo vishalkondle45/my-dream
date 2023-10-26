@@ -21,7 +21,6 @@ import {
   IconCircle,
   IconCircleCheck,
   IconCircleFilled,
-  IconCopy,
   IconDotsVertical,
   IconEye,
   IconListSearch,
@@ -37,7 +36,7 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 
-const Todo = ({ todo, setEdit, edit, color }) => {
+const Todo = ({ todo, setEdit, edit, color, hide }) => {
   const update = useMutation(api.todos.update);
   const remove = useMutation(api.todos.remove);
   const lists = useQuery(api.lists.get);
@@ -163,12 +162,13 @@ const Todo = ({ todo, setEdit, edit, color }) => {
               {todo?.todo}
             </Text>
             <Group justify="left" gap="xs" c="gray">
-              {todo?.list && (
+              {hide !== "list" && (
                 <Text size="xs" title="List">
-                  {lists?.find((list) => list?._id === todo?.list)?.list}
+                  {lists?.find((list) => list?._id === todo?.list)?.title ||
+                    "Todos"}
                 </Text>
               )}
-              {todo?.isAddedToMyDay && (
+              {todo?.isAddedToMyDay && hide !== "isAddedToMyDay" && (
                 <Group gap={2} title="My Day">
                   <ThemeIcon size="xs" variant="transparent">
                     <IconSun />
@@ -225,6 +225,7 @@ const Todo = ({ todo, setEdit, edit, color }) => {
           <ActionIcon
             size="xs"
             variant="transparent"
+            color={color}
             onClick={() => onUpdate({ isImportant: !todo.isImportant })}
           >
             {todo?.isImportant ? <IconStarFilled /> : <IconStar />}

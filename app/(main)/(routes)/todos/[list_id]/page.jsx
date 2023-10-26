@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { Center, Loader } from "@mantine/core";
 import { useQuery } from "convex/react";
 import { useState } from "react";
+import NewTodo from "../../_components/NewTodo";
 import Sorting from "../../_components/Sorting";
 import Todo from "../../_components/Todo";
 import TodoHeader_ from "../../_components/TodoHeader_";
@@ -30,6 +31,7 @@ const Page = ({ params }) => {
     <div>
       <TodoHeader_ queryParams={params} list={list} setSort={setSort} />
       <Sorting setSort={setSort} sort={sort} />
+      <NewTodo />
       {todos?.map((todo) => (
         <Todo
           key={todo._id}
@@ -37,8 +39,21 @@ const Page = ({ params }) => {
           setEdit={setEdit}
           edit={edit}
           color={list?.color}
+          hide="list"
         />
       ))}
+      {todos?.length > 0 && edit && (
+        <Modal
+          opened={edit}
+          onClose={() => setEdit(null)}
+          withCloseButton={false}
+          size="sm"
+          closeOnEscape={false}
+          closeOnClickOutside={false}
+        >
+          <EditTodo setEdit={setEdit} edit={edit} />
+        </Modal>
+      )}
     </div>
   );
 };

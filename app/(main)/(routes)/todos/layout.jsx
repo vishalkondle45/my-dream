@@ -1,19 +1,17 @@
 "use client";
 import { api } from "@/convex/_generated/api";
+import { sidebarData } from "@/utils/constants";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import "@mantine/core/styles.css";
-import {
-  IconCalendarEvent,
-  IconHome,
-  IconList,
-  IconStar,
-  IconSun,
-} from "@tabler/icons-react";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { IconList } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import TodoSidebar from "../_components/TodoSidebar";
 
 export default function RootLayout({ children }) {
   let lists = useQuery(api.lists.get);
+  const [opened, { toggle }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   if (!lists) {
     return (
@@ -23,41 +21,21 @@ export default function RootLayout({ children }) {
     );
   }
 
-  const sidebarData = [
-    {
-      icon: <IconHome size={18} />,
-      text: "Todos",
-      route: "/todos",
-    },
-    {
-      icon: <IconSun size={18} />,
-      text: "My Day",
-      route: "/todos/myday",
-    },
-    {
-      icon: <IconStar size={18} />,
-      text: "Important",
-      route: "/todos/important",
-    },
-    {
-      icon: <IconCalendarEvent size={18} />,
-      text: "Planned",
-      route: "/todos/planned",
-    },
-  ];
-
   if (lists) {
     lists?.forEach((list) => {
-      sidebarData.push({
-        icon: <IconList size={18} />,
-        text: list?.title,
-        route: `/todos/${list?._id}`,
-      });
+      if (!sidebarData.some((item) => item.route == `/todos/${list?._id}`)) {
+        sidebarData.push({
+          icon: <IconList size={18} />,
+          text: list?.title,
+          route: `/todos/${list?._id}`,
+        });
+      }
     });
   }
+
   return (
     <Box style={{ display: "flex", flexDirection: "row" }}>
-      <TodoSidebar data={sidebarData} />
+      {isMobile || <TodoSidebar data={sidebarData} />}
       <Group style={{ flexGrow: 4, alignItems: "baseline" }} grow>
         {children}
       </Group>

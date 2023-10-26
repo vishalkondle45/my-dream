@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <Box>
       <LandingPageNavbar />
-      <Box px="lg">{children}</Box>
+      <Box px="md">{children}</Box>
     </Box>
   );
 }

@@ -112,6 +112,9 @@ export const get = query({
   args: {
     sortBy: v.string(),
     reverse: v.boolean(),
+    field: v.string(),
+    value: v.any(),
+    not: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -123,7 +126,11 @@ export const get = query({
     const todos = await ctx.db
       .query("todos")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("list"), ""))
+      .filter((q) =>
+        args.not
+          ? q.neq(q.field(args.field), args.value)
+          : q.eq(q.field(args.field), args.value)
+      )
       .order("desc")
       .collect();
 

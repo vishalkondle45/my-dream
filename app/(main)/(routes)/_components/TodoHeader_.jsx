@@ -25,7 +25,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const TodoHeader_ = ({ queryParams, list, setSort }) => {
   const update = useMutation(api.lists.update);
@@ -58,7 +58,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
       .finally(() => setIsRename(false));
   };
   return (
-    <Group justify="space-between">
+    <Group justify="space-between" wrap="nowrap">
       <Group>
         {!isRename && (
           <ThemeIcon c={list?.color} variant="transparent">
@@ -169,13 +169,18 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
       </Group>
       <Menu shadow="md" position="bottom-end">
         <Menu.Target>
-          <Button variant="subtle" leftSection={<IconArrowsSort size={16} />}>
+          <Button
+            c={list?.color}
+            variant="subtle"
+            leftSection={<IconArrowsSort size={16} />}
+          >
             Sort
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
           {sortMap?.map((item) => (
             <Menu.Item
+              key={item.value}
               onClick={() =>
                 setSort((sort) => ({ ...sort, sortBy: item?.value }))
               }

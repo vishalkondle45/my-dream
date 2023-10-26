@@ -1,8 +1,10 @@
 import {
   IconCalendarEvent,
   IconCalendarTime,
+  IconHome,
   IconSortAZ,
   IconStar,
+  IconSun,
 } from "@tabler/icons-react";
 
 export const sortMap = [
@@ -40,4 +42,27 @@ export const colors = [
   "cyan",
   "lime",
   "orange",
+];
+
+export const sidebarData = [
+  {
+    icon: <IconHome size={18} />,
+    text: "Todos",
+    route: "/todos",
+  },
+  {
+    icon: <IconSun size={18} />,
+    text: "My Day",
+    route: "/todos/myday",
+  },
+  {
+    icon: <IconStar size={18} />,
+    text: "Important",
+    route: "/todos/important",
+  },
+  {
+    icon: <IconCalendarEvent size={18} />,
+    text: "Planned",
+    route: "/todos/planned",
+  },
 ];

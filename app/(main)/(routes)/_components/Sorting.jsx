@@ -1,12 +1,11 @@
 import { sortMap } from "@/utils/constants";
 import { ActionIcon, Group, Text } from "@mantine/core";
-import { IconChevronDown, IconChevronUp, IconX } from "@tabler/icons-react";
-import React from "react";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
 const Sorting = ({ setSort, sort }) => {
   return (
     <div>
-      <Group my="xs" gap={8} justify="right">
+      <Group mb="xs" gap={8} justify="right">
         <ActionIcon
           title="Reverse sort order"
           onClick={() =>

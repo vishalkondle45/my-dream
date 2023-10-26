@@ -1,30 +1,31 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { ActionIcon, Box, Group, Modal, Text } from "@mantine/core";
+import { Box, Modal } from "@mantine/core";
 import {
   IconCalendarEvent,
   IconCalendarTime,
-  IconChevronDown,
-  IconChevronUp,
   IconHome,
   IconSortAZ,
   IconStar,
-  IconX,
 } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import { useState } from "react";
 import EditTodo from "../_components/EditTodo";
 import NewTodo from "../_components/NewTodo";
+import Sorting from "../_components/Sorting";
 import Todo from "../_components/Todo";
 import TodoHeader from "../_components/TodoHeader";
-import Sorting from "../_components/Sorting";
 
 const Page = () => {
   const [sort, setSort] = useState({
     sortBy: "isImportant",
     reverse: false,
   });
-  let todos = useQuery(api.todos.get, sort);
+  let todos = useQuery(api.todos.get, {
+    ...sort,
+    field: "list",
+    value: "",
+  });
   const [edit, setEdit] = useState(null);
   const sortMap = [
     {
@@ -51,11 +52,22 @@ const Page = () => {
 
   return (
     <Box>
-      <TodoHeader icon={<IconHome />} setSort={setSort} sortMap={sortMap} />
+      <TodoHeader
+        icon={<IconHome />}
+        setSort={setSort}
+        sortMap={sortMap}
+        header="Todos"
+      />
       <Sorting setSort={setSort} sort={sort} />
       <NewTodo />
       {todos?.map((todo) => (
-        <Todo key={todo._id} todo={todo} setEdit={setEdit} edit={edit} />
+        <Todo
+          key={todo._id}
+          todo={todo}
+          setEdit={setEdit}
+          edit={edit}
+          hide="list"
+        />
       ))}
       {todos?.length > 0 && edit && (
         <Modal
