@@ -3,14 +3,14 @@ import { api } from "@/convex/_generated/api";
 import { sidebarData } from "@/utils/constants";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import "@mantine/core/styles.css";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconList } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import TodoSidebar from "../_components/TodoSidebar";
+import { useEffect } from "react";
 
 export default function RootLayout({ children }) {
   let lists = useQuery(api.lists.get);
-  const [opened, { toggle }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   if (!lists) {
@@ -21,10 +21,14 @@ export default function RootLayout({ children }) {
     );
   }
 
+  let data = [...sidebarData];
   if (lists) {
     lists?.forEach((list) => {
-      if (!sidebarData.some((item) => item.route == `/todos/${list?._id}`)) {
-        sidebarData.push({
+      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      if (i > -1) {
+        sidebarData[i].text = list.title;
+      } else {
+        data.push({
           icon: <IconList size={18} />,
           text: list?.title,
           route: `/todos/${list?._id}`,
@@ -35,7 +39,7 @@ export default function RootLayout({ children }) {
 
   return (
     <Box style={{ display: "flex", flexDirection: "row" }}>
-      {isMobile || <TodoSidebar data={sidebarData} />}
+      {isMobile || <TodoSidebar data={data} />}
       <Group style={{ flexGrow: 4, alignItems: "baseline" }} grow>
         {children}
       </Group>

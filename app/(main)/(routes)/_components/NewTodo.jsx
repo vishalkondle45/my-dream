@@ -23,7 +23,7 @@ import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 
-const NewTodo = ({ list }) => {
+const NewTodo = ({ object }) => {
   const create = useMutation(api.todos.create);
   const [opened, setOpened] = useState(false);
 
@@ -59,6 +59,7 @@ const NewTodo = ({ list }) => {
     await create({
       todo: values?.todo,
       date: values?.date && dayjs(values?.date).format("MM-DD-YYYY"),
+      ...object,
     })
       .then((res) => {
         notifications.update({

@@ -227,6 +227,34 @@ export const copy = mutation({
   },
 });
 
+export const createList = mutation({
+  args: { _id: v.id("todos") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
+
+    const existingTodo = await ctx.db.get(args._id);
+    if (!existingTodo) {
+      throw new Error("Not found");
+    }
+
+    if (existingTodo.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const list = await ctx.db.insert("lists", {
+      title: "Untitled list",
+      access: [],
+      userId,
+    });
+    const todo = await ctx.db.patch(args._id, { list });
+    return todo;
+  },
+});
+
 export const getByList = query({
   args: {
     list: v.optional(v.id("lists")),

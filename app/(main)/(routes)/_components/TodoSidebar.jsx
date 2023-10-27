@@ -31,7 +31,6 @@ const TodoSidebar = ({ data }) => {
     });
     await create(values)
       .then((res) => {
-        console.log(res);
         notifications.update({
           id,
           title: "List created!",

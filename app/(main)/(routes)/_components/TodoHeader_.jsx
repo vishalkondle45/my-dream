@@ -1,9 +1,11 @@
 import { api } from "@/convex/_generated/api";
-import { colors, sortMap } from "@/utils/constants";
+import { colors, sidebarData, sortMap } from "@/utils/constants";
 import {
   ActionIcon,
+  Burger,
   Button,
   CheckIcon,
+  Drawer,
   Group,
   Menu,
   Text,
@@ -11,6 +13,7 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconArrowsSort,
@@ -24,12 +27,19 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
+import TodoSidebar from "./TodoSidebar";
+import { useRouter } from "next/navigation";
 
 const TodoHeader_ = ({ queryParams, list, setSort }) => {
+  let lists = useQuery(api.lists.get);
   const update = useMutation(api.lists.update);
+  const removeList = useMutation(api.lists.remove);
   const [isRename, setIsRename] = useState(false);
+  const [opened, { toggle }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 600px)");
+  const router = useRouter();
 
   const form = useForm({ initialValues: { rename: list?.title } });
 
@@ -57,10 +67,70 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
       .catch((error) => console.log(error))
       .finally(() => setIsRename(false));
   };
+
+  const onRemoveList = async (list) => {
+    if (!list?._id) return;
+    const id = notifications.show({
+      title: "Deleting...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await removeList({ _id: list?._id })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Deleted!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 400,
+        });
+        router.push(res ? `/todos/${res}` : "/todos");
+      })
+      .catch((error) => console.log(error));
+  };
+
+  let data = [...sidebarData];
+  if (lists) {
+    lists?.forEach((list) => {
+      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      if (i > -1) {
+        sidebarData[i].text = list.title;
+      } else {
+        data.push({
+          icon: <IconList size={18} />,
+          text: list?.title,
+          route: `/todos/${list?._id}`,
+        });
+      }
+    });
+  }
+
   return (
     <Group justify="space-between" wrap="nowrap">
-      <Group>
-        {!isRename && (
+      <Group gap={8} wrap="nowrap">
+        {isMobile && (
+          <>
+            <Drawer
+              size={"55%"}
+              opened={opened}
+              onClose={toggle}
+              withCloseButton={false}
+            >
+              <TodoSidebar data={data} />
+            </Drawer>
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="xs"
+              size="sm"
+            />
+          </>
+        )}
+        {!isMobile && !isRename && (
           <ThemeIcon c={list?.color} variant="transparent">
             <IconList />
           </ThemeIcon>
@@ -76,13 +146,13 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
               form.setFieldValue("rename", values.rename.trim());
             })}
           >
-            <Group>
+            <Group wrap="nowrap">
               <TextInput
                 {...form.getInputProps("rename")}
                 styles={{ input: { fontWeight: 700 } }}
                 radius="xs"
               />
-              <Group gap="xs">
+              <Group gap="xs" wrap="nowrap">
                 <ActionIcon
                   variant="subtle"
                   color="red"
@@ -122,12 +192,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item
-                onClick={() => {
-                  setIsRename(true);
-                }}
-                onBlur={() => {
-                  console.log("onBlur");
-                }}
+                onClick={() => setIsRename(true)}
                 leftSection={<IconCursorText size={18} />}
               >
                 Rename list
@@ -160,7 +225,11 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
                 Print list
               </Menu.Item>
               <Menu.Divider />
-              <Menu.Item c="red" leftSection={<IconTrash size={18} />}>
+              <Menu.Item
+                onClick={() => onRemoveList(list)}
+                c="red"
+                leftSection={<IconTrash size={18} />}
+              >
                 Delete list
               </Menu.Item>
             </Menu.Dropdown>
@@ -169,13 +238,19 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
       </Group>
       <Menu shadow="md" position="bottom-end">
         <Menu.Target>
-          <Button
-            c={list?.color}
-            variant="subtle"
-            leftSection={<IconArrowsSort size={16} />}
-          >
-            Sort
-          </Button>
+          {isMobile ? (
+            <ActionIcon c={list?.color} variant="subtle">
+              <IconArrowsSort />
+            </ActionIcon>
+          ) : (
+            <Button
+              c={list?.color}
+              variant="subtle"
+              leftSection={<IconArrowsSort size={16} />}
+            >
+              Sort
+            </Button>
+          )}
         </Menu.Target>
         <Menu.Dropdown>
           {sortMap?.map((item) => (

@@ -1,5 +1,6 @@
 import { sidebarData } from "@/utils/constants";
 import {
+  ActionIcon,
   Burger,
   Button,
   Drawer,
@@ -9,15 +10,35 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { IconArrowsSort } from "@tabler/icons-react";
+import { IconArrowsSort, IconList } from "@tabler/icons-react";
 import TodoSidebar from "./TodoSidebar";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const TodoHeader = ({ icon, setSort, sortMap, header }) => {
   const [opened, { toggle }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 600px)");
+
+  let lists = useQuery(api.lists.get);
+  let data = [...sidebarData];
+  if (lists) {
+    lists?.forEach((list) => {
+      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      if (i > -1) {
+        sidebarData[i].text = list.title;
+      } else {
+        data.push({
+          icon: <IconList size={18} />,
+          text: list?.title,
+          route: `/todos/${list?._id}`,
+        });
+      }
+    });
+  }
+
   return (
     <Group justify="space-between" align="center">
-      <Group gap={8}>
+      <Group gap={8} wrap="nowrap">
         {isMobile && (
           <>
             <Drawer
@@ -26,7 +47,7 @@ const TodoHeader = ({ icon, setSort, sortMap, header }) => {
               onClose={toggle}
               withCloseButton={false}
             >
-              <TodoSidebar data={sidebarData} />
+              <TodoSidebar data={data} />
             </Drawer>
             <Burger
               opened={opened}
@@ -44,13 +65,23 @@ const TodoHeader = ({ icon, setSort, sortMap, header }) => {
       <Group>
         <Menu shadow="md" position="bottom-end">
           <Menu.Target>
-            <Button variant="subtle" leftSection={<IconArrowsSort size={16} />}>
-              Sort
-            </Button>
+            {isMobile ? (
+              <ActionIcon variant="subtle">
+                <IconArrowsSort />
+              </ActionIcon>
+            ) : (
+              <Button
+                variant="subtle"
+                leftSection={<IconArrowsSort size={16} />}
+              >
+                Sort
+              </Button>
+            )}
           </Menu.Target>
           <Menu.Dropdown>
             {sortMap?.map((item) => (
               <Menu.Item
+                key={item.value}
                 onClick={() =>
                   setSort((sort) => ({ ...sort, sortBy: item?.value }))
                 }

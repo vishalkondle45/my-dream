@@ -21,28 +21,46 @@ export const create = mutation({
   },
 });
 
-// export const remove = mutation({
-//   args: { _id: v.id("lists") },
-//   handler: async (ctx, args) => {
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       return null;
-//     }
-//     const userId = identity.subject;
+export const remove = mutation({
+  args: { _id: v.id("lists") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
+    }
+    const userId = identity.subject;
 
-//     const existingTodo = await ctx.db.get(args._id);
-//     if (!existingTodo) {
-//       throw new Error("Not found");
-//     }
+    const existingTodo = await ctx.db.get(args._id);
+    if (!existingTodo) {
+      throw new Error("Not found");
+    }
 
-//     if (existingTodo.userId !== userId) {
-//       throw new Error("Unauthorized");
-//     }
+    if (existingTodo.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
 
-//     const todo = await ctx.db.delete(args._id);
-//     return todo;
-//   },
-// });
+    const todos = await ctx.db
+      .query("todos")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("list"), args._id))
+      .order("desc")
+      .collect();
+
+    todos.forEach(async (item) => {
+      await ctx.db.delete(item._id);
+    });
+
+    await ctx.db.delete(args._id);
+
+    const lists = await ctx.db
+      .query("lists")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .order("desc")
+      .collect();
+
+    return lists[0]?._id;
+  },
+});
 
 export const update = mutation({
   args: {

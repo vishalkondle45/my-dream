@@ -10,6 +10,7 @@ import {
   ThemeIcon,
   rem,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconCalendarDue,
@@ -22,7 +23,7 @@ import {
   IconCircleCheck,
   IconCircleFilled,
   IconDotsVertical,
-  IconEye,
+  IconEdit,
   IconListSearch,
   IconNote,
   IconPlaylistAdd,
@@ -42,9 +43,10 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
   const lists = useQuery(api.lists.get);
   const move = useMutation(api.todos.move);
   const copy = useMutation(api.todos.copy);
+  const createList = useMutation(api.todos.createList);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const onCopy = async (list) => {
-    console.log(list);
     if (!todo?._id) return;
     const id = notifications.show({
       title: "Processing...",
@@ -78,6 +80,30 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
       withCloseButton: false,
     });
     await move({ _id: todo?._id, list })
+      .then((res) => {
+        notifications.update({
+          id,
+          title: "Completed!",
+          icon: <IconCheck size={16} />,
+          color: "green",
+          withBorder: true,
+          loading: false,
+          autoClose: 400,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onCreateNewListFromTodo = async () => {
+    if (!todo?._id) return;
+    const id = notifications.show({
+      title: "Processing...",
+      loading: true,
+      withBorder: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+    await createList({ _id: todo?._id })
       .then((res) => {
         notifications.update({
           id,
@@ -161,7 +187,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
             <Text size="sm" fw={500}>
               {todo?.todo}
             </Text>
-            <Group justify="left" gap="xs" c="gray">
+            <Group justify="left" gap="xs" style={{ rowGap: 0 }} c="gray">
               {hide !== "list" && (
                 <Text size="xs" title="List">
                   {lists?.find((list) => list?._id === todo?.list)?.title ||
@@ -214,16 +240,16 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
             </Group>
           </Box>
         </Group>
-        <Group wrap="nowrap">
+        <Group wrap="nowrap" gap={"xs"}>
           <ActionIcon
-            size="xs"
+            size={isMobile ? "xs" : "md"}
             variant="transparent"
             onClick={() => setEdit(edit?._id === todo?._id ? null : todo)}
           >
-            <IconEye />
+            <IconEdit />
           </ActionIcon>
           <ActionIcon
-            size="xs"
+            size={isMobile ? "xs" : "md"}
             variant="transparent"
             color={color}
             onClick={() => onUpdate({ isImportant: !todo.isImportant })}
@@ -232,7 +258,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
           </ActionIcon>
           <Menu position="bottom-end">
             <Menu.Target>
-              <ActionIcon size="xs" variant="transparent">
+              <ActionIcon size={isMobile ? "xs" : "md"} variant="transparent">
                 <IconDotsVertical />
               </ActionIcon>
             </Menu.Target>
@@ -306,8 +332,11 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
               )}
               <Menu.Divider />
 
-              <Menu.Item leftSection={<IconPlaylistAdd size={20} stroke={1} />}>
-                Create new list from this task
+              <Menu.Item
+                onClick={() => onCreateNewListFromTodo()}
+                leftSection={<IconPlaylistAdd size={20} stroke={1} />}
+              >
+                Create new list from this todo
               </Menu.Item>
 
               <Menu trigger="hover" position="left" shadow="md">
@@ -316,13 +345,16 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                     leftSection={<IconListSearch size={20} stroke={1} />}
                     rightSection={<IconChevronRight size={20} stroke={1} />}
                   >
-                    Move task to...
+                    Move todo to...
                   </Menu.Item>
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item onClick={() => onMove("")}>Todos</Menu.Item>
                   {lists?.map((list) => (
-                    <Menu.Item key={list._id} onClick={() => onMove(list?._id)}>
+                    <Menu.Item
+                      key={list?._id}
+                      onClick={() => onMove(list?._id)}
+                    >
                       {list?.title}
                     </Menu.Item>
                   ))}
@@ -335,12 +367,15 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                     leftSection={<IconListSearch size={20} stroke={1} />}
                     rightSection={<IconChevronRight size={20} stroke={1} />}
                   >
-                    Copy task to...
+                    Copy todo to...
                   </Menu.Item>
                 </Menu.Target>
                 <Menu.Dropdown>
                   {lists?.map((list) => (
-                    <Menu.Item key={list._id} onClick={() => onCopy(list?._id)}>
+                    <Menu.Item
+                      key={list?._id}
+                      onClick={() => onCopy(list?._id)}
+                    >
                       {list?.title}
                     </Menu.Item>
                   ))}

@@ -1,38 +1,68 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { Accordion, Center, Group, Loader, Text } from "@mantine/core";
+import { Accordion, Box, Group, Modal, Text } from "@mantine/core";
+import {
+  IconCalendarEvent,
+  IconCalendarTime,
+  IconHome,
+  IconSortAZ,
+  IconStar,
+} from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import { useState } from "react";
-import NewTodo from "../../_components/NewTodo";
-import Sorting from "../../_components/Sorting";
-import Todo from "../../_components/Todo";
-import TodoHeader_ from "../../_components/TodoHeader_";
+import EditTodo from "../_components/EditTodo";
+import NewTodo from "../_components/NewTodo";
+import Sorting from "../_components/Sorting";
+import Todo from "../_components/Todo";
+import TodoHeader from "../_components/TodoHeader";
 
-const Page = ({ params }) => {
-  const [value, setValue] = useState(null);
+const StaticPage = ({
+  sortBy,
+  reverse,
+  field,
+  value,
+  hide,
+  icon,
+  header,
+  not = false,
+}) => {
+  const [value1, setValue1] = useState(null);
+  const [sort, setSort] = useState({ sortBy, reverse });
+  let todos = useQuery(api.todos.get, { ...sort, field, value, not });
   const [edit, setEdit] = useState(null);
-  const [sort, setSort] = useState({
-    sortBy: "isImportant",
-    reverse: false,
-  });
-
-  let lists = useQuery(api?.lists?.get);
-  const list = lists?.find((list) => list?._id === params?.list_id);
-  let todos = useQuery(api?.todos?.getByList, { list: list?._id, ...sort });
-
-  if (!todos || !lists) {
-    return (
-      <Center>
-        <Loader type="bars" />
-      </Center>
-    );
-  }
+  const sortMap = [
+    {
+      value: "isImportant",
+      label: "Imporatance",
+      icon: <IconStar size={16} />,
+    },
+    {
+      value: "date",
+      label: "Due date",
+      icon: <IconCalendarEvent size={16} />,
+    },
+    {
+      value: "todo",
+      label: "Alphabetically",
+      icon: <IconSortAZ size={16} />,
+    },
+    {
+      value: "_creationTime",
+      label: "Creation Time",
+      icon: <IconCalendarTime size={16} />,
+    },
+  ];
 
   return (
-    <div>
-      <TodoHeader_ queryParams={params} list={list} setSort={setSort} />
+    <Box>
+      <TodoHeader
+        icon={icon}
+        setSort={setSort}
+        sortMap={sortMap}
+        header={header}
+      />
       <Sorting setSort={setSort} sort={sort} />
-      <NewTodo object={{ list: list?._id }} />
+      <NewTodo />
       {todos
         ?.filter(({ completedOn }) => completedOn === "")
         ?.map((todo) => (
@@ -41,8 +71,7 @@ const Page = ({ params }) => {
             todo={todo}
             setEdit={setEdit}
             edit={edit}
-            color={list?.color}
-            hide="list"
+            hide={hide}
           />
         ))}
       {todos?.filter(({ completedOn }) => completedOn !== "")?.length ? (
@@ -51,8 +80,8 @@ const Page = ({ params }) => {
           chevronPosition="left"
           mt="xl"
           variant="default"
-          value={value}
-          onChange={setValue}
+          value={value1}
+          onChange={setValue1}
           styles={{ content: { paddingInline: 0 } }}
         >
           <Accordion.Item value="completed">
@@ -78,7 +107,6 @@ const Page = ({ params }) => {
                     todo={todo}
                     setEdit={setEdit}
                     edit={edit}
-                    color={list?.color}
                     hide="list"
                   />
                 ))}
@@ -100,8 +128,8 @@ const Page = ({ params }) => {
           <EditTodo setEdit={setEdit} edit={edit} />
         </Modal>
       )}
-    </div>
+    </Box>
   );
 };
 
-export default Page;
+export default StaticPage;
