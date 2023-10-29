@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
   IconArrowsSort,
@@ -28,9 +29,9 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import TodoSidebar from "./TodoSidebar";
-import { useRouter } from "next/navigation";
 
 const TodoHeader_ = ({ queryParams, list, setSort }) => {
   let lists = useQuery(api.lists.get);
@@ -79,6 +80,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
     });
     await removeList({ _id: list?._id })
       .then((res) => {
+        router.push(res ? `/todos/${res}` : "/todos");
         notifications.update({
           id,
           title: "Deleted!",
@@ -88,10 +90,19 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
           loading: false,
           autoClose: 400,
         });
-        router.push(res ? `/todos/${res}` : "/todos");
       })
       .catch((error) => console.log(error));
   };
+
+  const openModal = () =>
+    modals.openConfirmModal({
+      title: `"${list?.title}" will be permanently deleted.`,
+      children: <Text size="sm">You wont be able to undo this action.</Text>,
+      labels: { confirm: "Confirm", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onCancel: () => {},
+      onConfirm: () => onRemoveList(list),
+    });
 
   let data = [...sidebarData];
   if (lists) {
@@ -197,7 +208,10 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
               >
                 Rename list
               </Menu.Item>
-              <Menu trigger="hover" position="right-start">
+              <Menu
+                trigger={isMobile ? "click" : "hover"}
+                position="right-start"
+              >
                 <Menu.Target>
                   <Menu.Item
                     leftSection={<IconPalette size={18} />}
@@ -226,7 +240,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item
-                onClick={() => onRemoveList(list)}
+                onClick={openModal}
                 c="red"
                 leftSection={<IconTrash size={18} />}
               >

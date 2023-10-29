@@ -11,6 +11,7 @@ const Page = () => {
       hide=""
       header="Important"
       icon={<IconStar />}
+      object={{ isImportant: true }}
     />
   );
 };

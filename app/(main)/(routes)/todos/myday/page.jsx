@@ -11,6 +11,7 @@ const Page = () => {
       hide="isAddedToMyDay"
       header="My Day"
       icon={<IconSun />}
+      object={{ isAddedToMyDay: true }}
     />
   );
 };

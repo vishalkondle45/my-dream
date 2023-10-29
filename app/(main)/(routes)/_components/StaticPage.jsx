@@ -25,6 +25,7 @@ const StaticPage = ({
   icon,
   header,
   not = false,
+  object,
 }) => {
   const [value1, setValue1] = useState(null);
   const [sort, setSort] = useState({ sortBy, reverse });
@@ -62,7 +63,7 @@ const StaticPage = ({
         header={header}
       />
       <Sorting setSort={setSort} sort={sort} />
-      <NewTodo />
+      <NewTodo object={object} />
       {todos
         ?.filter(({ completedOn }) => completedOn === "")
         ?.map((todo) => (

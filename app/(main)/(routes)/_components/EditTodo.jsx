@@ -84,7 +84,7 @@ const EditTodo = ({ setEdit, edit }) => {
       isAddedToMyDay: false,
       isImportant: false,
       notes: "",
-      title: "",
+      list: "",
       todo: "",
     },
     validate: {

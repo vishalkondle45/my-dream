@@ -1,4 +1,6 @@
 import { api } from "@/convex/_generated/api";
+var isToday = require("dayjs/plugin/isToday");
+var isTomorrow = require("dayjs/plugin/isTomorrow");
 import {
   ActionIcon,
   Box,
@@ -11,6 +13,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
   IconCalendarDue,
@@ -36,6 +39,8 @@ import {
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
+dayjs.extend(isToday);
+dayjs.extend(isTomorrow);
 
 const Todo = ({ todo, setEdit, edit, color, hide }) => {
   const update = useMutation(api.todos.update);
@@ -45,6 +50,16 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
   const copy = useMutation(api.todos.copy);
   const createList = useMutation(api.todos.createList);
   const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const openModal = () =>
+    modals.openConfirmModal({
+      title: `"${todo.todo}" will be permanently deleted.`,
+      children: <Text size="sm">You wont be able to undo this action.</Text>,
+      labels: { confirm: "Confirm", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onCancel: () => {},
+      onConfirm: () => onRemove(),
+    });
 
   const onCopy = async (list) => {
     if (!todo?._id) return;
@@ -204,11 +219,46 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
               )}
               {todo?.date && (
                 <Group gap={2} title="Due date">
-                  <ThemeIcon size="xs" variant="transparent">
+                  <ThemeIcon
+                    c={
+                      todo?.completedOn
+                        ? dayjs(todo?.completedOn).isAfter(
+                            dayjs(todo?.date),
+                            "date"
+                          )
+                          ? "red"
+                          : ""
+                        : dayjs().isAfter(dayjs(todo?.date), "date")
+                        ? "red"
+                        : ""
+                    }
+                    size="xs"
+                    variant="transparent"
+                  >
                     <IconCalendarEvent />
                   </ThemeIcon>
-                  <Text size="xs">
-                    Due {dayjs(todo?.date, "DD-MM-YYYY").format("ddd, MMM DD")}
+                  <Text
+                    size="xs"
+                    c={
+                      todo?.completedOn
+                        ? dayjs(todo?.completedOn).isAfter(
+                            dayjs(todo?.date),
+                            "date"
+                          )
+                          ? "red"
+                          : ""
+                        : dayjs().isAfter(dayjs(todo?.date), "date")
+                        ? "red"
+                        : ""
+                    }
+                  >
+                    {dayjs(todo?.date).isToday()
+                      ? "Today"
+                      : dayjs(todo?.date).isTomorrow()
+                      ? "Tomorrow"
+                      : `Due ${dayjs(todo?.date, "DD-MM-YYYY").format(
+                          "ddd, MMM DD"
+                        )}`}
                   </Text>
                 </Group>
               )}
@@ -386,7 +436,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
               <Menu.Item
                 c="red"
                 leftSection={<IconTrash size={20} stroke={1} />}
-                onClick={onRemove}
+                onClick={openModal}
               >
                 Delete task
               </Menu.Item>

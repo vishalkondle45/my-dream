@@ -1,5 +1,6 @@
 import { IconCalendarEvent } from "@tabler/icons-react";
 import StaticPage from "../../_components/StaticPage";
+import dayjs from "dayjs";
 
 const Page = () => {
   return (
@@ -12,6 +13,7 @@ const Page = () => {
       not={true}
       header="Planned"
       icon={<IconCalendarEvent />}
+      object={{ date: dayjs().format("MM-DD-YYYY"), isAddedToMyDay: true }}
     />
   );
 };

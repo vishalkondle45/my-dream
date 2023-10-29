@@ -1,8 +1,11 @@
 "use client";
 import { api } from "@/convex/_generated/api";
 import { Accordion, Center, Group, Loader, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import NewTodo from "../../_components/NewTodo";
 import Sorting from "../../_components/Sorting";
 import Todo from "../../_components/Todo";
@@ -15,9 +18,17 @@ const Page = ({ params }) => {
     sortBy: "isImportant",
     reverse: false,
   });
+  const router = useRouter();
 
   let lists = useQuery(api?.lists?.get);
   const list = lists?.find((list) => list?._id === params?.list_id);
+
+  useEffect(() => {
+    if (!list) {
+      router.push("/todos");
+    }
+  }, [list]);
+
   let todos = useQuery(api?.todos?.getByList, { list: list?._id, ...sort });
 
   if (!todos || !lists) {

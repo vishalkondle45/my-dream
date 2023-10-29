@@ -12,7 +12,6 @@ const Sidebar = ({ data }) => {
         alignSelf: "start",
       }}
       pr="xl"
-      w={rem(200)}
     >
       {data.map((item) => (
         <SidebarItem
