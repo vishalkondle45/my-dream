@@ -2,9 +2,11 @@ import {
   IconCalendarEvent,
   IconCalendarTime,
   IconHome,
+  IconNote,
   IconSortAZ,
   IconStar,
   IconSun,
+  IconTrash,
 } from "@tabler/icons-react";
 
 export const sortMap = [
@@ -64,5 +66,18 @@ export const sidebarData = [
     icon: <IconCalendarEvent size={18} />,
     text: "Planned",
     route: "/todos/planned",
+  },
+];
+
+export const sidebarDataNotes = [
+  {
+    icon: <IconNote size={18} />,
+    text: "Notes",
+    route: "/notes",
+  },
+  {
+    icon: <IconTrash size={18} />,
+    text: "Trash",
+    route: "/notes/trash",
   },
 ];

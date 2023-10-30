@@ -1,16 +1,29 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { Button, Group, SimpleGrid, Text, rem } from "@mantine/core";
+import {
+  Burger,
+  Button,
+  Drawer,
+  Group,
+  SimpleGrid,
+  Text,
+  rem,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconRestore, IconTrash, IconX } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
 import Note from "../../_components/Note";
+import NotesSidebar from "@/components/navigation/NotesSidebar";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { sidebarDataNotes } from "@/utils/constants";
 
 const Page = () => {
   let notes = useQuery(api.notes.getTrash);
   const empty = useMutation(api.notes.empty);
   const restoreAll = useMutation(api.notes.restoreAll);
+  const [opened2, { toggle: toggle2 }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const onEmpty = async () => {
     if (!notes.length) {
@@ -83,7 +96,25 @@ const Page = () => {
 
   return (
     <div>
-      <Group>
+      <Group align="start">
+        {isMobile && (
+          <>
+            <Drawer
+              size={"55%"}
+              opened={opened2}
+              onClose={toggle2}
+              withCloseButton={false}
+            >
+              <NotesSidebar data={sidebarDataNotes} />
+            </Drawer>
+            <Burger
+              opened={opened2}
+              onClick={toggle2}
+              hiddenFrom="xs"
+              size="sm"
+            />
+          </>
+        )}
         <Button onClick={onEmpty} mb="md" leftSection={<IconTrash size={16} />}>
           Delete all
         </Button>

@@ -1,8 +1,11 @@
 "use client";
 import { Box, rem } from "@mantine/core";
 import SidebarItem from "./SidebarItem";
+import { useMediaQuery } from "@mantine/hooks";
 
-const Sidebar = ({ data }) => {
+const NotesSidebar = ({ data }) => {
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   return (
     <Box
       style={{
@@ -11,7 +14,7 @@ const Sidebar = ({ data }) => {
         justifyContent: "flex-start",
         alignSelf: "start",
       }}
-      pr="xl"
+      pr={isMobile || "xl"}
     >
       {data.map((item) => (
         <SidebarItem
@@ -25,4 +28,4 @@ const Sidebar = ({ data }) => {
   );
 };
 
-export default Sidebar;
+export default NotesSidebar;

@@ -1,10 +1,13 @@
 "use client";
 import { api } from "@/convex/_generated/api";
+import { sidebarDataNotes } from "@/utils/constants";
 import {
   ActionIcon,
   Box,
+  Burger,
   Button,
   Checkbox,
+  Drawer,
   Flex,
   Group,
   Popover,
@@ -13,7 +16,7 @@ import {
   rem,
   useMantineTheme,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
   IconCheck,
@@ -30,6 +33,7 @@ import { useState } from "react";
 import EditNote from "../_components/EditNote";
 import NewNote from "../_components/NewNote";
 import Note from "../_components/Note";
+import NotesSidebar from "@/components/navigation/NotesSidebar";
 
 const Page = () => {
   const theme = useMantineTheme();
@@ -41,6 +45,9 @@ const Page = () => {
   });
   const [opened, { open, close }] = useDisclosure(false);
   const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const [opened2, { toggle: toggle2 }] = useDisclosure(false);
 
   let notes = useQuery(api.notes.get);
   let colorSelected = useMutation(api.notes.colorSelected);
@@ -170,6 +177,25 @@ const Page = () => {
   return (
     <Box>
       <Group justify="space-between" mb="md">
+        {isMobile && (
+          <>
+            <Drawer
+              size={"55%"}
+              opened={opened2}
+              onClose={toggle2}
+              withCloseButton={false}
+            >
+              <NotesSidebar data={sidebarDataNotes} />
+            </Drawer>
+            <Burger
+              opened={opened2}
+              onClick={toggle2}
+              hiddenFrom="xs"
+              size="sm"
+            />
+          </>
+        )}
+
         {value.length === 0 ? (
           <Button
             leftSection={<IconPlus size={16} />}
