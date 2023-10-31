@@ -10,17 +10,14 @@ import classes from "./ToggleColorMode.module.css";
 
 export default function ToggleColorMode() {
   const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme("light", {
+  const scheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,
   });
 
   return (
     <ActionIcon
-      onClick={() =>
-        setColorScheme(computedColorScheme === "light" ? "dark" : "light")
-      }
-      variant="default"
-      size="md"
+      onClick={() => setColorScheme(scheme === "light" ? "dark" : "light")}
+      variant="transparent"
       aria-label="Toggle color scheme"
     >
       <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />

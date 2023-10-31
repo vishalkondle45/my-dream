@@ -37,7 +37,7 @@ const NewNote = ({ newNote, setNewNote, close, opened }) => {
       return;
     }
     const id = notifications.show({
-      title: "Updating a note...",
+      title: "Creating a note...",
       loading: true,
       withBorder: true,
       autoClose: false,

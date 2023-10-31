@@ -1,6 +1,6 @@
-import { Container } from "@mantine/core";
-import "@mantine/core/styles.css";
 import LandingPageNavbar from "@/app/(marketing)/_components/Navbar";
+import { Box } from "@mantine/core";
+import "@mantine/core/styles.css";
 
 export const metadata = {
   title: "My Dream",
@@ -9,9 +9,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Container size="xl">
+    <Box>
       <LandingPageNavbar />
-      {children}
-    </Container>
+      <Box px="md">{children}</Box>
+    </Box>
   );
 }

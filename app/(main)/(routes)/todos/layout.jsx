@@ -13,6 +13,10 @@ export default function RootLayout({ children }) {
   let lists = useQuery(api.lists.get);
   const isMobile = useMediaQuery("(max-width: 600px)");
 
+  useEffect(() => {
+    document.title = "Todos";
+  }, []);
+
   if (!lists) {
     return (
       <Center>

@@ -14,7 +14,8 @@ const NotesSidebar = ({ data }) => {
         justifyContent: "flex-start",
         alignSelf: "start",
       }}
-      pr={isMobile || "xl"}
+      pr="xl"
+      w={rem(200)}
     >
       {data.map((item) => (
         <SidebarItem

@@ -176,7 +176,7 @@ const Page = () => {
 
   return (
     <Box>
-      <Group justify="space-between" mb="md">
+      <Group mb="md">
         {isMobile && (
           <>
             <Drawer
@@ -206,7 +206,7 @@ const Page = () => {
             Create Note
           </Button>
         ) : (
-          <>
+          <Group justify="space-between">
             <Text fw={700} fz="xl">
               {value.length} Selected
             </Text>
@@ -254,7 +254,7 @@ const Page = () => {
                 <IconFileText />
               </ActionIcon>
             </Group>
-          </>
+          </Group>
         )}
       </Group>
       {notes?.length > 0 ? (
