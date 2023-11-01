@@ -8,6 +8,7 @@ import {
   Drawer,
   Group,
   Menu,
+  Popover,
   Text,
   TextInput,
   ThemeIcon,
@@ -30,7 +31,7 @@ import {
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TodoSidebar from "./TodoSidebar";
 
 const TodoHeader_ = ({ queryParams, list, setSort }) => {
@@ -120,6 +121,12 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
     });
   }
 
+  const [opened1, { close, open }] = useDisclosure(false);
+
+  useEffect(() => {
+    close();
+  }, [list]);
+
   return (
     <Group justify="space-between" wrap="nowrap">
       <Group gap={8} wrap="nowrap">
@@ -191,7 +198,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
           </Text>
         )}
         {!isRename && (
-          <Menu shadow="md">
+          <Menu shadow="md" closeOnItemClick={isMobile ? false : true}>
             <Menu.Target>
               <ActionIcon c={list?.color} variant="transparent">
                 <IconDots />
@@ -208,7 +215,79 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
               >
                 Rename list
               </Menu.Item>
-              <Menu
+              <Menu.Item
+                leftSection={<IconPalette size={18} />}
+                rightSection={
+                  <Popover
+                    width={330}
+                    position="right"
+                    shadow="md"
+                    opened={!isMobile ? opened1 : undefined}
+                  >
+                    <Popover.Target>
+                      <IconChevronRight
+                        onMouseEnter={open}
+                        onMouseLeave={close}
+                        size={18}
+                      />
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Group gap="xs" onMouseEnter={open} onMouseLeave={close}>
+                        {colors.map((color) => (
+                          <ActionIcon
+                            key={color}
+                            radius="xl"
+                            color={color}
+                            onClick={() => onUpdate({ color })}
+                          >
+                            {color === list?.color && <CheckIcon size={14} />}
+                          </ActionIcon>
+                        ))}
+                      </Group>
+                    </Popover.Dropdown>
+                  </Popover>
+                }
+              >
+                Change theme
+              </Menu.Item>
+
+              {/* <Menu.Item
+                leftSection={<IconPalette size={18} />}
+                rightSection={
+                  <Popover
+                    position="bottom"
+                    withArrow
+                    shadow="md"
+                    opened={opened1}
+                  >
+                    <Popover.Target>
+                      <IconChevronRight
+                        onMouseEnter={open}
+                        onMouseLeave={close}
+                        size={18}
+                      />
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <Group gap="xs" p="sm">
+                        {colors.map((color) => (
+                          <ActionIcon
+                            key={color}
+                            radius="xl"
+                            color={color}
+                            onClick={() => onUpdate({ color })}
+                          >
+                            {color === list?.color && <CheckIcon size={14} />}
+                          </ActionIcon>
+                        ))}
+                      </Group>
+                    </Popover.Dropdown>
+                  </Popover>
+                }
+              >
+                Change theme
+              </Menu.Item> */}
+
+              {/* <Menu
                 trigger={isMobile ? "click" : "hover"}
                 position="right-start"
               >
@@ -234,7 +313,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
                     ))}
                   </Group>
                 </Menu.Dropdown>
-              </Menu>
+              </Menu> */}
               <Menu.Item leftSection={<IconPrinter size={18} />}>
                 Print list
               </Menu.Item>
