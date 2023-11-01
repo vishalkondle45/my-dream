@@ -8,11 +8,12 @@ import {
   Group,
   Menu,
   Paper,
+  Popover,
   Text,
   ThemeIcon,
   rem,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
@@ -39,6 +40,7 @@ import {
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 dayjs.extend(isToday);
 dayjs.extend(isTomorrow);
 
@@ -181,6 +183,16 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
       .catch((error) => console.log(error));
   };
 
+  const [opened1, { close, open }] = useDisclosure(false);
+  const [opened2, { close: close1, open: open1 }] = useDisclosure(false);
+
+  useEffect(() => {
+    close();
+    setOpened(false);
+  }, [todo]);
+
+  const [opened, setOpened] = useState(false);
+
   return (
     <Paper px="sm" py="xs" mt="xs" shadow="xl" withBorder>
       <Group mih={rem(32)} justify="space-between" wrap="nowrap" align="center">
@@ -306,7 +318,12 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
           >
             {todo?.isImportant ? <IconStarFilled /> : <IconStar />}
           </ActionIcon>
-          <Menu position="bottom-end">
+          <Menu
+            position="bottom-end"
+            opened={opened}
+            onChange={setOpened}
+            closeOnItemClick={false}
+          >
             <Menu.Target>
               <ActionIcon size={isMobile ? "xs" : "md"} variant="transparent">
                 <IconDotsVertical />
@@ -389,54 +406,80 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                 Create new list from this todo
               </Menu.Item>
 
-              <Menu trigger="hover" position="left" shadow="md">
-                <Menu.Target>
-                  <Menu.Item
-                    leftSection={<IconListSearch size={20} stroke={1} />}
-                    rightSection={<IconChevronRight size={20} stroke={1} />}
+              <Menu.Item
+                leftSection={<IconListSearch size={18} />}
+                rightSection={
+                  <Popover
+                    position="bottom"
+                    shadow="md"
+                    opened={!isMobile ? opened1 : undefined}
                   >
-                    Move todo to...
-                  </Menu.Item>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item onClick={() => onMove("")}>Todos</Menu.Item>
-                  {lists?.map((list) => (
-                    <Menu.Item
-                      key={list?._id}
-                      onClick={() => onMove(list?._id)}
-                    >
-                      {list?.title}
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              </Menu>
-
-              <Menu trigger="hover" position="left" shadow="md">
-                <Menu.Target>
-                  <Menu.Item
-                    leftSection={<IconListSearch size={20} stroke={1} />}
-                    rightSection={<IconChevronRight size={20} stroke={1} />}
+                    <Popover.Target>
+                      <IconChevronRight
+                        onMouseEnter={open}
+                        onMouseLeave={close}
+                        size={18}
+                      />
+                    </Popover.Target>
+                    <Popover.Dropdown p={0}>
+                      <Menu.Item onClick={() => onMove("")}>Todos</Menu.Item>
+                      {lists
+                        ?.filter((o) => o?._id !== todo?.title)
+                        ?.map((list) => (
+                          <Menu.Item
+                            key={list?._id}
+                            onClick={() => onMove(list?._id)}
+                          >
+                            {list?.title}
+                          </Menu.Item>
+                        ))}
+                    </Popover.Dropdown>
+                  </Popover>
+                }
+              >
+                Move todo to...
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<IconListSearch size={18} />}
+                rightSection={
+                  <Popover
+                    position="bottom"
+                    shadow="md"
+                    opened={!isMobile ? opened2 : undefined}
                   >
-                    Copy todo to...
-                  </Menu.Item>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  {lists?.map((list) => (
-                    <Menu.Item
-                      key={list?._id}
-                      onClick={() => onCopy(list?._id)}
-                    >
-                      {list?.title}
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              </Menu>
-
+                    <Popover.Target>
+                      <IconChevronRight
+                        onMouseEnter={open1}
+                        onMouseLeave={close1}
+                        size={18}
+                      />
+                    </Popover.Target>
+                    <Popover.Dropdown p={0}>
+                      <Menu.Item onClick={() => onCopy("")}>Todos</Menu.Item>
+                      {lists
+                        ?.filter((o) => o?._id !== todo?.title)
+                        ?.map((list) => (
+                          <Menu.Item
+                            key={list?._id}
+                            onClick={() => onCopy(list?._id)}
+                          >
+                            {list?.title}
+                          </Menu.Item>
+                        ))}
+                    </Popover.Dropdown>
+                  </Popover>
+                }
+              >
+                Copy todo to...
+              </Menu.Item>
               <Menu.Divider />
               <Menu.Item
                 c="red"
                 leftSection={<IconTrash size={20} stroke={1} />}
-                onClick={openModal}
+                onClick={() => {
+                  setOpened(false);
+                  openModal();
+                }}
               >
                 Delete task
               </Menu.Item>
