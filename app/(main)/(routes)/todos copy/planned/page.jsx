@@ -1,10 +1,10 @@
 import { IconCalendarEvent } from "@tabler/icons-react";
-import TodoStaticPage from "../../_components/TodoStaticPage";
+import StaticPage from "../../_components/TodoStaticPage";
 import dayjs from "dayjs";
 
 const Page = () => {
   return (
-    <TodoStaticPage
+    <StaticPage
       sortBy="isImportant"
       reverse={false}
       field="date"

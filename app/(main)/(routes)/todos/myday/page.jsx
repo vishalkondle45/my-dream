@@ -1,9 +1,9 @@
 import { IconSun } from "@tabler/icons-react";
-import StaticPage from "../../_components/StaticPage";
+import TodoStaticPage from "../../_components/TodoStaticPage";
 
 const Page = () => {
   return (
-    <StaticPage
+    <TodoStaticPage
       sortBy="isImportant"
       reverse={false}
       field="isAddedToMyDay"

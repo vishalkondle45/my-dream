@@ -10,14 +10,14 @@ import {
 } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import { useState } from "react";
-import EditTodo from "../_components/EditTodo";
-import NewTodo from "../_components/NewTodo";
-import Sorting from "../_components/Sorting";
-import Todo from "../_components/Todo";
-import TodoHeader from "../_components/TodoHeader";
+import EditTodo from "./EditTodo";
+import NewTodo from "./NewTodo";
+import Sorting from "./Sorting";
+import Todo from "./Todo";
+import TodoHeader from "./TodoHeader";
 import { sortMap } from "@/utils/constants";
 
-const StaticPage = ({
+const TodoStaticPage = ({
   sortBy,
   reverse,
   field,
@@ -112,4 +112,4 @@ const StaticPage = ({
   );
 };
 
-export default StaticPage;
+export default TodoStaticPage;
