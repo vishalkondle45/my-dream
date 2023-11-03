@@ -1,6 +1,6 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { sidebarData } from "@/utils/constants";
+import { sidebarDataTodos } from "@/utils/constants";
 import { Box, Center, Group, Loader } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { useMediaQuery } from "@mantine/hooks";
@@ -25,12 +25,14 @@ export default function RootLayout({ children }) {
     );
   }
 
-  let data = [...sidebarData];
+  let data = [...sidebarDataTodos];
   if (lists) {
     lists?.forEach((list) => {
-      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      let i = sidebarDataTodos.findIndex(
+        (o) => o.route == `/todos/${list?._id}`
+      );
       if (i > -1) {
-        sidebarData[i].text = list.title;
+        sidebarDataTodos[i].text = list.title;
       } else {
         data.push({
           icon: <IconList size={18} />,

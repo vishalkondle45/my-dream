@@ -1,4 +1,4 @@
-import { sidebarData } from "@/utils/constants";
+import { sidebarDataTodos } from "@/utils/constants";
 import {
   ActionIcon,
   Burger,
@@ -20,12 +20,14 @@ const TodoHeader = ({ icon, setSort, sortMap, header }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   let lists = useQuery(api.lists.get);
-  let data = [...sidebarData];
+  let data = [...sidebarDataTodos];
   if (lists) {
     lists?.forEach((list) => {
-      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      let i = sidebarDataTodos.findIndex(
+        (o) => o.route == `/todos/${list?._id}`
+      );
       if (i > -1) {
-        sidebarData[i].text = list.title;
+        sidebarDataTodos[i].text = list.title;
       } else {
         data.push({
           icon: <IconList size={18} />,

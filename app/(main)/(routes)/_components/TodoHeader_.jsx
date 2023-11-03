@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { colors, sidebarData, sortMap } from "@/utils/constants";
+import { colors, sidebarDataTodos, sortMap } from "@/utils/constants";
 import {
   ActionIcon,
   Burger,
@@ -105,12 +105,14 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
       onConfirm: () => onRemoveList(list),
     });
 
-  let data = [...sidebarData];
+  let data = [...sidebarDataTodos];
   if (lists) {
     lists?.forEach((list) => {
-      let i = sidebarData.findIndex((o) => o.route == `/todos/${list?._id}`);
+      let i = sidebarDataTodos.findIndex(
+        (o) => o.route == `/todos/${list?._id}`
+      );
       if (i > -1) {
-        sidebarData[i].text = list.title;
+        sidebarDataTodos[i].text = list.title;
       } else {
         data.push({
           icon: <IconList size={18} />,

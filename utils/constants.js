@@ -46,7 +46,7 @@ export const colors = [
   "orange",
 ];
 
-export const sidebarData = [
+export const sidebarDataTodos = [
   {
     icon: <IconHome size={18} />,
     text: "Todos",
