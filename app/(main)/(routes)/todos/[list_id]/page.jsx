@@ -1,6 +1,6 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { Accordion, Center, Group, Loader, Text } from "@mantine/core";
+import { Accordion, Center, Group, Loader, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
@@ -10,6 +10,7 @@ import NewTodo from "../../_components/NewTodo";
 import Sorting from "../../_components/Sorting";
 import Todo from "../../_components/Todo";
 import TodoHeader_ from "../../_components/TodoHeader_";
+import EditTodo from "../../_components/EditTodo";
 
 const Page = ({ params }) => {
   const [value, setValue] = useState(null);

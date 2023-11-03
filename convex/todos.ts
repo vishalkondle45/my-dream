@@ -175,7 +175,7 @@ export const move = mutation({
     }
 
     const todo = await ctx.db.patch(args._id, {
-      list: args.list,
+      list: args?.list,
     });
     return todo;
   },
@@ -214,7 +214,7 @@ export const copy = mutation({
 
     const document = await ctx.db.insert("todos", {
       todo,
-      list: args.list,
+      list: args?.list,
       completedOn,
       isAddedToMyDay,
       isImportant,

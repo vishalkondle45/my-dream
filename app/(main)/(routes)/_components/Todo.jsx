@@ -405,73 +405,68 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
               >
                 Create new list from this todo
               </Menu.Item>
-
-              <Menu.Item
-                leftSection={<IconListSearch size={18} />}
-                rightSection={
-                  <Popover
-                    position="bottom"
-                    shadow="md"
-                    opened={!isMobile ? opened1 : undefined}
-                  >
-                    <Popover.Target>
-                      <IconChevronRight
-                        onMouseEnter={open}
-                        onMouseLeave={close}
-                        size={18}
-                      />
-                    </Popover.Target>
-                    <Popover.Dropdown p={0}>
-                      <Menu.Item onClick={() => onMove("")}>Todos</Menu.Item>
-                      {lists
-                        ?.filter((o) => o?._id !== todo?.title)
-                        ?.map((list) => (
-                          <Menu.Item
-                            key={list?._id}
-                            onClick={() => onMove(list?._id)}
-                          >
-                            {list?.title}
-                          </Menu.Item>
-                        ))}
-                    </Popover.Dropdown>
-                  </Popover>
-                }
+              <Popover
+                position="bottom-end"
+                shadow="md"
+                opened={!isMobile ? opened1 : undefined}
               >
-                Move todo to...
-              </Menu.Item>
-              <Menu.Item
-                leftSection={<IconListSearch size={18} />}
-                rightSection={
-                  <Popover
-                    position="bottom"
-                    shadow="md"
-                    opened={!isMobile ? opened2 : undefined}
+                <Popover.Target>
+                  <Menu.Item
+                    leftSection={<IconListSearch size={18} />}
+                    rightSection={<IconChevronRight size={18} />}
+                    onMouseEnter={open}
+                    onMouseLeave={close}
                   >
-                    <Popover.Target>
-                      <IconChevronRight
-                        onMouseEnter={open1}
-                        onMouseLeave={close1}
-                        size={18}
-                      />
-                    </Popover.Target>
-                    <Popover.Dropdown p={0}>
-                      <Menu.Item onClick={() => onCopy("")}>Todos</Menu.Item>
-                      {lists
-                        ?.filter((o) => o?._id !== todo?.title)
-                        ?.map((list) => (
-                          <Menu.Item
-                            key={list?._id}
-                            onClick={() => onCopy(list?._id)}
-                          >
-                            {list?.title}
-                          </Menu.Item>
-                        ))}
-                    </Popover.Dropdown>
-                  </Popover>
-                }
+                    Move todo to...
+                  </Menu.Item>
+                </Popover.Target>
+                <Popover.Dropdown p={0}>
+                  <Box onMouseEnter={open} onMouseLeave={close}>
+                    <Menu.Item onClick={() => onMove()}>Todos</Menu.Item>
+                    {lists
+                      ?.filter((o) => o?._id !== todo?.title)
+                      ?.map((list) => (
+                        <Menu.Item
+                          key={list?._id}
+                          onClick={() => onMove(list?._id)}
+                        >
+                          {list?.title}
+                        </Menu.Item>
+                      ))}
+                  </Box>
+                </Popover.Dropdown>
+              </Popover>
+              <Popover
+                position="bottom-end"
+                shadow="md"
+                opened={!isMobile ? opened2 : undefined}
               >
-                Copy todo to...
-              </Menu.Item>
+                <Popover.Target>
+                  <Menu.Item
+                    leftSection={<IconListSearch size={18} />}
+                    rightSection={<IconChevronRight size={18} />}
+                    onMouseEnter={open1}
+                    onMouseLeave={close1}
+                  >
+                    Copy todo to...
+                  </Menu.Item>
+                </Popover.Target>
+                <Popover.Dropdown p={0}>
+                  <Box onMouseEnter={open1} onMouseLeave={close1}>
+                    <Menu.Item onClick={() => onCopy()}>Todos</Menu.Item>
+                    {lists
+                      ?.filter((o) => o?._id !== todo?.title)
+                      ?.map((list) => (
+                        <Menu.Item
+                          key={list?._id}
+                          onClick={() => onCopy(list?._id)}
+                        >
+                          {list?.title}
+                        </Menu.Item>
+                      ))}
+                  </Box>
+                </Popover.Dropdown>
+              </Popover>
               <Menu.Divider />
               <Menu.Item
                 c="red"
