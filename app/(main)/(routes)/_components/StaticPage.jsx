@@ -15,6 +15,7 @@ import NewTodo from "../_components/NewTodo";
 import Sorting from "../_components/Sorting";
 import Todo from "../_components/Todo";
 import TodoHeader from "../_components/TodoHeader";
+import { sortMap } from "@/utils/constants";
 
 const StaticPage = ({
   sortBy,
@@ -31,28 +32,6 @@ const StaticPage = ({
   const [sort, setSort] = useState({ sortBy, reverse });
   let todos = useQuery(api.todos.get, { ...sort, field, value, not });
   const [edit, setEdit] = useState(null);
-  const sortMap = [
-    {
-      value: "isImportant",
-      label: "Imporatance",
-      icon: <IconStar size={16} />,
-    },
-    {
-      value: "date",
-      label: "Due date",
-      icon: <IconCalendarEvent size={16} />,
-    },
-    {
-      value: "todo",
-      label: "Alphabetically",
-      icon: <IconSortAZ size={16} />,
-    },
-    {
-      value: "_creationTime",
-      label: "Creation Time",
-      icon: <IconCalendarTime size={16} />,
-    },
-  ];
 
   return (
     <Box>
