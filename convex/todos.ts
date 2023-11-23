@@ -112,7 +112,7 @@ export const get = query({
   args: {
     sortBy: v.string(),
     reverse: v.boolean(),
-    field: v.string(),
+    field: v.any(),
     value: v.any(),
     not: v.optional(v.boolean()),
   },

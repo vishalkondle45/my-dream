@@ -1,6 +1,11 @@
+import { Box, Center } from "@mantine/core";
 import {
+  IconBuilding,
   IconCalendarEvent,
   IconCalendarTime,
+  IconCar,
+  IconCricket,
+  IconDots,
   IconHome,
   IconNote,
   IconSortAZ,
@@ -80,4 +85,87 @@ export const sidebarDataNotes = [
     text: "Trash",
     route: "/notes/trash",
   },
+];
+
+export const sidebarDataSplit = [
+  {
+    icon: <IconHome size={18} />,
+    text: "Home",
+    route: "/split",
+  },
+];
+
+export const splitGroupTypes = [
+  {
+    value: "home",
+    label: (
+      <Center>
+        <IconHome size={16} />
+        <Box ml={4}>Home</Box>
+      </Center>
+    ),
+  },
+  {
+    value: "trip",
+    label: (
+      <Center>
+        <IconCar size={16} />
+        <Box ml={4}>Trip</Box>
+      </Center>
+    ),
+  },
+  {
+    value: "office",
+    label: (
+      <Center>
+        <IconBuilding size={16} />
+        <Box ml={4}>Office</Box>
+      </Center>
+    ),
+  },
+  {
+    value: "sports",
+    label: (
+      <Center>
+        <IconCricket size={16} />
+        <Box ml={4}>Sports</Box>
+      </Center>
+    ),
+  },
+  {
+    value: "others",
+    label: (
+      <Center>
+        <IconDots size={16} />
+        <Box ml={4}>Others</Box>
+      </Center>
+    ),
+  },
+];
+
+export const getGroupIconByType = (type) => {
+  switch (type) {
+    case "home":
+      return <IconHome />;
+
+    case "trip":
+      return <IconCar />;
+
+    case "office":
+      return <IconBuilding />;
+
+    case "sports":
+      return <IconCricket />;
+
+    default:
+      return <IconDots />;
+  }
+};
+
+export const getGroups = [
+  { name: "Home", icon: <IconHome /> },
+  { name: "Trip", icon: <IconCar /> },
+  { name: "Office", icon: <IconBuilding /> },
+  { name: "Sports", icon: <IconCricket /> },
+  { name: "Others", icon: <IconDots /> },
 ];

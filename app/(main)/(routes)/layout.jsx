@@ -1,13 +1,11 @@
+"use client";
 import LandingPageNavbar from "@/app/(marketing)/_components/Navbar";
 import { Box } from "@mantine/core";
 import "@mantine/core/styles.css";
-
-export const metadata = {
-  title: "My Dream",
-  description: "All tools in one application",
-};
+import useStoreUserEffect from "./_hooks/useStoreUserEffect";
 
 export default function RootLayout({ children }) {
+  const userId = useStoreUserEffect();
   return (
     <Box>
       <LandingPageNavbar />
