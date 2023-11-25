@@ -38,14 +38,21 @@ const Expenses = ({ expense, splitAmong, paidBy, users, user }) => {
             </Box>
           </Group>
           <Group justify="right">
-            <Text size="sm" c={remaining < 0 ? "red" : "green"}>
-              <NumberFormatter
-                allowNegative={false}
-                value={remaining}
-                prefix="₹ "
-                thousandsGroupStyle="lakh"
-                thousandSeparator
-              />
+            <Text
+              size="sm"
+              c={remaining ? (remaining < 0 ? "red" : "green") : "gray"}
+            >
+              {remaining ? (
+                <NumberFormatter
+                  allowNegative={false}
+                  value={remaining}
+                  prefix="₹ "
+                  thousandsGroupStyle="lakh"
+                  thousandSeparator
+                />
+              ) : (
+                "not involved"
+              )}
             </Text>
           </Group>
         </Group>
