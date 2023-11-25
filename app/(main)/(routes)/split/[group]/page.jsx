@@ -4,6 +4,7 @@ import { getGroupIconByType } from "@/utils/constants";
 import {
   ActionIcon,
   Group,
+  Loader,
   Modal,
   Stack,
   Tabs,
@@ -35,6 +36,9 @@ const Page = ({ params }) => {
   const deleteGroup = useMutation(api.groups.deleteGroup);
   const user = useQuery(api.users.getCurrentUser);
   const users = useQuery(api.split.getUsers, { group: group?._id });
+  const expenses = useQuery(api.expense.getExpenses, { group: group?._id });
+  const splitAmong = useQuery(api.expense.getSplitAmong, { group: group?._id });
+  const paidBy = useQuery(api.expense.getPaidBy, { group: group?._id });
   const router = useRouter();
   const [groupSettingsOpened, { open, close }] = useDisclosure(false);
   const [addExpenseOpened, addExpenseHandlers] = useDisclosure(false);
@@ -51,6 +55,10 @@ const Page = ({ params }) => {
       },
       size: "xs",
     });
+
+  if (!group || !user || !users || !expenses || !splitAmong || !paidBy) {
+    <Loader />;
+  }
 
   return (
     <>
@@ -108,7 +116,13 @@ const Page = ({ params }) => {
             </TabsTab>
           </TabsList>
           <TabsPanel value="gallery">
-            <Expenses />
+            <Expenses
+              expenses={expenses}
+              splitAmong={splitAmong}
+              paidBy={paidBy}
+              users={users}
+              user={user}
+            />
           </TabsPanel>
           <TabsPanel value="messages">{params.group}</TabsPanel>
           <TabsPanel value="settings">

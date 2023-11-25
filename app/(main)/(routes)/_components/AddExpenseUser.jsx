@@ -46,12 +46,14 @@ const AddExpenseUser = ({
           <NumberInput
             type="number"
             min={0}
-            readOnly={paidBy[0]?.user !== user?.userId}
+            readOnly={!paidBy?.find((item) => item?.user === user?.userId)}
             style={{ width: "30%" }}
             hideControls
             leftSection={<IconCurrencyRupee size={18} />}
             size="xs"
-            value={paidBy?.find((item) => item?.user === user?.userId)?.amount}
+            value={
+              paidBy?.find((item) => item?.user === user?.userId)?.amount || 0
+            }
             onChange={(e) => {
               let newArr = [...form.values.paidBy];
               let index = form.values.paidBy?.findIndex(

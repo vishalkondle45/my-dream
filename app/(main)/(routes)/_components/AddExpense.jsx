@@ -50,11 +50,11 @@ const AddExpense = ({ group, user, users, close }) => {
       amount: (value) =>
         value && value > 0 ? null : "Amount must be greater than 0.",
       paidBy: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values?.amount
+        value.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Paid By amount in is not equal to the price of the bill",
       splitAmong: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values?.amount
+        value.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Split among amount in is not equal to the price of the bill",
     },
@@ -76,11 +76,11 @@ const AddExpense = ({ group, user, users, close }) => {
     }
   }, [form.values.payer, form.values.amount]);
 
-  useEffect(() => {
-    if (opened === false) {
-      form.setFieldValue("payer", "single");
-    }
-  }, [opened]);
+  // useEffect(() => {
+  //   if (opened === false) {
+  //     form.setFieldValue("payer", "single");
+  //   }
+  // }, [opened]);
 
   useEffect(() => {
     form.setFieldValue("payer", "single");
@@ -102,6 +102,39 @@ const AddExpense = ({ group, user, users, close }) => {
     close();
     form.reset();
   };
+
+  const multipleSelectUser = (user) => {
+    form.setFieldValue(
+      "paidBy",
+      form.values.paidBy?.find((item) => item?.user === user?.userId)
+        ? form.values.paidBy?.filter((item) => item?.user !== user?.userId)
+        : [
+            ...form.values.paidBy,
+            {
+              user: user?.userId,
+              amount: 0,
+            },
+          ]
+    );
+  };
+
+  const singleSelectUser = (user) => {
+    form.setFieldValue("paidBy", [
+      {
+        user: user?.userId,
+        amount: form.values?.amount,
+      },
+    ]);
+  };
+
+  const equalize = () =>
+    form.setFieldValue(
+      "splitAmong",
+      form.values?.splitAmong?.map((item) => ({
+        ...item,
+        amount: form.values?.amount / users?.length,
+      }))
+    );
 
   return (
     <>
@@ -143,6 +176,7 @@ const AddExpense = ({ group, user, users, close }) => {
             position="bottom"
             withArrow
             shadow="xl"
+            arrowSize={12}
           >
             <Popover.Target>
               <TextInput
@@ -199,14 +233,7 @@ const AddExpense = ({ group, user, users, close }) => {
                         paidBy={form.values.paidBy}
                         user={user}
                         key={user?._id}
-                        selectUser={() => {
-                          form.setFieldValue("paidBy", [
-                            {
-                              user: user?.userId,
-                              amount: form.values?.amount,
-                            },
-                          ]);
-                        }}
+                        selectUser={() => singleSelectUser(user)}
                       />
                     ))}
                   </Stack>
@@ -221,24 +248,7 @@ const AddExpense = ({ group, user, users, close }) => {
                         key={user?._id}
                         withAmount
                         form={form}
-                        selectUser={() => {
-                          form.setFieldValue(
-                            "paidBy",
-                            form.values.paidBy?.find(
-                              (item) => item?.user === user?.userId
-                            )
-                              ? form.values.paidBy?.filter(
-                                  (item) => item?.user !== user?.userId
-                                )
-                              : [
-                                  ...form.values.paidBy,
-                                  {
-                                    user: user?.userId,
-                                    amount: 0,
-                                  },
-                                ]
-                          );
-                        }}
+                        selectUser={() => multipleSelectUser(user)}
                       />
                     ))}
                   </Stack>
@@ -255,15 +265,7 @@ const AddExpense = ({ group, user, users, close }) => {
             <Button
               size="compact-xs"
               leftSection={<IconEqual size={16} />}
-              onClick={() =>
-                form.setFieldValue(
-                  "splitAmong",
-                  form.values?.splitAmong?.map((item) => ({
-                    ...item,
-                    amount: form.values?.amount / users?.length,
-                  }))
-                )
-              }
+              onClick={equalize}
               radius="lg"
               variant="filled"
             >

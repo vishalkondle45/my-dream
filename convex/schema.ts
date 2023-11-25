@@ -50,13 +50,13 @@ export default defineSchema({
   }),
   paidBy: defineTable({
     expense: v.id("expenses"),
-    // group: v.id("groups"),
+    group: v.id("groups"),
     user: v.string(),
     amount: v.number(),
   }),
   splitAmong: defineTable({
     expense: v.id("expenses"),
-    // group: v.id("groups"),
+    group: v.id("groups"),
     user: v.string(),
     amount: v.number(),
   }),
