@@ -18,6 +18,7 @@ import { modals } from "@mantine/modals";
 import {
   IconChecklist,
   IconMoneybag,
+  IconPlus,
   IconReceipt,
   IconSettings,
   IconTrash,
@@ -27,14 +28,18 @@ import { useRouter } from "next/navigation";
 import Expenses from "../../_components/Expenses";
 import GroupSettings from "../../_components/GroupSettings";
 import Summary from "../../_components/Summary";
+import AddExpense from "../../_components/AddExpense";
 
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
   const deleteGroup = useMutation(api.groups.deleteGroup);
+  const user = useQuery(api.users.getCurrentUser);
+  const users = useQuery(api.split.getUsers, { group: group?._id });
   const router = useRouter();
-  const [opened, { open, close }] = useDisclosure(false);
+  const [groupSettingsOpened, { open, close }] = useDisclosure(false);
+  const [addExpenseOpened, addExpenseHandlers] = useDisclosure(false);
 
-  const openModal = () =>
+  const openGroupSettings = () =>
     modals.openConfirmModal({
       title: "Delete group",
       children: <Text size="sm">Press confirm to delete this group.</Text>,
@@ -57,7 +62,14 @@ const Page = ({ params }) => {
             </ThemeIcon>
             <Text fw="bold">{group?.name}</Text>
           </Group>
-          <Group gap="xs">
+          <Group gap={4}>
+            <ActionIcon
+              variant="subtle"
+              radius="xl"
+              onClick={addExpenseHandlers.open}
+            >
+              <IconPlus size={20} />
+            </ActionIcon>
             <ActionIcon variant="subtle" radius="xl" onClick={open}>
               <IconSettings size={20} />
             </ActionIcon>
@@ -65,7 +77,7 @@ const Page = ({ params }) => {
               variant="subtle"
               radius="xl"
               color="red"
-              onClick={openModal}
+              onClick={openGroupSettings}
             >
               <IconTrash size={20} />
             </ActionIcon>
@@ -105,8 +117,25 @@ const Page = ({ params }) => {
         </Tabs>
       </Stack>
 
-      <Modal title="Group settings" opened={opened} onClose={close}>
+      <Modal
+        title="Group settings"
+        opened={groupSettingsOpened}
+        onClose={close}
+      >
         <GroupSettings group={group} />
+      </Modal>
+
+      <Modal
+        title="Add expense"
+        opened={addExpenseOpened}
+        onClose={addExpenseHandlers.close}
+      >
+        <AddExpense
+          group={group}
+          close={addExpenseHandlers.close}
+          user={user}
+          users={users}
+        />
       </Modal>
     </>
   );

@@ -35,7 +35,7 @@ const Page = ({ params }) => {
   if (!todos || !lists) {
     return (
       <Center>
-        <Loader type="bars" />
+        <Loader />
       </Center>
     );
   }

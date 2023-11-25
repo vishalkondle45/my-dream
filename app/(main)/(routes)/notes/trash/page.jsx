@@ -5,6 +5,8 @@ import {
   Button,
   Drawer,
   Group,
+  Loader,
+  LoadingOverlay,
   SimpleGrid,
   Text,
   rem,
@@ -93,6 +95,10 @@ const Page = () => {
       })
       .catch((error) => console.log(error));
   };
+
+  if (!notes) {
+    return <Loader />;
+  }
 
   return (
     <div>

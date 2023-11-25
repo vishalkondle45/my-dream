@@ -181,7 +181,6 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
     <Paper
       bg={`${note?.color}`}
       p="md"
-      radius="md"
       withBorder
       ref={ref}
       shadow={hovered && "xl"}

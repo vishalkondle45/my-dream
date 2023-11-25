@@ -37,14 +37,27 @@ export default defineSchema({
     type: v.string(),
     userId: v.string(),
   }).index("by_user", ["userId"]),
-  // groupUsers: defineTable({
-  //   userId: v.string(),
-  //   email: v.string(),
-  //   name: v.string(),
-  //   group: v.string(),
-  // }),
   groupUsers: defineTable({
     userId: v.string(),
     group: v.string(),
+  }),
+  expenses: defineTable({
+    description: v.string(),
+    amount: v.number(),
+    group: v.id("groups"),
+    createdBy: v.string(),
+    date: v.string(),
+  }),
+  paidBy: defineTable({
+    expense: v.id("expenses"),
+    // group: v.id("groups"),
+    user: v.string(),
+    amount: v.number(),
+  }),
+  splitAmong: defineTable({
+    expense: v.id("expenses"),
+    // group: v.id("groups"),
+    user: v.string(),
+    amount: v.number(),
   }),
 });

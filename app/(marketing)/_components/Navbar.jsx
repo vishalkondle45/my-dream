@@ -40,7 +40,7 @@ const Navbar = () => {
         Dream
       </Text>
       <Group>
-        {isLoading && <Loader size="sm" type="dots" />}
+        {isLoading && <Loader size="sm" />}
         {!isAuthenticated && !isLoading && (
           <>
             <SignInButton mode="modal">
@@ -88,13 +88,13 @@ const Navbar = () => {
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCalendar />}
-                    text="Calendar"
+                    icon={<IconCoinRupeeFilled />}
+                    text="Split"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCoinRupeeFilled />}
-                    text="Split"
+                    icon={<IconCalendar />}
+                    text="Calendar"
                   />
                   <NavItem
                     setOpened={setOpened}

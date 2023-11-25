@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
   if (!lists) {
     return (
       <Center>
-        <Loader type="bars" />
+        <Loader />
       </Center>
     );
   }

@@ -10,6 +10,7 @@ import {
   Drawer,
   Flex,
   Group,
+  Loader,
   Popover,
   SimpleGrid,
   Text,
@@ -173,6 +174,10 @@ const Page = () => {
         onClick={() => onColorSelected(color)}
       ></ActionIcon>
     ));
+
+  if (!notes) {
+    return <Loader />;
+  }
 
   return (
     <Box>
