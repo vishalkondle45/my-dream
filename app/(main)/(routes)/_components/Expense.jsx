@@ -10,17 +10,28 @@ import {
 import { IconReceipt } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
-const Expenses = ({ expense, splitAmong, paidBy, users, user }) => {
+const Expenses = ({
+  expense,
+  splitAmong,
+  paidBy,
+  users,
+  user,
+  setSelectedExpense,
+}) => {
   const remaining =
-    (paidBy.find((item) => item.user === user?.subject)?.amount || 0) -
-    (splitAmong.find((item) => item.user === user?.subject)?.amount || 0);
+    (paidBy?.find((item) => item.user === user?.subject)?.amount || 0) -
+    (splitAmong?.find((item) => item.user === user?.subject)?.amount || 0);
   return (
     <>
-      <Paper mt="sm">
+      <Paper
+        style={{ cursor: "pointer" }}
+        mt="sm"
+        onClick={() => setSelectedExpense(expense)}
+      >
         <Text size="xs">{dayjs(expense.date).format("MMM DD")}</Text>
         <Group justify="space-between">
           <Group>
-            <ThemeIcon>
+            <ThemeIcon variant="light">
               <IconReceipt size={18} />
             </ThemeIcon>
             <Box>
@@ -28,10 +39,10 @@ const Expenses = ({ expense, splitAmong, paidBy, users, user }) => {
                 {expense?.description}
               </Text>
               <Text size="sm" fw={300}>
-                {paidBy.length > 1
-                  ? `${paidBy.length} people`
+                {paidBy?.length > 1
+                  ? `${paidBy?.length} people`
                   : users
-                      .find((item) => item.userId === paidBy[0].user)
+                      .find((item) => item.userId === paidBy[0]?.user)
                       .name.split(" ")[0]}{" "}
                 paid $ {expense?.amount}
               </Text>

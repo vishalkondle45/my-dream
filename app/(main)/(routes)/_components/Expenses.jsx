@@ -1,7 +1,14 @@
 import { Box, Text } from "@mantine/core";
 import Expense from "./Expense";
 
-const Expenses = ({ expenses, splitAmong, paidBy, users, user }) => {
+const Expenses = ({
+  expenses,
+  splitAmong,
+  paidBy,
+  users,
+  user,
+  setSelectedExpense,
+}) => {
   return (
     <Box mt="xs">
       {expenses?.map((expense) => (
@@ -14,6 +21,7 @@ const Expenses = ({ expenses, splitAmong, paidBy, users, user }) => {
           paidBy={paidBy?.filter((item) => item.expense === expense._id)}
           users={users}
           user={user}
+          setSelectedExpense={setSelectedExpense}
         />
       ))}
       <Text c="gray" ta="center">

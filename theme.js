@@ -5,7 +5,7 @@ import { Loader, createTheme } from "@mantine/core";
 export const theme = createTheme({
   fontFamily: "Inter, Verdana, sans-serif",
   headings: { fontFamily: "Inter, Verdana, sans-serif" },
-  primaryColor: "grape",
+  primaryColor: "dark",
   // primaryShade: {
   //   dark: 9,
   //   light: 7,

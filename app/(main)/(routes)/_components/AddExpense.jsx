@@ -302,7 +302,7 @@ const AddExpense = ({ group, user, users, close }) => {
                         )?.amount
                       }
                       onChange={(value) => {
-                        let index = form.values.splitAmong.findIndex(
+                        let index = form.values.splitAmong?.findIndex(
                           (item) => item.user === user.userId
                         );
                         let newArr = [...form.values.splitAmong];

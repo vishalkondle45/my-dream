@@ -23,7 +23,7 @@ export const add = mutation({
       createdBy: identity.subject,
       group: args.group,
     });
-    args.paidBy.forEach(async (item: { user: string; amount: number }) => {
+    args.paidBy?.forEach(async (item: { user: string; amount: number }) => {
       await ctx.db.insert("paidBy", {
         expense: expense,
         user: item.user,
@@ -31,7 +31,7 @@ export const add = mutation({
         group: args.group,
       });
     });
-    args.splitAmong.forEach(async (item: { user: string; amount: number }) => {
+    args.splitAmong?.forEach(async (item: { user: string; amount: number }) => {
       await ctx.db.insert("splitAmong", {
         expense: expense,
         user: item.user,
