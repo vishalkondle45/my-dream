@@ -28,6 +28,7 @@ const ViewExpense = ({
   splitAmong,
   users,
   setSelectedExpense,
+  user,
 }) => {
   const deleteExpense = useMutation(api.expense.deleteExpense);
 
@@ -103,7 +104,9 @@ const ViewExpense = ({
                   )}
                 </Avatar>
                 <Text>
-                  {users.find((user) => user.userId === item?.user).name}
+                  {item?.user === user.subject
+                    ? "You"
+                    : users.find((user) => user.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter
@@ -139,7 +142,9 @@ const ViewExpense = ({
                   )}
                 </Avatar>
                 <Text>
-                  {users.find((user) => user.userId === item?.user).name}
+                  {item?.user === user.subject
+                    ? "You"
+                    : users.find((user) => user.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter
