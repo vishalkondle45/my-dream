@@ -1,3 +1,4 @@
+import { api } from "@/convex/_generated/api";
 import { colors } from "@/utils/constants";
 import { getInitials, sumAscii } from "@/utils/functions";
 import {
@@ -17,6 +18,7 @@ import {
   IconShare,
   IconTrashFilled,
 } from "@tabler/icons-react";
+import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 
 const ViewExpense = ({
@@ -25,7 +27,10 @@ const ViewExpense = ({
   paidBy,
   splitAmong,
   users,
+  setSelectedExpense,
 }) => {
+  const deleteExpense = useMutation(api.expense.deleteExpense);
+
   return (
     <>
       <Paper shadow="xl" withBorder px="md" py="xs">
@@ -55,13 +60,17 @@ const ViewExpense = ({
           <Group gap="xs" justify="right" wrap="nowrap">
             <ActionIcon
               variant="light"
-              onClick={() => {
-                editExpenseHandlers.open();
-              }}
+              onClick={() => editExpenseHandlers.open()}
             >
               <IconPencil size={16} />
             </ActionIcon>
-            <ActionIcon variant="light">
+            <ActionIcon
+              variant="light"
+              onClick={() => {
+                deleteExpense({ expense: selectedExpense._id });
+                setSelectedExpense(null);
+              }}
+            >
               <IconTrashFilled size={16} />
             </ActionIcon>
             <ActionIcon variant="light">

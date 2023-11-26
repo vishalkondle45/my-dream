@@ -193,3 +193,35 @@ export const getSplitAmong = query({
     return splitAmong;
   },
 });
+
+export const deleteExpense = mutation({
+  args: {
+    expense: v.id("expenses"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const expense = await ctx.db.delete(args.expense);
+
+    let paidBy = await ctx.db
+      .query("paidBy")
+      .filter((q) => q.eq(q.field("expense"), args.expense))
+      .collect();
+    paidBy.forEach(async (item) => {
+      await ctx.db.delete(item._id);
+    });
+
+    let splitAmong = await ctx.db
+      .query("splitAmong")
+      .filter((q) => q.eq(q.field("expense"), args.expense))
+      .collect();
+    splitAmong.forEach(async (item) => {
+      await ctx.db.delete(item._id);
+    });
+
+    return expense;
+  },
+});

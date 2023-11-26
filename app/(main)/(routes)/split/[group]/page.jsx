@@ -192,6 +192,7 @@ const Page = ({ params }) => {
                 paidBy={paidBy}
                 splitAmong={splitAmong}
                 users={users}
+                setSelectedExpense={setSelectedExpense}
               />
             )}
           </Modal>
