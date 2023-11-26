@@ -21,6 +21,7 @@ const AddExpenseUser = ({
   selectUser,
   withAmount = false,
   form,
+  currentUser,
 }) => {
   return (
     <Paper p={rem(4)} withBorder>
@@ -40,7 +41,9 @@ const AddExpenseUser = ({
           >
             {getInitials(user?.name)}
           </Avatar>
-          <Text size="sm">{user?.name}</Text>
+          <Text size="sm">
+            {user?.userId === currentUser.subject ? "You" : user?.name}
+          </Text>
         </Group>
         {withAmount && (
           <NumberInput

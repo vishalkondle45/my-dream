@@ -1,16 +1,11 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { colors, getGroupIconByType } from "@/utils/constants";
-import { getInitials, sumAscii } from "@/utils/functions";
+import { getGroupIconByType } from "@/utils/constants";
 import {
   ActionIcon,
-  Avatar,
-  Divider,
   Group,
   Loader,
   Modal,
-  NumberFormatter,
-  Paper,
   ScrollArea,
   Stack,
   Tabs,
@@ -25,22 +20,20 @@ import { modals } from "@mantine/modals";
 import {
   IconChecklist,
   IconMoneybag,
-  IconPencil,
   IconPlus,
   IconReceipt,
   IconSettings,
-  IconShare,
   IconTrash,
-  IconTrashFilled,
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
-import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AddExpense from "../../_components/AddExpense";
+import EditExpense from "../../_components/EditExpense";
 import Expenses from "../../_components/Expenses";
 import GroupSettings from "../../_components/GroupSettings";
 import Summary from "../../_components/Summary";
+import ViewExpense from "../../_components/ViewExpense";
 
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
@@ -176,118 +169,31 @@ const Page = ({ params }) => {
             onClose={() => setSelectedExpense(null)}
             scrollAreaComponent={ScrollArea.Autosize}
           >
-            <Paper shadow="xl" withBorder px="md" py="xs">
-              <Group gap="xs" justify="space-between" wrap="nowrap">
-                <Group gap="xs" wrap="nowrap">
-                  <ThemeIcon variant="filled" size="lg">
-                    <IconReceipt size={22} />
-                  </ThemeIcon>
-                  <Stack gap={0}>
-                    <Text size="sm" fw={500}>
-                      {selectedExpense?.description}
-                    </Text>
-                    <Text size="sm" fw={300}>
-                      {dayjs(selectedExpense?.date).format("DD MMM YYYY")}
-                    </Text>
-                    <NumberFormatter
-                      allowNegative={false}
-                      value={selectedExpense?.amount}
-                      prefix="₹ "
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator
-                      size="sm"
-                      fw={500}
-                    />
-                  </Stack>
-                </Group>
-                <Group gap="xs" justify="right" wrap="nowrap">
-                  <ActionIcon variant="light">
-                    <IconPencil size={16} />
-                  </ActionIcon>
-                  <ActionIcon variant="light">
-                    <IconTrashFilled size={16} />
-                  </ActionIcon>
-                  <ActionIcon variant="light">
-                    <IconShare size={16} />
-                  </ActionIcon>
-                </Group>
-              </Group>
-            </Paper>
-            <Paper shadow="xl" mt="md" p="sm" withBorder>
-              <Text mb="xs" fw="bolder">
-                Paid By
-              </Text>
-              {paidBy
-                ?.filter((item) => item.expense === selectedExpense?._id)
-                ?.map((item) => (
-                  <Group mb="xs" key={item._id} justify="space-between">
-                    <Group gap="xs">
-                      <Avatar
-                        size="sm"
-                        color={
-                          colors[
-                            sumAscii(
-                              users.find((user) => user.userId === item?.user)
-                                .name
-                            ) - 1
-                          ]
-                        }
-                      >
-                        {getInitials(
-                          users.find((user) => user.userId === item?.user).name
-                        )}
-                      </Avatar>
-                      <Text>
-                        {users.find((user) => user.userId === item?.user).name}
-                      </Text>
-                    </Group>
-                    <NumberFormatter
-                      allowNegative={false}
-                      value={item.amount}
-                      prefix="₹ "
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator
-                    />
-                  </Group>
-                ))}
-              <Divider my="xs" variant="dashed" />
-              <Text mb="xs" fw="bolder">
-                Split Among
-              </Text>
-              {splitAmong
-                ?.filter((item) => item.expense === selectedExpense?._id)
-                ?.map((item) => (
-                  <Group mb="xs" key={item._id} justify="space-between">
-                    <Group gap="xs">
-                      <Avatar
-                        size="sm"
-                        color={
-                          colors[
-                            sumAscii(
-                              users.find((user) => user.userId === item?.user)
-                                .name
-                            ) - 1
-                          ]
-                        }
-                      >
-                        {getInitials(
-                          users.find((user) => user.userId === item?.user).name
-                        )}
-                      </Avatar>
-                      <Text>
-                        {users.find((user) => user.userId === item?.user).name}
-                      </Text>
-                    </Group>
-                    <NumberFormatter
-                      allowNegative={false}
-                      value={item.amount}
-                      prefix="₹ "
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator
-                    />
-                  </Group>
-                ))}
-            </Paper>
+            {editExpenseOpened ? (
+              <EditExpense
+                group={group}
+                close={addExpenseHandlers.close}
+                user={user}
+                users={users}
+                selectedExpense={selectedExpense}
+                paidBy={paidBy.filter(
+                  (item) => item.expense === selectedExpense?._id
+                )}
+                splitAmong={splitAmong.filter(
+                  (item) => item.expense === selectedExpense?._id
+                )}
+                editExpenseHandlers={editExpenseHandlers}
+                setSelectedExpense={setSelectedExpense}
+              />
+            ) : (
+              <ViewExpense
+                selectedExpense={selectedExpense}
+                editExpenseHandlers={editExpenseHandlers}
+                paidBy={paidBy}
+                splitAmong={splitAmong}
+                users={users}
+              />
+            )}
           </Modal>
         </>
       )}

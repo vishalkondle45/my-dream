@@ -31,15 +31,25 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import AddExpenseUser from "../_components/AddExpenseUser";
 
-const AddExpense = ({ group, user, users, close }) => {
+const EditExpense = ({
+  group,
+  user,
+  users,
+  close,
+  selectedExpense,
+  paidBy,
+  splitAmong,
+  editExpenseHandlers,
+  setSelectedExpense,
+}) => {
   const [opened, setOpened] = useState(false);
-  const add = useMutation(api.expense.add);
+  const update = useMutation(api.expense.update);
 
   const form = useForm({
     initialValues: {
       amount: 0,
       date: new Date(),
-      paidBy: [{ user: user?.subject, amount: 0 }],
+      paidBy: [],
       description: "",
       payer: "single",
       splitAmong: [],
@@ -61,46 +71,36 @@ const AddExpense = ({ group, user, users, close }) => {
   });
 
   useEffect(() => {
-    if (form.values.payer === "single") {
-      form.setFieldValue("paidBy", [
-        { user: user?.subject, amount: form.values.amount },
-      ]);
-    } else {
-      form.setFieldValue(
-        "paidBy",
-        users?.map((item) => ({
-          user: item.userId,
-          amount: 0,
-        }))
-      );
-    }
-  }, [form.values.payer, form.values.amount]);
-
-  // useEffect(() => {
-  //   if (opened === false) {
-  //     form.setFieldValue("payer", "single");
-  //   }
-  // }, [opened]);
+    form.setValues({ ...selectedExpense, date: dayjs(selectedExpense.date) });
+  }, []);
 
   useEffect(() => {
-    form.setFieldValue("payer", "single");
-    form.setFieldValue(
-      "splitAmong",
-      users?.map((item) => ({
-        user: item.userId,
-        amount: form.values?.amount / users?.length,
-      }))
-    );
-  }, [form.values?.amount]);
+    if (paidBy && splitAmong) {
+      form.setFieldValue("paidBy", paidBy);
+      form.setFieldValue("splitAmong", splitAmong);
+      if (paidBy.filter((item) => item.amount > 0).length > 0) {
+        form.setFieldValue("payer", "multiple");
+      } else {
+        form.setFieldValue("payer", "single");
+      }
+    }
+  }, [paidBy, splitAmong]);
 
-  const addExpense = (values) => {
-    add({
+  const editExpense = (values) => {
+    values.paidBy = values.paidBy.filter((item) => item.amount > 0);
+    values.splitAmong = values.splitAmong.filter((item) => item.amount > 0);
+    update({
       ...values,
       group: group._id,
       date: dayjs(values.date).format("MM-DD-YYYY"),
       payer: undefined,
+      _creationTime: undefined,
+      createdBy: undefined,
+      updatedBy: undefined,
     });
     close();
+    editExpenseHandlers.close();
+    setSelectedExpense(null);
     form.reset();
   };
 
@@ -141,7 +141,7 @@ const AddExpense = ({ group, user, users, close }) => {
     <>
       <form
         onSubmit={form.onSubmit((values) =>
-          addExpense({ ...values, group: group._id })
+          editExpense({ ...values, group: group._id })
         )}
       >
         <Group justify="space-between" gap={0} wrap="nowrap" align="flex-start">
@@ -167,6 +167,20 @@ const AddExpense = ({ group, user, users, close }) => {
             placeholder="Enter price"
             label="Price"
             {...form.getInputProps("amount")}
+            onChange={(value) => {
+              form.setFieldValue("amount", value);
+              form.setFieldValue(
+                "splitAmong",
+                users?.map((item) => ({
+                  user: item.userId,
+                  amount: value / users?.length,
+                }))
+              );
+              form.setFieldValue("payer", "single");
+              form.setFieldValue("paidBy", [
+                { user: user?.subject, amount: value },
+              ]);
+            }}
             leftSection={<IconCurrencyRupee size={18} />}
           />
           <Popover
@@ -328,4 +342,4 @@ const AddExpense = ({ group, user, users, close }) => {
   );
 };
 
-export default AddExpense;
+export default EditExpense;

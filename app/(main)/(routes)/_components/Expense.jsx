@@ -43,7 +43,7 @@ const Expenses = ({
                   ? `${paidBy?.length} people`
                   : users
                       .find((item) => item.userId === paidBy[0]?.user)
-                      .name.split(" ")[0]}{" "}
+                      ?.name.split(" ")[0]}{" "}
                 paid $ {expense?.amount}
               </Text>
             </Box>

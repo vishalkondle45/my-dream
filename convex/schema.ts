@@ -46,6 +46,7 @@ export default defineSchema({
     amount: v.number(),
     group: v.id("groups"),
     createdBy: v.string(),
+    updatedBy: v.string(),
     date: v.string(),
   }),
   paidBy: defineTable({
