@@ -4,6 +4,7 @@ import { getInitials, sumAscii } from "@/utils/functions";
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Divider,
   Group,
   NumberFormatter,
@@ -58,26 +59,32 @@ const ViewExpense = ({
               />
             </Stack>
           </Group>
-          <Group gap="xs" justify="right" wrap="nowrap">
-            <ActionIcon
-              variant="light"
-              onClick={() => editExpenseHandlers.open()}
-            >
-              <IconPencil size={16} />
-            </ActionIcon>
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                deleteExpense({ expense: selectedExpense._id });
-                setSelectedExpense(null);
-              }}
-            >
-              <IconTrashFilled size={16} />
-            </ActionIcon>
-            <ActionIcon variant="light">
-              <IconShare size={16} />
-            </ActionIcon>
-          </Group>
+          <Stack>
+            <Group gap="xs" justify="right" wrap="nowrap">
+              <ActionIcon
+                variant="light"
+                onClick={() => editExpenseHandlers.open()}
+              >
+                <IconPencil size={16} />
+              </ActionIcon>
+              <ActionIcon
+                variant="light"
+                onClick={() => {
+                  deleteExpense({ expense: selectedExpense._id });
+                  setSelectedExpense(null);
+                  editExpenseHandlers.close();
+                }}
+              >
+                <IconTrashFilled size={16} />
+              </ActionIcon>
+              <ActionIcon variant="light">
+                <IconShare size={16} />
+              </ActionIcon>
+            </Group>
+            <Badge size="xs">
+              added on {dayjs(selectedExpense?._creationTime).format("DD MMM")}
+            </Badge>
+          </Stack>
         </Group>
       </Paper>
       <Paper shadow="xl" mt="md" p="sm" withBorder>
