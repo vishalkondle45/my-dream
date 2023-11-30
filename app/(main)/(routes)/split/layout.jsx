@@ -10,14 +10,14 @@ import { useEffect } from "react";
 import SplitSidebar from "../_components/SplitSidebar";
 
 export default function RootLayout({ children }) {
-  let lists = useQuery(api.lists.get);
+  let groups = useQuery(api.groups.get);
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   useEffect(() => {
     document.title = "Split";
   }, []);
 
-  if (!lists) {
+  if (!groups) {
     return (
       <Center>
         <Loader size="xl" />

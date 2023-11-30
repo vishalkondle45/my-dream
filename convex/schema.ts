@@ -48,6 +48,7 @@ export default defineSchema({
     createdBy: v.string(),
     updatedBy: v.string(),
     date: v.string(),
+    isSettlement: v.optional(v.boolean()),
   }),
   paidBy: defineTable({
     expense: v.id("expenses"),

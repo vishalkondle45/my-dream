@@ -1,24 +1,38 @@
+import { api } from "@/convex/_generated/api";
 import { colors } from "@/utils/constants";
 import { getInitials, sumAscii } from "@/utils/functions";
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Button,
   Grid,
   Group,
+  List,
+  Modal,
   NumberFormatter,
+  NumberInput,
   Paper,
   Stack,
   Text,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 import {
   IconArrowRight,
   IconBellRingingFilled,
   IconCurrencyRupee,
   IconMinus,
+  IconX,
 } from "@tabler/icons-react";
+import { useMutation } from "convex/react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
+  const settle = useMutation(api.expense.settle);
+  const [opened, { close, open }] = useDisclosure(false);
+
   let myRemaining =
     paidBy
       .filter((i) => i.user === user.subject)
@@ -119,6 +133,33 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
     })
     .reduce((n, amount) => n + Number(amount), 0);
 
+  const [amount, setAmount] = useState(Math.abs(youWill));
+
+  const submitSettle = () => {
+    settle({
+      amount,
+      sender: user.subject,
+      receiver: item.userId,
+      group: expenses[0].group,
+      date: dayjs().format("MM-DD-YYYY"),
+    })
+      .then(() => {
+        showNotification({
+          color: "red",
+          icon: <IconX />,
+          message: `You settled ₹ ${amount} with ${item.name}`,
+        });
+        close();
+      })
+      .catch((error) => console.log(result));
+  };
+
+  useEffect(() => {
+    if (youWill) {
+      setAmount(Math.abs(amount));
+    }
+  }, [youWill]);
+
   return (
     <>
       {Boolean(myRemaining) && youWill !== 0 && (
@@ -183,17 +224,69 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             </Grid.Col>
             <Grid.Col span={2}>
               <Stack gap="xs">
-                <ActionIcon title="Remind" variant="outline" radius="md">
-                  <IconBellRingingFilled size={16} />
-                </ActionIcon>
-                <ActionIcon title="Settle" variant="filled" radius="md">
-                  <IconCurrencyRupee size={18} />
-                </ActionIcon>
+                {youWill > 0 && (
+                  <ActionIcon title="Remind" variant="outline" radius="md">
+                    <IconBellRingingFilled size={16} />
+                  </ActionIcon>
+                )}
+                {youWill < 0 && (
+                  <ActionIcon
+                    title="Settle"
+                    variant="filled"
+                    radius="md"
+                    onClick={open}
+                  >
+                    <IconCurrencyRupee size={18} />
+                  </ActionIcon>
+                )}
               </Stack>
             </Grid.Col>
           </Grid>
         </Paper>
       )}
+
+      <Modal withCloseButton={false} opened={opened} onClose={close}>
+        <Badge size="lg" mb="sm" fullWidth>
+          Record a payment
+        </Badge>
+        <Group mb="xs">
+          <Text>
+            You Paid <b>Amma</b>
+          </Text>
+          <Avatar size="sm">VK</Avatar>
+        </Group>
+        <NumberInput
+          placeholder="Amount"
+          leftSection={<IconCurrencyRupee size={18} />}
+          w="100%"
+          value={amount}
+          onChange={(value) => setAmount(value)}
+          mb="xs"
+          min={1}
+          styles={{ input: { fontWeight: 700, fontSize: 18 } }}
+          hideControls
+        />
+        <Button fullWidth onClick={submitSettle}>
+          Settle Up
+        </Button>
+
+        <>
+          <Text size="sm" fw={700} mt="xs">
+            Disclaimer :
+          </Text>
+          <List withPadding>
+            <List.Item>
+              <Text size="sm">Recording a payment doesn't move money</Text>
+            </List.Item>
+            {/* <List.Item>
+              <Text size="sm">
+                This option is intended for recording payments made outside
+                mySplit.
+              </Text>
+            </List.Item> */}
+          </List>
+        </>
+      </Modal>
     </>
   );
 };

@@ -225,3 +225,43 @@ export const deleteExpense = mutation({
     return expense;
   },
 });
+
+export const settle = mutation({
+  args: {
+    amount: v.number(),
+    date: v.string(),
+    group: v.id("groups"),
+    sender: v.string(),
+    receiver: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const expense = await ctx.db.insert("expenses", {
+      description: `${args.sender} Paid ${args.receiver}`,
+      date: args.date,
+      amount: args.amount,
+      group: args.group,
+      createdBy: identity.subject,
+      updatedBy: identity.subject,
+      isSettlement: true,
+    });
+    await ctx.db.insert("paidBy", {
+      expense: expense,
+      user: args.sender,
+      amount: args.amount,
+      group: args.group,
+    });
+    await ctx.db.insert("splitAmong", {
+      expense: expense,
+      user: args.receiver,
+      amount: args.amount,
+      group: args.group,
+    });
+
+    return expense;
+  },
+});

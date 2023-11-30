@@ -42,9 +42,29 @@ const ViewExpense = ({
               <IconReceipt size={22} />
             </ThemeIcon>
             <Stack gap={0}>
-              <Text size="sm" fw={500}>
-                {selectedExpense?.description}
-              </Text>
+              {selectedExpense?.isSettlement ? (
+                <Group gap="xs">
+                  <Text fw={700}>
+                    {paidBy[0]?.user === user?.subject
+                      ? "You"
+                      : users
+                          .find((item) => item.userId === paidBy[0]?.user)
+                          ?.name.split(" ")[0]}
+                  </Text>
+                  <Text>Paid</Text>
+                  <Text fw={700}>
+                    {splitAmong[0]?.user === user?.subject
+                      ? "You"
+                      : users
+                          .find((item) => item.userId === splitAmong[0]?.user)
+                          ?.name.split(" ")[0]}
+                  </Text>
+                </Group>
+              ) : (
+                <Text size="sm" fw={700}>
+                  {selectedExpense?.description}
+                </Text>
+              )}
               <Text size="sm" fw={300}>
                 {dayjs(selectedExpense?.date).format("DD MMM YYYY")}
               </Text>
@@ -61,12 +81,14 @@ const ViewExpense = ({
           </Group>
           <Stack>
             <Group gap="xs" justify="right" wrap="nowrap">
-              <ActionIcon
-                variant="light"
-                onClick={() => editExpenseHandlers.open()}
-              >
-                <IconPencil size={16} />
-              </ActionIcon>
+              {!selectedExpense?.isSettlement && (
+                <ActionIcon
+                  variant="light"
+                  onClick={() => editExpenseHandlers.open()}
+                >
+                  <IconPencil size={16} />
+                </ActionIcon>
+              )}
               <ActionIcon
                 variant="light"
                 onClick={() => {

@@ -7,7 +7,11 @@ import {
   Text,
   ThemeIcon,
 } from "@mantine/core";
-import { IconReceipt } from "@tabler/icons-react";
+import {
+  IconDiscountCheck,
+  IconDiscountCheckFilled,
+  IconReceipt,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 
 const Expenses = ({
@@ -32,20 +36,46 @@ const Expenses = ({
         <Group justify="space-between">
           <Group>
             <ThemeIcon variant="light">
-              <IconReceipt size={18} />
+              {expense?.isSettlement ? (
+                <IconDiscountCheckFilled size={18} />
+              ) : (
+                <IconReceipt size={18} />
+              )}
             </ThemeIcon>
             <Box>
-              <Text size="sm" fw={700}>
-                {expense?.description}
-              </Text>
-              <Text size="sm" fw={300}>
-                {paidBy?.length > 1
-                  ? `${paidBy?.length} people`
-                  : users
-                      .find((item) => item.userId === paidBy[0]?.user)
-                      ?.name.split(" ")[0]}{" "}
-                paid $ {expense?.amount}
-              </Text>
+              {expense?.isSettlement ? (
+                <Group gap="xs">
+                  <Text fw={700}>
+                    {paidBy[0]?.user === user?.subject
+                      ? "You"
+                      : users
+                          .find((item) => item.userId === paidBy[0]?.user)
+                          ?.name.split(" ")[0]}
+                  </Text>
+                  <Text>Paid</Text>
+                  <Text fw={700}>
+                    {splitAmong[0]?.user === user?.subject
+                      ? "You"
+                      : users
+                          .find((item) => item.userId === splitAmong[0]?.user)
+                          ?.name.split(" ")[0]}
+                  </Text>
+                </Group>
+              ) : (
+                <Text size="sm" fw={700}>
+                  {expense?.description}
+                </Text>
+              )}
+              {!expense?.isSettlement && (
+                <Text size="sm" fw={300}>
+                  {paidBy?.length > 1
+                    ? `${paidBy?.length} people`
+                    : users
+                        .find((item) => item.userId === paidBy[0]?.user)
+                        ?.name.split(" ")[0]}{" "}
+                  paid $ {expense?.amount}
+                </Text>
+              )}
             </Box>
           </Group>
           <Group justify="right">
