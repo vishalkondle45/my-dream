@@ -13,7 +13,7 @@ export const addUser = mutation({
     }
     const user = await ctx.db
       .query("groupUsers")
-      .filter((q) =>
+      ?.filter((q) =>
         q.and(
           q.eq(q.field("group"), args.group),
           q.eq(q.field("userId"), args.user)
@@ -42,16 +42,16 @@ export const getUsers = query({
     }
     let groupUsers = await ctx.db
       .query("groupUsers")
-      .filter((q) => q.eq(q.field("group"), args.group))
+      ?.filter((q) => q.eq(q.field("group"), args.group))
       .order("desc")
       .collect();
     const users = await ctx.db.query("users").collect();
 
     groupUsers = groupUsers.map((user) => ({
       ...user,
-      email: users.find((u) => u.subject === user?.userId)?.email,
-      name: users.find((u) => u.subject === user?.userId)?.name,
-      user: users.find((u) => u.subject === user?.userId)?._id,
+      email: users?.find((u) => u.subject === user?.userId)?.email,
+      name: users?.find((u) => u.subject === user?.userId)?.name,
+      user: users?.find((u) => u.subject === user?.userId)?._id,
     }));
 
     return groupUsers;

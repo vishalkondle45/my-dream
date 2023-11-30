@@ -34,7 +34,7 @@ export const store = mutation({
       // if (user.email !== identity.email) {
       //   await ctx.db.patch(user._id, { email: identity.email });
       // }
-      // if (user.subject !== identity.subject) {
+      // if (user?.subject !== identity.subject) {
       //   await ctx.db.patch(user._id, { subject: identity.subject });
       // }
       return user._id;
@@ -59,7 +59,7 @@ export const getUserByEmail = mutation({
     }
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("email"), args.email))
+      ?.filter((q) => q.eq(q.field("email"), args.email))
       .collect();
     return user[0];
   },
@@ -73,7 +73,7 @@ export const getCurrentUser = query({
     }
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("email"), identity.email))
+      ?.filter((q) => q.eq(q.field("email"), identity.email))
       .collect();
     return user[0];
   },

@@ -29,6 +29,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AddExpense from "../../_components/AddExpense";
+import Balances from "../../_components/Balances";
 import EditExpense from "../../_components/EditExpense";
 import Expenses from "../../_components/Expenses";
 import GroupSettings from "../../_components/GroupSettings";
@@ -38,7 +39,7 @@ import ViewExpense from "../../_components/ViewExpense";
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
   const deleteGroup = useMutation(api.groups.deleteGroup);
-  const user = useQuery(api.users.getCurrentUser);
+  const user = useQuery(api.users?.getCurrentUser);
   const users = useQuery(api.split.getUsers, { group: group?._id });
   const expenses = useQuery(api.expense.getExpenses, { group: group?._id });
   const splitAmong = useQuery(api.expense.getSplitAmong, { group: group?._id });
@@ -97,7 +98,7 @@ const Page = ({ params }) => {
             </ActionIcon>
           </Group>
         </Group>
-        <Tabs p={0} m={0} variant="default" defaultValue="summary">
+        <Tabs p={0} m={0} variant="default" defaultValue="balance">
           <TabsList px={0} grow>
             <TabsTab
               px="sm"
@@ -131,7 +132,15 @@ const Page = ({ params }) => {
               setSelectedExpense={setSelectedExpense}
             />
           </TabsPanel>
-          <TabsPanel value="balance">{params.group}</TabsPanel>
+          <TabsPanel value="balance">
+            <Balances
+              expenses={expenses}
+              splitAmong={splitAmong}
+              paidBy={paidBy}
+              users={users}
+              user={user}
+            />
+          </TabsPanel>
           <TabsPanel value="summary">
             <Summary
               group={params.group}
@@ -178,10 +187,10 @@ const Page = ({ params }) => {
             user={user}
             users={users}
             selectedExpense={selectedExpense}
-            paidBy={paidBy.filter(
+            paidBy={paidBy?.filter(
               (item) => item.expense === selectedExpense?._id
             )}
-            splitAmong={splitAmong.filter(
+            splitAmong={splitAmong?.filter(
               (item) => item.expense === selectedExpense?._id
             )}
             editExpenseHandlers={editExpenseHandlers}

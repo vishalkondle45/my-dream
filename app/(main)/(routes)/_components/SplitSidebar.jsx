@@ -115,7 +115,6 @@ const SplitSidebar = ({ data }) => {
             <TextInput
               label="Group name"
               placeholder="Enter a group name"
-              // leftSection={<IconAddressBook />}
               {...form.getInputProps("name")}
             />
             <SegmentedControl

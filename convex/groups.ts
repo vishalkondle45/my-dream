@@ -78,7 +78,7 @@ export const deleteGroup = mutation({
 
     const groupUsers = await ctx.db
       .query("groupUsers")
-      .filter((q) => q.eq(q.field("group"), args.group))
+      ?.filter((q) => q.eq(q.field("group"), args.group))
       .collect();
 
     groupUsers.map(async (user) => {

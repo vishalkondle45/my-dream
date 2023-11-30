@@ -163,7 +163,7 @@ const Page = () => {
   };
 
   const swatches = Object.keys(theme.colors)
-    .filter((color) => color !== "dark")
+    ?.filter((color) => color !== "dark")
     .map((color) => (
       <ActionIcon
         color={color}

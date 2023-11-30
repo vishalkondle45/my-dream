@@ -8,6 +8,7 @@ import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 // import "@mantine/modals/styles.css";
 import { Inter } from "next/font/google";
+import LogUser from "./(main)/(routes)/_components/LogUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
           <MantineProvider theme={theme}>
             <ModalsProvider>
               <Notifications />
+              <LogUser />
               {children}
             </ModalsProvider>
           </MantineProvider>

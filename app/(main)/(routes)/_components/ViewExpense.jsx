@@ -101,19 +101,19 @@ const ViewExpense = ({
                   color={
                     colors[
                       sumAscii(
-                        users.find((user) => user.userId === item?.user).name
+                        users?.find((user) => user.userId === item?.user).name
                       ) - 1
                     ]
                   }
                 >
                   {getInitials(
-                    users.find((user) => user.userId === item?.user).name
+                    users?.find((user) => user.userId === item?.user).name
                   )}
                 </Avatar>
                 <Text>
-                  {item?.user === user.subject
+                  {item?.user === user?.subject
                     ? "You"
-                    : users.find((user) => user.userId === item?.user).name}
+                    : users?.find((user) => user.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter
@@ -139,19 +139,19 @@ const ViewExpense = ({
                   color={
                     colors[
                       sumAscii(
-                        users.find((user) => user.userId === item?.user).name
+                        users?.find((user) => user.userId === item?.user).name
                       ) - 1
                     ]
                   }
                 >
                   {getInitials(
-                    users.find((user) => user.userId === item?.user).name
+                    users?.find((user) => user.userId === item?.user).name
                   )}
                 </Avatar>
                 <Text>
-                  {item?.user === user.subject
+                  {item?.user === user?.subject
                     ? "You"
-                    : users.find((user) => user.userId === item?.user).name}
+                    : users?.find((user) => user.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter

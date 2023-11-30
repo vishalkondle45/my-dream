@@ -126,7 +126,7 @@ export const get = query({
     const todos = await ctx.db
       .query("todos")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) =>
+      ?.filter((q) =>
         args.not
           ? q.neq(q.field(args.field), args.value)
           : q.eq(q.field(args.field), args.value)
@@ -281,7 +281,7 @@ export const getByList = query({
     const todos = await ctx.db
       .query("todos")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("list"), args.list))
+      ?.filter((q) => q.eq(q.field("list"), args.list))
       .order("desc")
       .collect();
 

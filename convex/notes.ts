@@ -37,7 +37,7 @@ export const get = query({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isTrashed"), false))
+      ?.filter((q) => q.eq(q.field("isTrashed"), false))
       .order("desc")
       .collect();
     return notes;
@@ -79,7 +79,7 @@ export const getTrash = query({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isTrashed"), true))
+      ?.filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
     return notes;
@@ -146,7 +146,7 @@ export const empty = mutation({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isTrashed"), true))
+      ?.filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
 
@@ -334,7 +334,7 @@ export const restoreAll = mutation({
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isTrashed"), true))
+      ?.filter((q) => q.eq(q.field("isTrashed"), true))
       .order("desc")
       .collect();
 

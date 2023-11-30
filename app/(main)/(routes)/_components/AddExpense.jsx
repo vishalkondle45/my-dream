@@ -50,11 +50,11 @@ const AddExpense = ({ group, user, users, close }) => {
       amount: (value) =>
         value && value > 0 ? null : "Amount must be greater than 0.",
       paidBy: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values.amount
+        value?.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Paid By amount in is not equal to the price of the bill",
       splitAmong: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values.amount
+        value?.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Split among amount in is not equal to the price of the bill",
     },
@@ -75,12 +75,6 @@ const AddExpense = ({ group, user, users, close }) => {
       );
     }
   }, [form.values.payer, form.values.amount]);
-
-  // useEffect(() => {
-  //   if (opened === false) {
-  //     form.setFieldValue("payer", "single");
-  //   }
-  // }, [opened]);
 
   useEffect(() => {
     form.setFieldValue("payer", "single");

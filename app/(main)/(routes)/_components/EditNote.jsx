@@ -109,7 +109,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
       />
       <Group justify="flex-start" p="md">
         {Object.keys(theme.colors)
-          .filter((color) => color !== "dark")
+          ?.filter((color) => color !== "dark")
           .map((color) => (
             <ActionIcon
               key={color}

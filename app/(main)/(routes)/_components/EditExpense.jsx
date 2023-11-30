@@ -60,11 +60,11 @@ const EditExpense = ({
       amount: (value) =>
         value && value > 0 ? null : "Amount must be greater than 0.",
       paidBy: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values.amount
+        value?.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Paid By amount in is not equal to the price of the bill",
       splitAmong: (value, values) =>
-        value.reduce((n, { amount }) => n + amount, 0) === values.amount
+        value?.reduce((n, { amount }) => n + amount, 0) === values.amount
           ? null
           : "Split among amount in is not equal to the price of the bill",
     },
@@ -78,7 +78,7 @@ const EditExpense = ({
     if (paidBy && splitAmong) {
       form.setFieldValue("paidBy", paidBy);
       form.setFieldValue("splitAmong", splitAmong);
-      if (paidBy.filter((item) => item.amount > 0).length > 0) {
+      if (paidBy?.filter((item) => item.amount > 0).length > 0) {
         form.setFieldValue("payer", "multiple");
       } else {
         form.setFieldValue("payer", "single");
@@ -87,8 +87,8 @@ const EditExpense = ({
   }, [paidBy, splitAmong]);
 
   const editExpense = (values) => {
-    values.paidBy = values.paidBy.filter((item) => item.amount > 0);
-    values.splitAmong = values.splitAmong.filter((item) => item.amount > 0);
+    values.paidBy = values.paidBy?.filter((item) => item.amount > 0);
+    values.splitAmong = values.splitAmong?.filter((item) => item.amount > 0);
     update({
       ...values,
       group: group._id,
