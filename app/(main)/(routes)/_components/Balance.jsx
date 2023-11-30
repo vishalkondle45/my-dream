@@ -21,9 +21,9 @@ import { showNotification } from "@mantine/notifications";
 import {
   IconArrowRight,
   IconBellRingingFilled,
+  IconCheck,
   IconCurrencyRupee,
   IconMinus,
-  IconX,
 } from "@tabler/icons-react";
 import { useMutation } from "convex/react";
 import dayjs from "dayjs";
@@ -31,6 +31,7 @@ import { useEffect, useState } from "react";
 
 const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   const settle = useMutation(api.expense.settle);
+  const create = useMutation(api.notifications.create);
   const [opened, { close, open }] = useDisclosure(false);
 
   let myRemaining =
@@ -145,13 +146,32 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
     })
       .then(() => {
         showNotification({
-          color: "red",
-          icon: <IconX />,
+          color: "green",
+          icon: <IconCheck />,
           message: `You settled ₹ ${amount} with ${item.name}`,
         });
         close();
       })
       .catch((error) => console.log(result));
+  };
+
+  const notify = () => {
+    create({
+      title: "Please settle",
+      message: `You have pending settlement with ${item.name} of ₹ ${amount}`,
+      receiver: item.userId,
+      date: dayjs().format("MM-DD-YYYY"),
+    })
+      .then(() => {
+        showNotification({
+          color: "green",
+          icon: <IconCheck />,
+          message: `You notified to ${item.name}`,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -225,7 +245,12 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             <Grid.Col span={2}>
               <Stack gap="xs">
                 {youWill > 0 && (
-                  <ActionIcon title="Remind" variant="outline" radius="md">
+                  <ActionIcon
+                    title="Remind"
+                    variant="outline"
+                    radius="md"
+                    onClick={notify}
+                  >
                     <IconBellRingingFilled size={16} />
                   </ActionIcon>
                 )}

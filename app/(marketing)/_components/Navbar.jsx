@@ -5,30 +5,49 @@ import {
   Avatar,
   Button,
   Group,
+  Indicator,
   Loader,
+  Notification,
   Popover,
   SimpleGrid,
+  Stack,
   Text,
 } from "@mantine/core";
 import {
+  IconBell,
   IconCalendar,
   IconCircleCheckFilled,
+  IconClearAll,
   IconCoinRupeeFilled,
   IconGridDots,
   IconNote,
   IconRobot,
   IconSubtask,
 } from "@tabler/icons-react";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import ToggleColorMode from "../../../components/theme/ToggleColorMode";
 import NavItem from "./NavItem";
 import { useRouter } from "next/navigation";
+import { api } from "@/convex/_generated/api";
+import { showNotification } from "@mantine/notifications";
 
 const Navbar = () => {
   const { isLoading, isAuthenticated } = useConvexAuth();
   const [opened, setOpened] = useState(false);
   const router = useRouter();
+  const getNotifications = useQuery(api.notifications.get);
+  const readAll = useMutation(api.notifications.readAll);
+  const readOne = useMutation(api.notifications.readOne);
+
+  const readAllNotifications = () => {
+    readAll()
+      .then(() => {
+        showNotification({ message: `Hi` });
+      })
+      .catch(() => {});
+  };
+
   return (
     <Group p="md" justify="space-between">
       <Text
@@ -57,6 +76,37 @@ const Navbar = () => {
         )}
         {isAuthenticated && !isLoading && (
           <>
+            <Popover width={330} position="bottom-end" radius="xl" shadow="md">
+              <Popover.Target>
+                <ActionIcon title="Notifications" variant="transparent">
+                  <Indicator inline label={getNotifications.length} size={16}>
+                    <IconBell />
+                  </Indicator>
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Group mb="xs" justify="right">
+                  <Button
+                    size="compact-xs"
+                    leftSection={<IconClearAll size={16} />}
+                  >
+                    Clear all
+                  </Button>
+                </Group>
+                <Stack>
+                  {getNotifications.map((notification) => (
+                    <Notification
+                      icon={<IconBell size={18} />}
+                      key={notification?._id}
+                      onClose={() => readOne({ _id: notification._id })}
+                      withBorder
+                    >
+                      {notification?.message}
+                    </Notification>
+                  ))}
+                </Stack>
+              </Popover.Dropdown>
+            </Popover>
             <Popover
               width={330}
               position="bottom-end"

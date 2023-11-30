@@ -62,4 +62,12 @@ export default defineSchema({
     user: v.string(),
     amount: v.number(),
   }),
+  notifications: defineTable({
+    title: v.string(),
+    message: v.string(),
+    sender: v.optional(v.string()),
+    receiver: v.string(),
+    readedOn: v.optional(v.string()),
+    date: v.string(),
+  }),
 });

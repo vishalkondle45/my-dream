@@ -18,6 +18,7 @@ import type * as expense from "../expense";
 import type * as groups from "../groups";
 import type * as lists from "../lists";
 import type * as notes from "../notes";
+import type * as notifications from "../notifications";
 import type * as split from "../split";
 import type * as todos from "../todos";
 import type * as users from "../users";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   groups: typeof groups;
   lists: typeof lists;
   notes: typeof notes;
+  notifications: typeof notifications;
   split: typeof split;
   todos: typeof todos;
   users: typeof users;
