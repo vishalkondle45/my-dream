@@ -20,11 +20,13 @@ const GroupUser = ({ user, splitAmong, paidBy }) => {
   const { hovered, ref } = useHover();
   const removeUserFromGroup = useMutation(api.groups.removeUserFromGroup);
   const openModal = () => {
-    if (getSpendings(user.userId) !== 0) {
+    if (getBalance(user.userId) !== 0) {
       showNotification({
         color: "red",
         icon: <IconX />,
-        message: `You cant remove users with settlement pending`,
+        message: `You cant remove users with settlement pending ${getSpendings(
+          user.userId
+        )}`,
       });
       return null;
     }
