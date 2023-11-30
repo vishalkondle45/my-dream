@@ -3,6 +3,9 @@ import { api } from "@/convex/_generated/api";
 import { getGroupIconByType } from "@/utils/constants";
 import {
   ActionIcon,
+  Burger,
+  Drawer,
+  Grid,
   Group,
   Loader,
   Modal,
@@ -15,7 +18,7 @@ import {
   Text,
   ThemeIcon,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
   IconChecklist,
@@ -35,20 +38,25 @@ import Expenses from "../../_components/Expenses";
 import GroupSettings from "../../_components/GroupSettings";
 import Summary from "../../_components/Summary";
 import ViewExpense from "../../_components/ViewExpense";
+import SplitSidebar from "../../_components/SplitSidebar";
 
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
   const deleteGroup = useMutation(api.groups.deleteGroup);
-  const user = useQuery(api.users?.getCurrentUser);
-  const users = useQuery(api.split.getUsers, { group: group?._id });
-  const expenses = useQuery(api.expense.getExpenses, { group: group?._id });
-  const splitAmong = useQuery(api.expense.getSplitAmong, { group: group?._id });
-  const paidBy = useQuery(api.expense.getPaidBy, { group: group?._id });
+  const users = useQuery(api.split.getUsers, { group: params?.group });
+  const expenses = useQuery(api.expense.getExpenses, { group: params?.group });
+  const splitAmong = useQuery(api.expense.getSplitAmong, {
+    group: params?.group,
+  });
+  const paidBy = useQuery(api.expense.getPaidBy, { group: params?.group });
   const router = useRouter();
   const [groupSettingsOpened, { open, close }] = useDisclosure(false);
   const [addExpenseOpened, addExpenseHandlers] = useDisclosure(false);
   const [editExpenseOpened, editExpenseHandlers] = useDisclosure(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const isMobile = useMediaQuery("(max-width: 600px)");
+  const [opened, { toggle }] = useDisclosure(false);
+  const user = useQuery(api.users?.getCurrentUser);
 
   const openGroupSettings = () =>
     modals.openConfirmModal({
@@ -70,8 +78,26 @@ const Page = ({ params }) => {
   return (
     <>
       <Stack gap={0}>
-        <Group justify="space-between">
+        <Group justify="space-between" mb="xs">
           <Group gap="xs">
+            {isMobile && (
+              <>
+                <Drawer
+                  size={"55%"}
+                  opened={opened}
+                  onClose={toggle}
+                  withCloseButton={false}
+                >
+                  <SplitSidebar />
+                </Drawer>
+                <Burger
+                  opened={opened}
+                  onClick={toggle}
+                  hiddenFrom="xs"
+                  size="sm"
+                />
+              </>
+            )}
             <ThemeIcon size="sm" variant="transparent">
               {getGroupIconByType(group?.type)}
             </ThemeIcon>
@@ -98,7 +124,7 @@ const Page = ({ params }) => {
             </ActionIcon>
           </Group>
         </Group>
-        <Tabs p={0} m={0} variant="default" defaultValue="balance">
+        <Tabs p={0} m={0} variant="pills" defaultValue="balance">
           <TabsList px={0} grow>
             <TabsTab
               px="sm"

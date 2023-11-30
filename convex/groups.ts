@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
   args: {
@@ -28,13 +29,14 @@ export const get = query({
       return null;
     }
     const userId = identity.subject;
-
     const groups = await ctx.db
-      .query("groups")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .query("groupUsers")
+      ?.filter((q) => q.eq(q.field("userId"), userId))
       .order("desc")
       .collect();
-    return groups;
+    const groupIds = groups.map(({ group }) => group);
+    let result = await ctx.db.query("groups").order("desc").collect();
+    return result.filter((item) => groupIds.includes(item._id));
   },
 });
 

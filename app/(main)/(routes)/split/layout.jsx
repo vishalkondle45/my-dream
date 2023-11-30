@@ -25,27 +25,9 @@ export default function RootLayout({ children }) {
     );
   }
 
-  let data = [...sidebarDataSplit];
-  if (lists) {
-    lists?.forEach((list) => {
-      let i = sidebarDataSplit.findIndex(
-        (o) => o.route == `/split/${list?._id}`
-      );
-      if (i > -1) {
-        sidebarDataSplit[i].text = list.title;
-      } else {
-        data.push({
-          icon: <IconList size={18} />,
-          text: list?.title,
-          route: `/split/${list?._id}`,
-        });
-      }
-    });
-  }
-
   return (
     <Flex direction="row" align="baseline">
-      {isMobile || <SplitSidebar data={data} />}
+      {isMobile || <SplitSidebar />}
       <Box w="100%">
         <Center>{children}</Center>
       </Box>

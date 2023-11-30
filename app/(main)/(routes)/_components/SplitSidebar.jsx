@@ -1,6 +1,10 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { getGroupIconByType, splitGroupTypes } from "@/utils/constants";
+import {
+  getGroupIconByType,
+  sidebarDataSplit,
+  splitGroupTypes,
+} from "@/utils/constants";
 import {
   Box,
   Button,
@@ -20,7 +24,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import TodoSidebarItem from "./TodoSidebarItem";
 
-const SplitSidebar = ({ data }) => {
+const SplitSidebar = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const create = useMutation(api.groups.create);
   const addUser = useMutation(api.split.addUser);
@@ -73,7 +77,7 @@ const SplitSidebar = ({ data }) => {
       pr="xl"
       w={rem(200)}
     >
-      {data.map((item) => (
+      {sidebarDataSplit.map((item) => (
         <TodoSidebarItem
           icon={item.icon}
           text={item.text}
