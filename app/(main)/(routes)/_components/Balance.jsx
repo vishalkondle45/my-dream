@@ -145,28 +145,22 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             </Grid.Col>
             <Grid.Col span={4}>
               <Group justify="space-between" wrap="nowrap" gap={0}>
-                <Group wrap="nowrap" justify="space-between" gap="xs">
-                  <IconMinus size={16} />
-                  <Stack ta="center" gap={0}>
-                    <Text c={youWill < 0 ? "red" : "green"}>
-                      <NumberFormatter
-                        prefix="₹ "
-                        value={youWill}
-                        thousandsGroupStyle="lakh"
-                        thousandSeparator
-                        allowNegative={false}
-                        style={{
-                          whiteSpace: "nowrap",
-                        }}
-                      />
-                    </Text>
-                    <Text size="sm" style={{ whiteSpace: "nowrap" }}>
-                      will pay
-                    </Text>
-                  </Stack>
-                  <IconArrowRight size={16} />
-                </Group>
+                <IconMinus size={16} />
+                <Text c={youWill < 0 ? "red" : "green"}>
+                  <NumberFormatter
+                    prefix="₹ "
+                    value={youWill}
+                    thousandsGroupStyle="lakh"
+                    thousandSeparator
+                    allowNegative={false}
+                    style={{ whiteSpace: "nowrap" }}
+                  />
+                </Text>
+                <IconArrowRight size={16} />
               </Group>
+              <Text ta="center" size="sm" style={{ whiteSpace: "nowrap" }}>
+                will pay
+              </Text>
             </Grid.Col>
             <Grid.Col span={3}>
               <Stack
