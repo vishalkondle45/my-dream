@@ -8,6 +8,7 @@ import {
   NumberFormatter,
   Text,
 } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useHover } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconX } from "@tabler/icons-react";
@@ -18,7 +19,15 @@ import { getInitials, sumAscii } from "../../../../utils/functions";
 const GroupUser = ({ user, splitAmong, paidBy }) => {
   const { hovered, ref } = useHover();
   const removeUserFromGroup = useMutation(api.groups.removeUserFromGroup);
-  const openModal = () =>
+  const openModal = () => {
+    if (getSpendings(user.userId) !== 0) {
+      showNotification({
+        color: "red",
+        icon: <IconX />,
+        message: `You cant remove users with settlement pending`,
+      });
+      return null;
+    }
     modals.openConfirmModal({
       title: "Remove Member",
       children: <Text size="sm">Press confirm to remove this member.</Text>,
@@ -27,6 +36,7 @@ const GroupUser = ({ user, splitAmong, paidBy }) => {
       onConfirm: () => removeUserFromGroup({ user: user?._id }),
       size: "xs",
     });
+  };
 
   const getSpendings = (userId) =>
     paidBy
