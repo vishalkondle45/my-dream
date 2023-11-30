@@ -8,14 +8,14 @@ import {
   NumberFormatter,
   Text,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { useMutation } from "convex/react";
-import { getInitials, sumAscii } from "../../../../utils/functions";
-import { colors } from "../../../../utils/constants";
 import { useHover } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import { IconX } from "@tabler/icons-react";
+import { useMutation } from "convex/react";
+import { colors } from "../../../../utils/constants";
+import { getInitials, sumAscii } from "../../../../utils/functions";
 
-const GroupUser = ({ user }) => {
+const GroupUser = ({ user, splitAmong, paidBy }) => {
   const { hovered, ref } = useHover();
   const removeUserFromGroup = useMutation(api.groups.removeUserFromGroup);
   const openModal = () =>
@@ -27,6 +27,19 @@ const GroupUser = ({ user }) => {
       onConfirm: () => removeUserFromGroup({ user: user?._id }),
       size: "xs",
     });
+
+  const getSpendings = (userId) =>
+    paidBy
+      ?.filter((item) => item.user === userId)
+      ?.reduce((n, { amount }) => n + amount, 0);
+
+  const getShare = (userId) =>
+    splitAmong
+      ?.filter((item) => item.user === userId)
+      ?.reduce((n, { amount }) => n + amount, 0);
+
+  const getBalance = (userId) =>
+    getSpendings(userId) + 0 - (getShare(userId) + 0);
 
   return (
     <Box key={user?._id} ref={ref}>
@@ -42,12 +55,13 @@ const GroupUser = ({ user }) => {
           <Text fz="sm">{user?.name}</Text>
         </Group>
         <Group>
-          <Text fz="sm" c={100000 > 0 ? "green" : "red"}>
+          <Text fz="sm" c={getBalance(user.userId) > 0 ? "green" : "red"}>
             <NumberFormatter
               prefix="₹ "
-              value={100000}
+              value={getBalance(user.userId)}
               thousandsGroupStyle="lakh"
               thousandSeparator
+              allowNegative={false}
             />
           </Text>
           {hovered && (

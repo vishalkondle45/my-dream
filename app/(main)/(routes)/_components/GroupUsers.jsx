@@ -17,7 +17,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { showNotification } from "@mantine/notifications";
 
-const GroupUsers = ({ users, group }) => {
+const GroupUsers = ({ users, group, splitAmong, paidBy }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [loading, handlers] = useDisclosure(false);
   const addUser = useMutation(api.split.addUser);
@@ -68,7 +68,12 @@ const GroupUsers = ({ users, group }) => {
           }
         />
         {users?.map((user) => (
-          <GroupUser user={user} key={user?._id} />
+          <GroupUser
+            user={user}
+            key={user?._id}
+            splitAmong={splitAmong}
+            paidBy={paidBy}
+          />
         ))}
       </Paper>
     </>

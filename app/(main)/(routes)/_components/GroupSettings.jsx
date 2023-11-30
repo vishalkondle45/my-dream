@@ -1,22 +1,14 @@
 "use client";
 import { api } from "@/convex/_generated/api";
 import { getGroupIconByType, getGroups } from "@/utils/constants";
-import {
-  ActionIcon,
-  Group,
-  LoadingOverlay,
-  Menu,
-  Paper,
-  TextInput,
-  ThemeIcon,
-} from "@mantine/core";
+import { ActionIcon, Group, Menu, Paper, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconCheck, IconSettings } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import GroupMoreSettings from "./GroupMoreSettings";
 import GroupUsers from "./GroupUsers";
 
-const GroupSettings = ({ group }) => {
+const GroupSettings = ({ group, splitAmong, paidBy }) => {
   const users = useQuery(api.split.getUsers, { group: group?._id });
   const changeGroupType = useMutation(api.groups.changeGroupType);
   const updateGroupName = useMutation(api.groups.updateGroupName);
@@ -84,7 +76,12 @@ const GroupSettings = ({ group }) => {
             </ActionIcon>
           )}
         </Group>
-        <GroupUsers group={group} users={users} />
+        <GroupUsers
+          group={group}
+          users={users}
+          splitAmong={splitAmong}
+          paidBy={paidBy}
+        />
         <GroupMoreSettings />
       </form>
     </Paper>

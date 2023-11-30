@@ -181,7 +181,7 @@ const Page = ({ params }) => {
       </Stack>
 
       <Modal title="Group summary" opened={groupSettingsOpened} onClose={close}>
-        <GroupSettings group={group} />
+        <GroupSettings group={group} splitAmong={splitAmong} paidBy={paidBy} />
       </Modal>
 
       <Modal
