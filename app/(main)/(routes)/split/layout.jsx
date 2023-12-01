@@ -28,9 +28,7 @@ export default function RootLayout({ children }) {
   return (
     <Flex direction="row" align="baseline">
       {isMobile || <SplitSidebar />}
-      <Box w="100%">
-        <Center>{children}</Center>
-      </Box>
+      <Box w="100%">{children}</Box>
     </Flex>
   );
 }

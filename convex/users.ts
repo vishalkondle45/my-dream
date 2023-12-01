@@ -28,14 +28,11 @@ export const store = mutation({
       .unique();
     if (user !== null) {
       // If we've seen this identity before but the name has changed, patch the value.
-      if (user.name !== identity.name) {
-        await ctx.db.patch(user._id, { name: identity.name });
-      }
-      if (user.email !== identity.email) {
-        await ctx.db.patch(user._id, { email: identity.email });
-      }
-      if (user?.subject !== identity.subject) {
-        await ctx.db.patch(user._id, { subject: identity.subject });
+      if (user.name !== identity.name || user.email !== identity.email) {
+        await ctx.db.patch(user._id, {
+          name: identity.name,
+          email: identity.email,
+        });
       }
       return user._id;
     }

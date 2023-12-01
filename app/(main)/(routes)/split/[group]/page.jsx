@@ -5,7 +5,7 @@ import {
   ActionIcon,
   Burger,
   Drawer,
-  Grid,
+  Center,
   Group,
   Loader,
   Modal,
@@ -36,9 +36,9 @@ import Balances from "../../_components/Balances";
 import EditExpense from "../../_components/EditExpense";
 import Expenses from "../../_components/Expenses";
 import GroupSettings from "../../_components/GroupSettings";
+import SplitSidebar from "../../_components/SplitSidebar";
 import Summary from "../../_components/Summary";
 import ViewExpense from "../../_components/ViewExpense";
-import SplitSidebar from "../../_components/SplitSidebar";
 
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
@@ -76,7 +76,7 @@ const Page = ({ params }) => {
   }
 
   return (
-    <>
+    <Center>
       <Stack gap={0}>
         <Group justify="space-between" mb="xs">
           <Group gap="xs">
@@ -125,7 +125,7 @@ const Page = ({ params }) => {
           </Group>
         </Group>
         <Tabs p={0} m={0} variant="pills" defaultValue="balance">
-          <TabsList px={0} grow>
+          <TabsList px={0} grow={isMobile}>
             <TabsTab
               px="sm"
               value="expenses"
@@ -234,7 +234,7 @@ const Page = ({ params }) => {
           />
         )}
       </Modal>
-    </>
+    </Center>
   );
 };
 
