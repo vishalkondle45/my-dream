@@ -1,10 +1,8 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { sidebarDataSplit } from "@/utils/constants";
-import { Box, Center, Flex, Group, Loader } from "@mantine/core";
+import { Box, Flex, LoadingOverlay } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconList } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
 import SplitSidebar from "../_components/SplitSidebar";
@@ -18,11 +16,7 @@ export default function RootLayout({ children }) {
   }, []);
 
   if (!groups) {
-    return (
-      <Center>
-        <Loader size="xl" />
-      </Center>
-    );
+    return <LoadingOverlay visible={!groups} />;
   }
 
   return (

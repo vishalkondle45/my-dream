@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/convex/_generated/api";
 import { SignInButton, UserButton } from "@clerk/clerk-react";
 import {
   ActionIcon,
@@ -6,7 +7,7 @@ import {
   Button,
   Group,
   Indicator,
-  Loader,
+  LoadingOverlay,
   Notification,
   Popover,
   SimpleGrid,
@@ -25,12 +26,10 @@ import {
   IconSubtask,
 } from "@tabler/icons-react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ToggleColorMode from "../../../components/theme/ToggleColorMode";
 import NavItem from "./NavItem";
-import { useRouter } from "next/navigation";
-import { api } from "@/convex/_generated/api";
-import { showNotification } from "@mantine/notifications";
 
 const Navbar = () => {
   const { isLoading, isAuthenticated } = useConvexAuth();
@@ -51,7 +50,7 @@ const Navbar = () => {
         Dream
       </Text>
       <Group>
-        {isLoading && <Loader size="sm" />}
+        {isLoading && <LoadingOverlay visible={true} />}
         {!isAuthenticated && !isLoading && (
           <>
             <SignInButton mode="modal">
@@ -71,13 +70,13 @@ const Navbar = () => {
             <Popover width={330} position="bottom" radius="xl" shadow="md">
               <Popover.Target>
                 <ActionIcon title="Notifications" variant="transparent">
-                  <Indicator inline label={getNotifications.length} size={16}>
+                  <Indicator inline label={getNotifications?.length} size={16}>
                     <IconBell />
                   </Indicator>
                 </ActionIcon>
               </Popover.Target>
               <Popover.Dropdown styles={{ dropdown: { paddingInline: 0 } }}>
-                {getNotifications.length ? (
+                {getNotifications?.length ? (
                   <>
                     <Group mb="xs" mr="xs" justify="right">
                       <Button
@@ -89,7 +88,7 @@ const Navbar = () => {
                       </Button>
                     </Group>
                     <Stack mb="xs">
-                      {getNotifications.map((notification) => (
+                      {getNotifications?.map((notification) => (
                         <Notification
                           icon={<IconBell size={18} />}
                           key={notification?._id}

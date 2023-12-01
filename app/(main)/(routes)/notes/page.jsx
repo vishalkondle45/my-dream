@@ -1,4 +1,5 @@
 "use client";
+import NotesSidebar from "@/components/navigation/NotesSidebar";
 import { api } from "@/convex/_generated/api";
 import { sidebarDataNotes } from "@/utils/constants";
 import {
@@ -10,7 +11,7 @@ import {
   Drawer,
   Flex,
   Group,
-  Loader,
+  LoadingOverlay,
   Popover,
   SimpleGrid,
   Text,
@@ -34,7 +35,6 @@ import { useState } from "react";
 import EditNote from "../_components/EditNote";
 import NewNote from "../_components/NewNote";
 import Note from "../_components/Note";
-import NotesSidebar from "@/components/navigation/NotesSidebar";
 
 const Page = () => {
   const theme = useMantineTheme();
@@ -176,7 +176,7 @@ const Page = () => {
     ));
 
   if (!notes) {
-    return <Loader />;
+    return <LoadingOverlay visible={true} />;
   }
 
   return (

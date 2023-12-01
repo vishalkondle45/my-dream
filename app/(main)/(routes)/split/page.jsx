@@ -93,7 +93,7 @@ const Page = () => {
           </TabsList>
           <TabsPanel value="groups">
             <Stack mt="xs" gap="sm">
-              {groups.map((group) => (
+              {groups?.map((group) => (
                 <GrouItem group={group} />
               ))}
             </Stack>

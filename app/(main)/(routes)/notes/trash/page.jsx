@@ -1,24 +1,23 @@
 "use client";
+import NotesSidebar from "@/components/navigation/NotesSidebar";
 import { api } from "@/convex/_generated/api";
+import { sidebarDataNotes } from "@/utils/constants";
 import {
   Burger,
   Button,
   Drawer,
   Group,
-  Loader,
   LoadingOverlay,
   SimpleGrid,
   Text,
   rem,
 } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconRestore, IconTrash, IconX } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
 import Note from "../../_components/Note";
-import NotesSidebar from "@/components/navigation/NotesSidebar";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { sidebarDataNotes } from "@/utils/constants";
 
 const Page = () => {
   let notes = useQuery(api.notes.getTrash);
@@ -97,7 +96,7 @@ const Page = () => {
   };
 
   if (!notes) {
-    return <Loader />;
+    return <LoadingOverlay visible={true} />;
   }
 
   return (

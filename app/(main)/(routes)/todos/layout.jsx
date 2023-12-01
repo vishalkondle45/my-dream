@@ -1,13 +1,13 @@
 "use client";
 import { api } from "@/convex/_generated/api";
 import { sidebarDataTodos } from "@/utils/constants";
-import { Box, Center, Group, Loader } from "@mantine/core";
+import { Box, Center, Group, LoadingOverlay } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconList } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
-import TodoSidebar from "../_components/TodoSidebar";
 import { useEffect } from "react";
+import TodoSidebar from "../_components/TodoSidebar";
 
 export default function RootLayout({ children }) {
   let lists = useQuery(api.lists.get);
@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
   if (!lists) {
     return (
       <Center>
-        <Loader />
+        <LoadingOverlay visible={true} />
       </Center>
     );
   }

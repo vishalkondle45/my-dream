@@ -4,10 +4,10 @@ import { getGroupIconByType } from "@/utils/constants";
 import {
   ActionIcon,
   Burger,
-  Drawer,
   Center,
+  Drawer,
   Group,
-  Loader,
+  LoadingOverlay,
   Modal,
   ScrollArea,
   Stack,
@@ -72,7 +72,7 @@ const Page = ({ params }) => {
     });
 
   if (!group || !user || !users || !expenses || !splitAmong || !paidBy) {
-    return <Loader />;
+    return <LoadingOverlay visible={true} />;
   }
 
   return (

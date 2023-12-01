@@ -1,16 +1,21 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { Accordion, Center, Group, Loader, Modal, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
+import {
+  Accordion,
+  Center,
+  Group,
+  LoadingOverlay,
+  Modal,
+  Text,
+} from "@mantine/core";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import EditTodo from "../../_components/EditTodo";
 import NewTodo from "../../_components/NewTodo";
 import Sorting from "../../_components/Sorting";
 import Todo from "../../_components/Todo";
 import TodoHeader_ from "../../_components/TodoHeader_";
-import EditTodo from "../../_components/EditTodo";
 
 const Page = ({ params }) => {
   const [value, setValue] = useState(null);
@@ -35,7 +40,7 @@ const Page = ({ params }) => {
   if (!todos || !lists) {
     return (
       <Center>
-        <Loader />
+        <LoadingOverlay visible={true} />
       </Center>
     );
   }
