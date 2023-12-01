@@ -28,11 +28,21 @@ import {
 import { useMutation } from "convex/react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
 
 const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   const settle = useMutation(api.expense.settle);
   const create = useMutation(api.notifications.create);
   const [opened, { close, open }] = useDisclosure(false);
+
+  const form = useForm({
+    initialValues: {
+      amount: 0,
+    },
+    validate: {
+      amount: (value) => (value > 0 ? null : "Amount must be more than 0"),
+    },
+  });
 
   let myRemaining =
     paidBy
@@ -134,11 +144,9 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
     })
     .reduce((n, amount) => n + Number(amount), 0);
 
-  const [amount, setAmount] = useState(Math.abs(youWill));
-
   const submitSettle = () => {
     settle({
-      amount,
+      amount: form.values.amount,
       sender: user.subject,
       receiver: item.userId,
       group: expenses[0].group,
@@ -148,7 +156,7 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
         showNotification({
           color: "green",
           icon: <IconCheck />,
-          message: `You settled ₹ ${amount} with ${item.name}`,
+          message: `You settled ₹ ${form.values.amount} with ${item.name}`,
         });
         close();
       })
@@ -158,7 +166,7 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   const notify = () => {
     create({
       title: "Please settle",
-      message: `You have pending settlement with ${item.name} of ₹ ${amount}`,
+      message: `You have pending settlement with ${item.name} of ₹ ${form.values.amount}`,
       receiver: item.userId,
       date: dayjs().format("MM-DD-YYYY"),
     })
@@ -175,9 +183,7 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   };
 
   useEffect(() => {
-    if (youWill) {
-      setAmount(Math.abs(amount));
-    }
+    form.setFieldValue("amount", Math.abs(youWill));
   }, [youWill]);
 
   return (
@@ -284,8 +290,9 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
           placeholder="Amount"
           leftSection={<IconCurrencyRupee size={18} />}
           w="100%"
-          value={amount}
-          onChange={(value) => setAmount(value)}
+          // value={amount}
+          // onChange={(value) => setAmount(value)}
+          {...form.getInputProps("amount")}
           mb="xs"
           min={1}
           styles={{ input: { fontWeight: 700, fontSize: 18 } }}

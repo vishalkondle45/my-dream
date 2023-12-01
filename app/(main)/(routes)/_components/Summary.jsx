@@ -5,18 +5,41 @@ import SummarySingleItem from "./SummarySingleItem";
 const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
   const groupSpendings = expenses?.reduce((n, { amount }) => n + amount, 0);
 
+  const nonSettlementExpenses = expenses
+    .filter(({ isSettlement }) => !isSettlement)
+    .map(({ _id }) => _id);
+
   const getSpendings = (userId) =>
     paidBy
-      ?.filter((item) => item.user === userId)
-      ?.reduce((n, { amount }) => n + amount, 0);
+      ?.filter(
+        (item) =>
+          item.user === userId && nonSettlementExpenses.includes(item.expense)
+      )
+      ?.reduce((n, { amount }) => n + amount, 0) || 0;
+
+  const getPaids = (userId) =>
+    paidBy
+      ?.filter(
+        (item) =>
+          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+      )
+      ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
   const getShare = (userId) =>
     splitAmong
-      ?.filter((item) => item.user === userId)
-      ?.reduce((n, { amount }) => n + amount, 0);
+      ?.filter(
+        (item) =>
+          item.user === userId && nonSettlementExpenses.includes(item.expense)
+      )
+      ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
-  const getBalance = (userId) =>
-    getSpendings(userId) + 0 - (getShare(userId) + 0);
+  const getReceived = (userId) =>
+    splitAmong
+      ?.filter(
+        (item) =>
+          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+      )
+      ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
   return (
     <>
@@ -29,8 +52,9 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
       <SpendingItem
         name={"Your Spending Summary"}
         spendings={getSpendings(user?.subject)}
+        paids={getPaids(user?.subject)}
         share={getShare(user?.subject)}
-        balance={getBalance(user?.subject)}
+        received={getReceived(user?.subject)}
         color="red"
       />
       <Accordion
@@ -50,10 +74,11 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
               ?.map((user) => (
                 <SpendingItem
                   key={user._id}
-                  name={user.name.split(" ")[0]}
+                  name={user.name}
                   spendings={getSpendings(user.userId)}
+                  paids={getPaids(user?.userId)}
                   share={getShare(user.userId)}
-                  balance={getBalance(user.userId)}
+                  received={getReceived(user?.subject)}
                   color="orange"
                 />
               ))}
