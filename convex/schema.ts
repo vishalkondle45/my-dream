@@ -67,7 +67,6 @@ export default defineSchema({
     message: v.string(),
     sender: v.optional(v.string()),
     receiver: v.string(),
-    readedOn: v.optional(v.string()),
     date: v.string(),
   }),
 });

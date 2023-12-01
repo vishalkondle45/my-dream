@@ -40,14 +40,6 @@ const Navbar = () => {
   const readAll = useMutation(api.notifications.readAll);
   const readOne = useMutation(api.notifications.readOne);
 
-  const readAllNotifications = () => {
-    readAll()
-      .then(() => {
-        showNotification({ message: `Hi` });
-      })
-      .catch(() => {});
-  };
-
   return (
     <Group p="md" justify="space-between">
       <Text
@@ -76,7 +68,7 @@ const Navbar = () => {
         )}
         {isAuthenticated && !isLoading && (
           <>
-            <Popover width={330} position="bottom-end" radius="xl" shadow="md">
+            <Popover width={330} position="bottom" radius="xl" shadow="md">
               <Popover.Target>
                 <ActionIcon title="Notifications" variant="transparent">
                   <Indicator inline label={getNotifications.length} size={16}>
@@ -84,27 +76,35 @@ const Navbar = () => {
                   </Indicator>
                 </ActionIcon>
               </Popover.Target>
-              <Popover.Dropdown>
-                <Group mb="xs" justify="right">
-                  <Button
-                    size="compact-xs"
-                    leftSection={<IconClearAll size={16} />}
-                  >
-                    Clear all
-                  </Button>
-                </Group>
-                <Stack>
-                  {getNotifications.map((notification) => (
-                    <Notification
-                      icon={<IconBell size={18} />}
-                      key={notification?._id}
-                      onClose={() => readOne({ _id: notification._id })}
-                      withBorder
-                    >
-                      {notification?.message}
-                    </Notification>
-                  ))}
-                </Stack>
+              <Popover.Dropdown styles={{ dropdown: { paddingInline: 0 } }}>
+                {getNotifications.length ? (
+                  <>
+                    <Group mb="xs" mr="xs" justify="right">
+                      <Button
+                        size="compact-xs"
+                        leftSection={<IconClearAll size={16} />}
+                        onClick={() => readAll({})}
+                      >
+                        Clear all
+                      </Button>
+                    </Group>
+                    <Stack mb="xs">
+                      {getNotifications.map((notification) => (
+                        <Notification
+                          icon={<IconBell size={18} />}
+                          key={notification?._id}
+                          radius="xl"
+                          onClose={() => readOne({ _id: notification._id })}
+                          withBorder
+                        >
+                          {notification?.message}
+                        </Notification>
+                      ))}
+                    </Stack>
+                  </>
+                ) : (
+                  <Text ta="center">No notifications to show.</Text>
+                )}
               </Popover.Dropdown>
             </Popover>
             <Popover

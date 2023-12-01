@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import dayjs from "dayjs";
 
 export const create = mutation({
   args: {
@@ -32,11 +31,9 @@ export const get = query({
     if (!identity) {
       return null;
     }
-    const userId = identity.subject;
     const notifications = await ctx.db
       .query("notifications")
-      // ?.filter((q) => q.eq(q.field("receiver"), userId))
-      .filter((q) => q.eq(q.field("readedOn"), undefined))
+      .filter((q) => q.eq(q.field("receiver"), identity.subject))
       .order("desc")
       .collect();
     return notifications;
@@ -54,37 +51,28 @@ export const readOne = mutation({
     }
     const notifications = await ctx.db
       .query("notifications")
-      // ?.filter((q) => q.eq(q.field("receiver"), userId))
+      .filter((q) => q.eq(q.field("receiver"), identity.subject))
       .order("desc")
       .collect();
-
-    await ctx.db.patch(args._id, {
-      readedOn: dayjs().format("MM-DD-YYYY HH:MM"),
-    });
-
+    await ctx.db.delete(args._id);
     return notifications;
   },
 });
 
 export const readAll = mutation({
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
     }
     const notifications = await ctx.db
       .query("notifications")
-      // ?.filter((q) => q.eq(q.field("receiver"), userId))
+      .filter((q) => q.eq(q.field("receiver"), identity.subject))
       .order("desc")
       .collect();
-
     notifications.map(async (child) => {
-      console.log(child);
-      await ctx.db.patch(child._id, {
-        readedOn: dayjs().format("MM-DD-YYYY HH:MM"),
-      });
+      await ctx.db.delete(child._id);
     });
-
     return notifications;
   },
 });
