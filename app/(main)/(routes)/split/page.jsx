@@ -22,13 +22,25 @@ import {
   IconUsersGroup,
 } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
+import { useEffect, useState } from "react";
 import GrouItem from "../_components/GroupItem";
 import SplitSidebar from "../_components/SplitSidebar";
+import Analysis from "../_components/Analysis";
 
 const Page = () => {
   const groups = useQuery(api.groups.get);
   const [opened, { toggle }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 600px)");
+  const [group, setGroup] = useState("");
+  const getPaidBy = useQuery(api.expense.getPaidBy, { group: group });
+  const getSplitAmong = useQuery(api.expense.getSplitAmong, { group: group });
+  const users = useQuery(api.split.getUsers, { group: group });
+
+  useEffect(() => {
+    if (groups) {
+      setGroup(groups[0]._id);
+    }
+  }, [groups]);
 
   return (
     <Center>
@@ -67,7 +79,7 @@ const Page = () => {
             </ActionIcon>
           </Group>
         </Group>
-        <Tabs p={0} m={0} variant="pills" defaultValue="groups">
+        <Tabs p={0} m={0} variant="pills" defaultValue="analysis">
           <TabsList px={0} grow>
             <TabsTab
               px="sm"
@@ -98,7 +110,9 @@ const Page = () => {
               ))}
             </Stack>
           </TabsPanel>
-          <TabsPanel value="analysis">Analysis</TabsPanel>
+          <TabsPanel value="analysis">
+            <Analysis groups={groups} group={group} setGroup={setGroup} />
+          </TabsPanel>
           <TabsPanel value="summary">Analysis</TabsPanel>
         </Tabs>
       </Stack>

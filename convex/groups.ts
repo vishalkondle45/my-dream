@@ -82,9 +82,30 @@ export const deleteGroup = mutation({
       .query("groupUsers")
       ?.filter((q) => q.eq(q.field("group"), args.group))
       .collect();
+    const groupExpenses = await ctx.db
+      .query("expenses")
+      ?.filter((q) => q.eq(q.field("group"), args.group))
+      .collect();
+    const groupPaidBy = await ctx.db
+      .query("paidBy")
+      ?.filter((q) => q.eq(q.field("group"), args.group))
+      .collect();
+    const groupSplitAmong = await ctx.db
+      .query("splitAmong")
+      ?.filter((q) => q.eq(q.field("group"), args.group))
+      .collect();
 
     groupUsers.map(async (user) => {
       await ctx.db.delete(user._id);
+    });
+    groupExpenses.map(async (expense) => {
+      await ctx.db.delete(expense._id);
+    });
+    groupPaidBy.map(async (paid) => {
+      await ctx.db.delete(paid._id);
+    });
+    groupSplitAmong.map(async (split) => {
+      await ctx.db.delete(split._id);
     });
 
     const group = await ctx.db.delete(args.group);
