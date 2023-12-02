@@ -9,6 +9,12 @@ const Analysis = ({ groups, group, setGroup }) => {
   const getSplitAmong = useQuery(api.expense.getSplitAmong, { group: group });
   const users = useQuery(api.split.getUsers, { group: group });
   const loadingAnalysis = !getSplitAmong || !getPaidBy || !users;
+  const userColors =
+    users &&
+    users.map((user, i) => ({
+      user: user._id,
+      color: colors[i],
+    }));
   return (
     <>
       <Select
@@ -52,7 +58,7 @@ const Analysis = ({ groups, group, setGroup }) => {
 
                 return {
                   value: (userTotalAmountPaid / totalAmountPaid) * 100,
-                  color: colors[i],
+                  color: userColors.find(({ user }) => user === item._id).color,
                   tooltip: `${item.name} – ₹${userTotalAmountPaid}`,
                 };
               })}
@@ -83,7 +89,7 @@ const Analysis = ({ groups, group, setGroup }) => {
                 );
                 return {
                   value: (userTotalAmountSplit / totalAmountSplit) * 100,
-                  color: colors[i],
+                  color: userColors.find(({ user }) => user === item._id).color,
                   tooltip: `${item.name} – ₹${userTotalAmountSplit}`,
                 };
               })}
