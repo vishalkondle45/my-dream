@@ -41,18 +41,21 @@ const Analysis = ({ groups, group, setGroup }) => {
                   Paid
                 </Text>
               }
-              sections={users?.map((item, i) => ({
-                value:
-                  (getPaidBy
-                    ?.filter(({ user }) => user === item.userId)
-                    ?.reduce((n, { amount }) => n + amount, 0) /
-                    getPaidBy?.reduce((n, { amount }) => n + amount, 0)) *
-                  100,
-                color: colors[i],
-                tooltip: `${item.name} – ₹${getPaidBy
+              sections={users?.map((item, i) => {
+                const userTotalAmountPaid = getPaidBy
                   ?.filter(({ user }) => user === item.userId)
-                  ?.reduce((n, { amount }) => n + amount, 0)}`,
-              }))}
+                  ?.reduce((n, { amount }) => n + amount, 0);
+                const totalAmountPaid = getPaidBy?.reduce(
+                  (n, { amount }) => n + amount,
+                  0
+                );
+
+                return {
+                  value: (userTotalAmountPaid / totalAmountPaid) * 100,
+                  color: colors[i],
+                  tooltip: `${item.name} – ₹${userTotalAmountPaid}`,
+                };
+              })}
             />
           )}
           {users && getSplitAmong && (
@@ -70,18 +73,20 @@ const Analysis = ({ groups, group, setGroup }) => {
                   Split
                 </Text>
               }
-              sections={users?.map((item, i) => ({
-                value:
-                  (getSplitAmong
-                    ?.filter(({ user }) => user === item.userId)
-                    ?.reduce((n, { amount }) => n + amount, 0) /
-                    getSplitAmong?.reduce((n, { amount }) => n + amount, 0)) *
-                  100,
-                color: colors[i],
-                tooltip: `${item.name} – ₹${getSplitAmong
+              sections={users?.map((item, i) => {
+                const userTotalAmountSplit = getSplitAmong
                   ?.filter(({ user }) => user === item.userId)
-                  ?.reduce((n, { amount }) => n + amount, 0)}`,
-              }))}
+                  ?.reduce((n, { amount }) => n + amount, 0);
+                const totalAmountSplit = getSplitAmong?.reduce(
+                  (n, { amount }) => n + amount,
+                  0
+                );
+                return {
+                  value: (userTotalAmountSplit / totalAmountSplit) * 100,
+                  color: colors[i],
+                  tooltip: `${item.name} – ₹${userTotalAmountSplit}`,
+                };
+              })}
             />
           )}
         </Group>

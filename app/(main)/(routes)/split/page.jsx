@@ -86,21 +86,21 @@ const Page = () => {
               value="groups"
               leftSection={<IconUsersGroup size={16} />}
             >
-              Groups
+              Groups &nbsp;
             </TabsTab>
             <TabsTab
               px="sm"
               value="analysis"
               leftSection={<IconChartPieFilled size={16} />}
             >
-              Analysis
+              Analysis &nbsp;
             </TabsTab>
             <TabsTab
               px="sm"
               value="summary"
               leftSection={<IconChartPieFilled size={16} />}
             >
-              Analysis
+              Analysis &nbsp;
             </TabsTab>
           </TabsList>
           <TabsPanel value="groups">
