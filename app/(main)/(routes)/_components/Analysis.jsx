@@ -5,12 +5,15 @@ import {
   Badge,
   Group,
   List,
+  NumberFormatter,
   RingProgress,
   Select,
   Skeleton,
+  Stack,
   Text,
   ThemeIcon,
 } from "@mantine/core";
+import { IconSquare, IconSquareFilled } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 
 const Analysis = ({ groups, group, setGroup }) => {
@@ -107,17 +110,31 @@ const Analysis = ({ groups, group, setGroup }) => {
             />
           )}
         </Group>
-        <Group>
-          {users?.map((item) => (
-            <Badge
-              color={
-                userColors?.find(({ user }) => user === item.userId)?.color
-              }
-            >
-              {item.name}
-            </Badge>
-          ))}
-        </Group>
+        <Stack gap={0}>
+          {users?.map((item, i) => {
+            const userTotalAmountSplit = getSplitAmong
+              ?.filter(({ user }) => user === item.userId)
+              ?.reduce((n, { amount }) => n + amount, 0);
+            const totalAmountSplit = getSplitAmong?.reduce(
+              (n, { amount }) => n + amount,
+              0
+            );
+            return (
+              <Group>
+                <ThemeIcon
+                  radius="xs"
+                  variant="transparent"
+                  color={
+                    userColors?.find(({ user }) => user === item.userId)?.color
+                  }
+                >
+                  <IconSquareFilled />
+                </ThemeIcon>
+                <Text>{item.name}</Text>
+              </Group>
+            );
+          })}
+        </Stack>
       </Skeleton>
     </>
   );
