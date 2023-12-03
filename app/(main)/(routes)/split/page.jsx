@@ -67,17 +67,6 @@ const Page = () => {
             )}
             <Text fw="bold">Home</Text>
           </Group>
-          <Group gap={4}>
-            <ActionIcon variant="subtle" radius="xl">
-              <IconPlus size={20} />
-            </ActionIcon>
-            <ActionIcon variant="subtle" radius="xl">
-              <IconSettings size={20} />
-            </ActionIcon>
-            <ActionIcon variant="subtle" radius="xl" color="red">
-              <IconTrash size={20} />
-            </ActionIcon>
-          </Group>
         </Group>
         <Tabs p={0} m={0} variant="pills" defaultValue="analysis">
           <TabsList px={0} grow>
