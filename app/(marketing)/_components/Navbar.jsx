@@ -17,8 +17,9 @@ import {
 import {
   IconBell,
   IconCalendar,
-  IconCircleCheckFilled,
+  IconCircleCheck,
   IconClearAll,
+  IconCoinRupee,
   IconCoinRupeeFilled,
   IconGridDots,
   IconNote,
@@ -132,12 +133,12 @@ const Navbar = () => {
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCircleCheckFilled />}
+                    icon={<IconCircleCheck />}
                     text="Todos"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCoinRupeeFilled />}
+                    icon={<IconCoinRupee />}
                     text="Split"
                   />
                   <NavItem
