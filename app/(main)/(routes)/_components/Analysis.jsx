@@ -1,7 +1,16 @@
 "use client";
 import { api } from "@/convex/_generated/api";
 import { colors } from "@/utils/constants";
-import { Group, RingProgress, Select, Skeleton, Text } from "@mantine/core";
+import {
+  Badge,
+  Group,
+  List,
+  RingProgress,
+  Select,
+  Skeleton,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
 import { useQuery } from "convex/react";
 
 const Analysis = ({ groups, group, setGroup }) => {
@@ -12,7 +21,7 @@ const Analysis = ({ groups, group, setGroup }) => {
   const userColors =
     users &&
     users.map((user, i) => ({
-      user: user._id,
+      user: user.userId,
       color: colors[i],
     }));
   return (
@@ -58,7 +67,8 @@ const Analysis = ({ groups, group, setGroup }) => {
 
                 return {
                   value: (userTotalAmountPaid / totalAmountPaid) * 100,
-                  color: userColors.find(({ user }) => user === item._id).color,
+                  color: userColors?.find(({ user }) => user === item.userId)
+                    .color,
                   tooltip: `${item.name} – ₹${userTotalAmountPaid}`,
                 };
               })}
@@ -89,12 +99,24 @@ const Analysis = ({ groups, group, setGroup }) => {
                 );
                 return {
                   value: (userTotalAmountSplit / totalAmountSplit) * 100,
-                  color: userColors.find(({ user }) => user === item._id).color,
+                  color: userColors?.find(({ user }) => user === item.userId)
+                    ?.color,
                   tooltip: `${item.name} – ₹${userTotalAmountSplit}`,
                 };
               })}
             />
           )}
+        </Group>
+        <Group>
+          {users?.map((item) => (
+            <Badge
+              color={
+                userColors?.find(({ user }) => user === item.userId)?.color
+              }
+            >
+              {item.name}
+            </Badge>
+          ))}
         </Group>
       </Skeleton>
     </>
