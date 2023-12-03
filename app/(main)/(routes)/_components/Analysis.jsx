@@ -111,15 +111,7 @@ const Analysis = ({ groups, group, setGroup }) => {
           )}
         </Group>
         <Stack gap={0}>
-          {users?.map((item, i) => {
-            const userTotalAmountSplit = getSplitAmong
-              ?.filter(({ user }) => user === item.userId)
-              ?.reduce((n, { amount }) => n + amount, 0);
-            const totalAmountSplit = getSplitAmong?.reduce(
-              (n, { amount }) => n + amount,
-              0
-            );
-            return (
+          {users?.map((item, i) => (
               <Group>
                 <ThemeIcon
                   radius="xs"
@@ -132,8 +124,8 @@ const Analysis = ({ groups, group, setGroup }) => {
                 </ThemeIcon>
                 <Text>{item.name}</Text>
               </Group>
-            );
-          })}
+            )
+          )}
         </Stack>
       </Skeleton>
     </>
