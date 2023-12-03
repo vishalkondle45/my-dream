@@ -35,7 +35,6 @@ const Analysis = ({ groups, group, setGroup }) => {
         value={group}
         onChange={setGroup}
         allowDeselect={false}
-        searchable
         data={groups?.map(({ _id, type, name }) => ({
           value: _id,
           label: `${name} (${type[0].toUpperCase()}${type.slice(1)})`,
