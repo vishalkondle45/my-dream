@@ -86,10 +86,10 @@ const Page = () => {
             </TabsTab>
             <TabsTab
               px="sm"
-              value="summary"
+              value="todo"
               leftSection={<IconChartPieFilled size={16} />}
             >
-              Analysis &nbsp;
+              Todo &nbsp;
             </TabsTab>
           </TabsList>
           <TabsPanel value="groups">
@@ -102,7 +102,7 @@ const Page = () => {
           <TabsPanel value="analysis">
             <Analysis groups={groups} group={group} setGroup={setGroup} />
           </TabsPanel>
-          <TabsPanel value="summary">Analysis</TabsPanel>
+          <TabsPanel value="todo">Analysis</TabsPanel>
         </Tabs>
       </Stack>
     </Center>
