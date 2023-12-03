@@ -17,12 +17,13 @@ const Page = () => {
   const handleSelect = (date) =>
     form.setFieldValue(
       "date",
-      dayjs(date).isSame(form.values.date, "date") ? new Date() : date
+      dayjs(date).isSame(form.values.date, "date")
+        ? dayjs().format("MM-DD-YYYY")
+        : dayjs(date).format("MM-DD-YYYY")
     );
 
   const checkDate =
-    dayjs(form.values.date).format("DDMMYYYY") !==
-    dayjs(new Date()).format("DDMMYYYY");
+    dayjs(form.values.date).format("DDMMYYYY") !== dayjs().format("DDMMYYYY");
   const selectedDateFormat = dayjs(form.values.date).format("DD MMM YYYY");
 
   const datePickerStyles = {
