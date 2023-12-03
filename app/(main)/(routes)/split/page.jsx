@@ -102,7 +102,7 @@ const Page = () => {
           <TabsPanel value="analysis">
             <Analysis groups={groups} group={group} setGroup={setGroup} />
           </TabsPanel>
-          <TabsPanel value="todo">Analysis</TabsPanel>
+          <TabsPanel value="todo">Todo</TabsPanel>
         </Tabs>
       </Stack>
     </Center>
