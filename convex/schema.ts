@@ -69,4 +69,11 @@ export default defineSchema({
     receiver: v.string(),
     date: v.string(),
   }),
+  events: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    user: v.string(),
+    date: v.string(),
+    time: v.string(),
+  }),
 });
