@@ -28,11 +28,11 @@ const Page = () => {
   dayjs.extend(duration);
   const create = useMutation(api.events.create);
   const [date, setDate] = useState(new Date());
-  // const events = useQuery(api.events.getEventsWithDate, {
-  //   date: dayjs(date).format("MM-DD-YYYY"),
-  // });
+  const update = useMutation(api.events.update);
   const events = useQuery(api.events.getAll);
   const [opened, { open, close }] = useDisclosure(false);
+  const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
+
   const form = useForm({
     initialValues: {
       title: "",
@@ -44,11 +44,36 @@ const Page = () => {
       title: (value) => (value.length ? null : "This field is required."),
     },
   });
+  const form1 = useForm({
+    initialValues: {
+      _id: "",
+      title: "",
+      description: "",
+      date: "",
+      time: "00:00",
+    },
+    validate: {
+      title: (value) => (value.length > 0 ? null : "This field is required."),
+    },
+  });
+
+  const openEdit = async (event) => {
+    let eventDetails = { ...event };
+    let [hours, minutes] = eventDetails.time.split(":");
+    eventDetails.date = dayjs(eventDetails.date)
+      .add(hours, "hours")
+      .add(minutes, "minutes");
+    eventDetails._creationTime = undefined;
+    eventDetails.user = undefined;
+    form1.setValues(eventDetails);
+    open1();
+  };
 
   const handleSelect = (dt) =>
     setDate(dayjs(dt).isSame(date, "day") ? dayjs() : dayjs(dt));
 
   const checkDate = dayjs().isSame(date, "day");
+  const isAfter = dayjs().isAfter(date);
   const checkHour = (e, i) =>
     dayjs(e.date + " " + e.time).format("H") === String(i);
   const checkDate2 = (e) =>
@@ -65,7 +90,6 @@ const Page = () => {
   };
 
   const createEvent = async (hour) => {
-    console.log(dayjs(date).startOf("date").add(hour, "hours"));
     form.setValues({
       date,
       time: dayjs(date).startOf("date").add(hour, "hours").format("HH:mm"),
@@ -82,9 +106,29 @@ const Page = () => {
     form.reset();
   };
 
+  const submitUpdate = async () => {
+    update({
+      ...form1.values,
+      date: dayjs(form1.values.date).format("MM-DD-YYYY"),
+    });
+    close1();
+    form1.reset();
+  };
+
+  const closeNew = () => {
+    close();
+    form.reset();
+  };
+
+  const closeEdit = () => {
+    close1();
+    form1.reset();
+  };
+
   if (!events) {
     return <LoadingOverlay />;
   }
+
   return (
     <Box>
       <Grid>
@@ -134,7 +178,7 @@ const Page = () => {
           </Alert>
           <Timeline
             mt={"xs"}
-            active={dayjs().format("H")}
+            active={checkDate ? dayjs().format("H") : isAfter ? "24" : "-1"}
             bulletSize={24}
             lineWidth={2}
             mb={24}
@@ -143,7 +187,7 @@ const Page = () => {
               <Timeline.Item
                 key={i}
                 bullet={
-                  <Avatar size={24} src={null} onClick={() => createEvent(i)}>
+                  <Avatar size={26} src={null} onClick={() => createEvent(i)}>
                     {String(i)}
                   </Avatar>
                 }
@@ -157,6 +201,7 @@ const Page = () => {
                         .filter((e) => checkHour(e, i) && checkDate2(e))
                         .map((event) => (
                           <Alert
+                            onClick={() => openEdit(event)}
                             px={12}
                             py={4}
                             my={4}
@@ -179,6 +224,7 @@ const Page = () => {
                   ) : (
                     <Text onClick={() => createEvent(i)}>&nbsp;</Text>
                   )}
+
                   <Divider />
                 </>
               </Timeline.Item>
@@ -187,7 +233,7 @@ const Page = () => {
         </Grid.Col>
       </Grid>
 
-      <Modal opened={opened} onClose={close} title="Create event">
+      <Modal opened={opened} onClose={closeNew} title="Create event">
         <form onSubmit={form.onSubmit((values) => submitEvent(values))}>
           <TextInput
             label="Title"
@@ -215,7 +261,44 @@ const Page = () => {
             />
           </Group>
           <Group mt="xs" justify="center">
-            <Button color="red" onClick={close} type="button">
+            <Button color="red" onClick={closeNew} type="button">
+              Cancel
+            </Button>
+            <Button color="green" type="submit">
+              Create
+            </Button>
+          </Group>
+        </form>
+      </Modal>
+
+      <Modal opened={opened1} onClose={closeEdit} title="Edit event">
+        <form onSubmit={form1.onSubmit((values) => submitUpdate(values))}>
+          <TextInput
+            label="Title"
+            placeholder="Enter title"
+            {...form1.getInputProps("title")}
+          />
+          <Textarea
+            label="Description"
+            placeholder="Enter description"
+            {...form1.getInputProps("description")}
+          />
+          <Group grow>
+            <DateInput
+              label="Date"
+              placeholder="Date"
+              {...form1.getInputProps("date")}
+              valueFormat="DD MMM YYYY"
+              disabled
+            />
+            <TimeInput
+              label="Time"
+              placeholder="Time"
+              {...form1.getInputProps("time")}
+            />
+          </Group>
+          <Group mt="xs" justify="center">
+            <Button color="red" onClick={closeEdit} type="button">
               Cancel
             </Button>
             <Button color="green" type="submit">

@@ -59,3 +59,26 @@ export const getEventsWithDate = query({
     return events;
   },
 });
+
+export const update = mutation({
+  args: {
+    _id: v.id("events"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    date: v.string(),
+    time: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const event = await ctx.db.patch(args._id, {
+      title: args.title,
+      description: args.description,
+      date: args.date,
+      time: args.time,
+    });
+    return event;
+  },
+});
