@@ -156,7 +156,9 @@ const Page = () => {
                 processing
                 size="xl"
               >
-                <Text>{dt.getDate()}</Text>
+                <Text fw={dayjs().isSame(dt, "day") && "bold"}>
+                  {dt.getDate() + (dayjs().isSame(dt, "day") && " (Today)")}
+                </Text>
               </Indicator>
             )}
             firstDayOfWeek={0}
