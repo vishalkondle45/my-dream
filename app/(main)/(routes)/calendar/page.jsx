@@ -166,7 +166,7 @@ const Page = () => {
           <Text fz={20} fw="bold" ta="center">
             {checkDate ? "Today" : selectedDateFormat}
           </Text>
-          <Alert
+          {/* <Alert
             px={12}
             py={4}
             variant="filled"
@@ -175,7 +175,7 @@ const Page = () => {
             radius="xs"
           >
             <Text size="xs">All day</Text>
-          </Alert>
+          </Alert> */}
           <Timeline
             mt={"xs"}
             active={checkDate ? dayjs().format("H") : isAfter ? "24" : "-1"}
