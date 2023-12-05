@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/convex/_generated/api";
 import {
   Alert,
   Avatar,
@@ -15,14 +16,13 @@ import {
   Textarea,
   Timeline,
 } from "@mantine/core";
-import { DatePicker, DateTimePicker } from "@mantine/dates";
+import { DateInput, DatePicker, TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
-import { api } from "@/convex/_generated/api";
 
 const Page = () => {
   dayjs.extend(duration);
@@ -38,6 +38,10 @@ const Page = () => {
       title: "",
       description: "",
       date: new Date(),
+      time: "00:00",
+    },
+    validate: {
+      title: (value) => (value.length ? null : "This field is required."),
     },
   });
 
@@ -60,18 +64,20 @@ const Page = () => {
     yearsListCell: { width: "100%" },
   };
 
-  const createEvent = async (start_time) => {
-    form.setFieldValue(
-      "date",
-      dayjs(date).startOf("date").add(start_time, "h")
-    );
+  const createEvent = async (hour) => {
+    console.log(dayjs(date).startOf("date").add(hour, "hours"));
+    form.setValues({
+      date,
+      time: dayjs(date).startOf("date").add(hour, "hours").format("HH:mm"),
+    });
     open();
   };
 
   const submitEvent = async () => {
-    const values = { ...form.values };
-    values.date = dayjs(form.values.date).format("MM-DD-YYYY HH:mm");
-    create(values);
+    create({
+      ...form.values,
+      date: dayjs(form.values.date).format("MM-DD-YYYY"),
+    });
     close();
     form.reset();
   };
@@ -114,7 +120,7 @@ const Page = () => {
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 3 }}>
           <Text fz={20} fw="bold" ta="center">
-            {checkDate ? selectedDateFormat : "Today"}
+            {checkDate ? "Today" : selectedDateFormat}
           </Text>
           <Alert
             px={12}
@@ -146,25 +152,30 @@ const Page = () => {
                 <>
                   {events.filter((e) => checkHour(e, i) && checkDate2(e))
                     .length ? (
-                    events
-                      .filter((e) => checkHour(e, i) && checkDate2(e))
-                      .map((event) => (
-                        <Alert
-                          px={12}
-                          py={4}
-                          my={4}
-                          variant="filled"
-                          color="dark.4"
-                          title={event.title}
-                          radius="xs"
-                          key={event._id}
-                        >
-                          <Text size="sm">{event.description}</Text>
-                          <Text ta="right" size="xs">
-                            {event.time}
-                          </Text>
-                        </Alert>
-                      ))
+                    <>
+                      {events
+                        .filter((e) => checkHour(e, i) && checkDate2(e))
+                        .map((event) => (
+                          <Alert
+                            px={12}
+                            py={4}
+                            my={4}
+                            variant="filled"
+                            color="dark.4"
+                            title={event.title}
+                            radius="xs"
+                            key={event._id}
+                          >
+                            <Text size="sm">{event.description}</Text>
+                            <Text ta="right" size="xs">
+                              {event.time}
+                            </Text>
+                          </Alert>
+                        ))}
+                      <Text size="xs" onClick={() => createEvent(i)}>
+                        &nbsp;
+                      </Text>
+                    </>
                   ) : (
                     <Text onClick={() => createEvent(i)}>&nbsp;</Text>
                   )}
@@ -182,18 +193,27 @@ const Page = () => {
             label="Title"
             placeholder="Enter title"
             {...form.getInputProps("title")}
+            required
           />
           <Textarea
             label="Description"
             placeholder="Enter description"
             {...form.getInputProps("description")}
           />
-          <DateTimePicker
-            label="Date & Time"
-            placeholder="Enter date and time"
-            dropdownType="modal"
-            {...form.getInputProps("date")}
-          />
+          <Group grow>
+            <DateInput
+              label="Date"
+              placeholder="Date"
+              {...form.getInputProps("date")}
+              valueFormat="DD MMM YYYY"
+              disabled
+            />
+            <TimeInput
+              label="Time"
+              placeholder="Time"
+              {...form.getInputProps("time")}
+            />
+          </Group>
           <Group mt="xs" justify="center">
             <Button color="red" onClick={close} type="button">
               Cancel

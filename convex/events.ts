@@ -6,19 +6,19 @@ export const create = mutation({
     title: v.string(),
     description: v.optional(v.string()),
     date: v.string(),
+    time: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Not authenticated");
     }
-    const [date, time] = args.date.split(" ");
     const event = await ctx.db.insert("events", {
       user: identity.subject,
       title: args.title,
       description: args.description,
-      date,
-      time,
+      date: args.date,
+      time: args.time,
     });
     return event;
   },
@@ -33,7 +33,6 @@ export const getAll = query({
     const events = await ctx.db
       .query("events")
       ?.filter((q) => q.eq(q.field("user"), identity.subject))
-      .order("desc")
       .collect();
     return events;
   },
