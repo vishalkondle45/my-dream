@@ -30,7 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToggleColorMode from "../../../components/theme/ToggleColorMode";
 import NavItem from "./NavItem";
 
@@ -41,6 +41,12 @@ const Navbar = () => {
   const getNotifications = useQuery(api.notifications.get);
   const readAll = useMutation(api.notifications.readAll);
   const readOne = useMutation(api.notifications.readOne);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/");
+    }
+  }, [isLoading]);
 
   return (
     <Group p="md" justify="space-between">
