@@ -19,12 +19,14 @@ import {
   IconCalendar,
   IconCircleCheck,
   IconClearAll,
+  IconCloudRain,
   IconCoinRupee,
-  IconCoinRupeeFilled,
+  IconFileText,
   IconGridDots,
+  IconMessageCircle2,
+  IconMusic,
   IconNote,
-  IconRobot,
-  IconSubtask,
+  IconUserCircle,
 } from "@tabler/icons-react";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
@@ -88,14 +90,14 @@ const Navbar = () => {
                         Clear all
                       </Button>
                     </Group>
-                    <Stack mb="xs">
+                    <Stack mb="xs" px="xs">
                       {getNotifications?.map((notification) => (
                         <Notification
                           icon={<IconBell size={18} />}
                           key={notification?._id}
-                          radius="xl"
+                          radius="xs"
                           onClose={() => readOne({ _id: notification._id })}
-                          withBorder
+                          // withBorder
                         >
                           {notification?.message}
                         </Notification>
@@ -148,28 +150,28 @@ const Navbar = () => {
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconRobot />}
-                    text="GPT"
+                    icon={<IconCloudRain />}
+                    text="Weather"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconSubtask />}
-                    text="Jira"
+                    icon={<IconMusic />}
+                    text="Music"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCoinRupeeFilled />}
-                    text="Split"
+                    icon={<IconFileText />}
+                    text="Blog"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCoinRupeeFilled />}
-                    text="Split"
+                    icon={<IconMessageCircle2 />}
+                    text="Forum"
                   />
                   <NavItem
                     setOpened={setOpened}
-                    icon={<IconCoinRupeeFilled />}
-                    text="Split"
+                    icon={<IconUserCircle />}
+                    text="Profile"
                   />
                 </SimpleGrid>
               </Popover.Dropdown>
