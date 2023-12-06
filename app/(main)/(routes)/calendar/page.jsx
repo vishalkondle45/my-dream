@@ -19,6 +19,7 @@ import {
 import { DateInput, DatePicker, TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { IconCircleCheck, IconCircleCheckFilled } from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -30,6 +31,7 @@ const Page = () => {
   const [date, setDate] = useState(new Date());
   const update = useMutation(api.events.update);
   const events = useQuery(api.events.getAll);
+  const todos = useQuery(api.todos.getAll);
   const [opened, { open, close }] = useDisclosure(false);
   const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
 
@@ -125,7 +127,7 @@ const Page = () => {
     form1.reset();
   };
 
-  if (!events) {
+  if (!events || !todos) {
     return <LoadingOverlay />;
   }
 
@@ -168,16 +170,26 @@ const Page = () => {
           <Text fz={20} fw="bold" ta="center">
             {checkDate ? "Today" : selectedDateFormat}
           </Text>
-          {/* <Alert
-            px={12}
-            py={4}
-            variant="filled"
-            color="dark.4"
-            title="Alert title"
-            radius="xs"
-          >
-            <Text size="xs">All day</Text>
-          </Alert> */}
+          {todos
+            ?.filter((todo) => dayjs(todo.date).isSame(date, "day"))
+            ?.map((todo) => (
+              <Alert
+                px={12}
+                py={4}
+                my={2}
+                variant="filled"
+                color="dark.4"
+                icon={
+                  todo.completedOn ? (
+                    <IconCircleCheckFilled />
+                  ) : (
+                    <IconCircleCheck />
+                  )
+                }
+                title={todo.todo}
+                radius="xs"
+              />
+            ))}
           <Timeline
             mt={"xs"}
             active={checkDate ? dayjs().format("H") : isAfter ? "24" : "-1"}
