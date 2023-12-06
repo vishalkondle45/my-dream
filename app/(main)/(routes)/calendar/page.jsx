@@ -188,7 +188,7 @@ const Page = () => {
           </Paper>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 3 }}>
-          <Paper px="xs" withBorder>
+          <Paper px="xs" mb="xs" withBorder>
             <Text fz={20} fw="bold" ta="center">
               {checkDate ? "Today" : selectedDateFormat}
             </Text>
