@@ -11,6 +11,7 @@ import {
   Indicator,
   LoadingOverlay,
   Modal,
+  Paper,
   Text,
   TextInput,
   Textarea,
@@ -18,8 +19,14 @@ import {
 } from "@mantine/core";
 import { DateInput, DatePicker, TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
-import { IconCircleCheck, IconCircleCheckFilled } from "@tabler/icons-react";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import {
+  IconCheck,
+  IconCircleCheck,
+  IconCircleCheckFilled,
+  IconTrash,
+  IconX,
+} from "@tabler/icons-react";
 import { useMutation, useQuery } from "convex/react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -30,10 +37,12 @@ const Page = () => {
   const create = useMutation(api.events.create);
   const [date, setDate] = useState(new Date());
   const update = useMutation(api.events.update);
+  const remove = useMutation(api.events.remove);
   const events = useQuery(api.events.getAll);
   const todos = useQuery(api.todos.getAll);
   const [opened, { open, close }] = useDisclosure(false);
   const [opened1, { open: open1, close: close1 }] = useDisclosure(false);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const form = useForm({
     initialValues: {
@@ -127,6 +136,14 @@ const Page = () => {
     form1.reset();
   };
 
+  const removeEvent = () => {
+    remove({ _id: form1.values._id })
+      .then(() => {
+        closeEdit();
+      })
+      .catch(() => {});
+  };
+
   if (!events || !todos) {
     return <LoadingOverlay />;
   }
@@ -135,115 +152,120 @@ const Page = () => {
     <Box>
       <Grid>
         <Grid.Col span={{ base: 12, md: 9 }}>
-          <DatePicker
-            styles={datePickerStyles}
-            getDayProps={(dt) => ({
-              selected: dayjs(dt).isSame(date, "day"),
-              onClick: () => handleSelect(dt),
-            })}
-            renderDay={(dt) => (
-              <Indicator
-                offset={-3}
-                color="red"
-                disabled={
-                  !events.filter(
-                    (d) => dayjs(dt).format("MM-DD-YYYY") === d.date
-                  ).length
-                }
-                label={
-                  events.filter(
-                    (d) => dayjs(dt).format("MM-DD-YYYY") === d.date
-                  ).length
-                }
-                processing
-                size="xl"
-              >
-                <Text fw={dayjs().isSame(dt, "day") && "bold"}>
-                  {dt.getDate() + (dayjs().isSame(dt, "day") && " (Today)")}
-                </Text>
-              </Indicator>
-            )}
-            firstDayOfWeek={0}
-          />
+          <Paper withBorder>
+            <DatePicker
+              styles={datePickerStyles}
+              getDayProps={(dt) => ({
+                selected: dayjs(dt).isSame(date, "day"),
+                onClick: () => handleSelect(dt),
+              })}
+              renderDay={(dt) => (
+                <Indicator
+                  offset={-3}
+                  color="red"
+                  disabled={
+                    !events.filter(
+                      (d) => dayjs(dt).format("MM-DD-YYYY") === d.date
+                    ).length
+                  }
+                  label={
+                    events.filter(
+                      (d) => dayjs(dt).format("MM-DD-YYYY") === d.date
+                    ).length
+                  }
+                  processing
+                  size="xl"
+                >
+                  <Text fw={dayjs().isSame(dt, "day") && "bold"}>
+                    {dt.getDate() +
+                      (dayjs().isSame(dt, "day") &&
+                        (isMobile ? " (T)" : " (Today)"))}
+                  </Text>
+                </Indicator>
+              )}
+              firstDayOfWeek={0}
+            />
+          </Paper>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 3 }}>
-          <Text fz={20} fw="bold" ta="center">
-            {checkDate ? "Today" : selectedDateFormat}
-          </Text>
-          {todos
-            ?.filter((todo) => dayjs(todo.date).isSame(date, "day"))
-            ?.map((todo) => (
-              <Alert
-                px={12}
-                py={4}
-                my={2}
-                variant="filled"
-                color="dark.4"
-                icon={
-                  todo.completedOn ? (
-                    <IconCircleCheckFilled />
-                  ) : (
-                    <IconCircleCheck />
-                  )
-                }
-                title={todo.todo}
-                radius="xs"
-              />
-            ))}
-          <Timeline
-            mt={"xs"}
-            active={checkDate ? dayjs().format("H") : isAfter ? "24" : "-1"}
-            bulletSize={24}
-            lineWidth={2}
-            mb={24}
-          >
-            {Array.from(Array(24).keys()).map((i) => (
-              <Timeline.Item
-                key={i}
-                bullet={
-                  <Avatar size={26} src={null} onClick={() => createEvent(i)}>
-                    {String(i)}
-                  </Avatar>
-                }
-                my={4}
-              >
-                <>
-                  {events.filter((e) => checkHour(e, i) && checkDate2(e))
-                    .length ? (
-                    <>
-                      {events
-                        .filter((e) => checkHour(e, i) && checkDate2(e))
-                        .map((event) => (
-                          <Alert
-                            onClick={() => openEdit(event)}
-                            px={12}
-                            py={4}
-                            my={4}
-                            variant="filled"
-                            color="dark.4"
-                            title={event.title}
-                            radius="xs"
-                            key={event._id}
-                          >
-                            <Text size="sm">{event.description}</Text>
-                            <Text ta="right" size="xs">
-                              {event.time}
-                            </Text>
-                          </Alert>
-                        ))}
-                      <Text size="xs" onClick={() => createEvent(i)}>
-                        &nbsp;
-                      </Text>
-                    </>
-                  ) : (
-                    <Text onClick={() => createEvent(i)}>&nbsp;</Text>
-                  )}
+          <Paper px="xs" withBorder>
+            <Text fz={20} fw="bold" ta="center">
+              {checkDate ? "Today" : selectedDateFormat}
+            </Text>
+            {todos
+              ?.filter((todo) => dayjs(todo.date).isSame(date, "day"))
+              ?.map((todo) => (
+                <Alert
+                  px={12}
+                  py={4}
+                  my={2}
+                  variant="filled"
+                  color="dark.4"
+                  icon={
+                    todo.completedOn ? (
+                      <IconCircleCheckFilled />
+                    ) : (
+                      <IconCircleCheck />
+                    )
+                  }
+                  title={todo.todo}
+                />
+              ))}
+            <Timeline
+              mt={"xs"}
+              active={checkDate ? dayjs().format("H") : isAfter ? "24" : "-1"}
+              bulletSize={24}
+              lineWidth={2}
+              mb={24}
+            >
+              {Array.from(Array(24).keys()).map((i) => (
+                <Timeline.Item
+                  key={i}
+                  bullet={
+                    <Avatar size={26} src={null} onClick={() => createEvent(i)}>
+                      {String(i)}
+                    </Avatar>
+                  }
+                  my={4}
+                >
+                  <>
+                    {events.filter((e) => checkHour(e, i) && checkDate2(e))
+                      .length ? (
+                      <>
+                        {events
+                          .filter((e) => checkHour(e, i) && checkDate2(e))
+                          .map((event) => (
+                            <Alert
+                              onClick={() => openEdit(event)}
+                              px={12}
+                              py={4}
+                              my={4}
+                              variant="filled"
+                              color="dark.4"
+                              title={event.title}
+                              radius="xs"
+                              key={event._id}
+                            >
+                              <Text size="sm">{event.description}</Text>
+                              <Text ta="right" size="xs">
+                                {event.time}
+                              </Text>
+                            </Alert>
+                          ))}
+                        <Text size="xs" onClick={() => createEvent(i)}>
+                          &nbsp;
+                        </Text>
+                      </>
+                    ) : (
+                      <Text onClick={() => createEvent(i)}>&nbsp;</Text>
+                    )}
 
-                  <Divider />
-                </>
-              </Timeline.Item>
-            ))}
-          </Timeline>
+                    <Divider />
+                  </>
+                </Timeline.Item>
+              ))}
+            </Timeline>
+          </Paper>
         </Grid.Col>
       </Grid>
 
@@ -275,10 +297,15 @@ const Page = () => {
             />
           </Group>
           <Group mt="xs" justify="center">
-            <Button color="red" onClick={closeNew} type="button">
+            <Button
+              color="red"
+              onClick={closeNew}
+              type="button"
+              leftSection={<IconX />}
+            >
               Cancel
             </Button>
-            <Button color="green" type="submit">
+            <Button color="green" type="submit" leftSection={<IconCheck />}>
               Create
             </Button>
           </Group>
@@ -312,10 +339,15 @@ const Page = () => {
             />
           </Group>
           <Group mt="xs" justify="center">
-            <Button color="red" onClick={closeEdit} type="button">
-              Cancel
+            <Button
+              color="red"
+              leftSection={<IconTrash />}
+              onClick={removeEvent}
+              type="button"
+            >
+              Delete
             </Button>
-            <Button color="green" type="submit">
+            <Button color="green" type="submit" leftSection={<IconCheck />}>
               Create
             </Button>
           </Group>
