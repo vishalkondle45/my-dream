@@ -7,13 +7,14 @@ import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 // import "@mantine/modals/styles.css";
+import "@mantine/carousel/styles.css";
 import { Inter } from "next/font/google";
 import LogUser from "./(main)/(routes)/_components/LogUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "My Dream",
+  title: "EaseLife",
   description: "All tools in one application",
 };
 

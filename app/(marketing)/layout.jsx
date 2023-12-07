@@ -3,7 +3,7 @@ import { Box } from "@mantine/core";
 import "@mantine/core/styles.css";
 
 export const metadata = {
-  title: "My Dream",
+  title: "EaseLife",
   description: "All tools in one application",
 };
 

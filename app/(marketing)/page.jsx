@@ -1,14 +1,27 @@
 "use client";
-import { useUser } from "@clerk/clerk-react";
-import { Box, Text, Title } from "@mantine/core";
+import { CardsCarousel } from "@/components/home/Slideshow";
+import Contact from "@/components/home/Contact";
+import EmailBanner from "@/components/home/EmailBanner";
+import { Box, Container, Text } from "@mantine/core";
+import { useConvexAuth } from "convex/react";
+import FeaturesGrid from "@/components/home/FeaturesGrid";
 
 export default function Home() {
-  // const everything = useConvexAuth();
-  const user = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  const isLoggedIn = !isLoading && isAuthenticated;
   return (
     <Box>
-      <Title order={5}>Page.jsx</Title>
-      <Text>{JSON.stringify(user)}</Text>
+      {isLoggedIn ? (
+        <Text>LoggedIn</Text>
+      ) : (
+        <Container my="xl">
+          <CardsCarousel />
+          <FeaturesGrid />
+          <Contact />
+          <EmailBanner />
+          <Text my="xl">&emsp;</Text>
+        </Container>
+      )}
     </Box>
   );
 }

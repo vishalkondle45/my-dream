@@ -56,7 +56,7 @@ const Navbar = () => {
         fw={700}
         ff={"cursive"}
       >
-        Dream
+        EaseLife
       </Text>
       <Group>
         {isLoading && <LoadingOverlay visible={true} />}
@@ -69,7 +69,7 @@ const Navbar = () => {
             </SignInButton>
             <SignInButton mode="modal">
               <Button variant="filled" size="compact-sm">
-                Join dream free
+                Join EaseLife free
               </Button>
             </SignInButton>
           </>
