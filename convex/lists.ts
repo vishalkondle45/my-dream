@@ -110,7 +110,6 @@ export const get = query({
     const lists = await ctx.db
       .query("lists")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      // .order("desc")
       .collect();
     return lists;
   },

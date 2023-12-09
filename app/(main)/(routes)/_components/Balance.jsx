@@ -295,8 +295,6 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
           placeholder="Amount"
           leftSection={<IconCurrencyRupee size={18} />}
           w="100%"
-          // value={amount}
-          // onChange={(value) => setAmount(value)}
           {...form.getInputProps("amount")}
           mb="xs"
           min={1}
@@ -315,12 +313,6 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             <List.Item>
               <Text size="sm">Recording a payment doesn't move money</Text>
             </List.Item>
-            {/* <List.Item>
-              <Text size="sm">
-                This option is intended for recording payments made outside
-                mysplit?.
-              </Text>
-            </List.Item> */}
           </List>
         </>
       </Modal>
