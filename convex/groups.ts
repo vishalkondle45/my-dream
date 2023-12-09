@@ -36,7 +36,7 @@ export const get = query({
       .collect();
     const groupIds = groups.map(({ group }) => group);
     let result = await ctx.db.query("groups").order("desc").collect();
-    return result.filter((item) => groupIds.includes(item._id));
+    return result.filter((item) => groupIds.includes(item?._id));
   },
 });
 
@@ -96,16 +96,16 @@ export const deleteGroup = mutation({
       .collect();
 
     groupUsers.map(async (user) => {
-      await ctx.db.delete(user._id);
+      await ctx.db.delete(user?._id);
     });
     groupExpenses.map(async (expense) => {
-      await ctx.db.delete(expense._id);
+      await ctx.db.delete(expense?._id);
     });
     groupPaidBy.map(async (paid) => {
-      await ctx.db.delete(paid._id);
+      await ctx.db.delete(paid?._id);
     });
     groupSplitAmong.map(async (split) => {
-      await ctx.db.delete(split._id);
+      await ctx.db.delete(split?._id);
     });
 
     const group = await ctx.db.delete(args.group);

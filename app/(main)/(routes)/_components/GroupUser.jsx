@@ -20,12 +20,12 @@ const GroupUser = ({ user, splitAmong, paidBy }) => {
   const { hovered, ref } = useHover();
   const removeUserFromGroup = useMutation(api.groups.removeUserFromGroup);
   const openModal = () => {
-    if (getBalance(user.userId) !== 0) {
+    if (getBalance(user?.userId) !== 0) {
       showNotification({
         color: "red",
         icon: <IconX />,
         message: `You cant remove users with settlement pending ${getSpendings(
-          user.userId
+          user?.userId
         )}`,
       });
       return null;
@@ -42,12 +42,12 @@ const GroupUser = ({ user, splitAmong, paidBy }) => {
 
   const getSpendings = (userId) =>
     paidBy
-      ?.filter((item) => item.user === userId)
+      ?.filter((item) => item?.user === userId)
       ?.reduce((n, { amount }) => n + amount, 0);
 
   const getShare = (userId) =>
     splitAmong
-      ?.filter((item) => item.user === userId)
+      ?.filter((item) => item?.user === userId)
       ?.reduce((n, { amount }) => n + amount, 0);
 
   const getBalance = (userId) =>
@@ -67,10 +67,10 @@ const GroupUser = ({ user, splitAmong, paidBy }) => {
           <Text fz="sm">{user?.name}</Text>
         </Group>
         <Group>
-          <Text fz="sm" c={getBalance(user.userId) > 0 ? "green" : "red"}>
+          <Text fz="sm" c={getBalance(user?.userId) > 0 ? "green" : "red"}>
             <NumberFormatter
               prefix="₹ "
-              value={getBalance(user.userId)}
+              value={getBalance(user?.userId)}
               thousandsGroupStyle="lakh"
               thousandSeparator
               allowNegative={false}

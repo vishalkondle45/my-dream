@@ -27,7 +27,7 @@ import TodoSidebarItem from "./TodoSidebarItem";
 const SplitSidebar = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const create = useMutation(api.groups.create);
-  const addUser = useMutation(api.split.addUser);
+  const addUser = useMutation(api.split?.addUser);
   const groups = useQuery(api.groups.get);
   const router = useRouter();
 
@@ -77,12 +77,12 @@ const SplitSidebar = () => {
       pr="xl"
       w={rem(200)}
     >
-      {sidebarDataSplit.map((item) => (
+      {sidebarDatasplit?.map((item) => (
         <TodoSidebarItem
-          icon={item.icon}
-          text={item.text}
-          route={item.route}
-          key={item.route}
+          icon={item?.icon}
+          text={item?.text}
+          route={item?.route}
+          key={item?.route}
         />
       ))}
       <Button
@@ -101,10 +101,10 @@ const SplitSidebar = () => {
       </Text>
       {groups?.map((item) => (
         <TodoSidebarItem
-          icon={getGroupIconByType(item.type)}
-          text={item.name}
-          route={`/split/${item._id}`}
-          key={item._id}
+          icon={getGroupIconByType(item?.type)}
+          text={item?.name}
+          route={`/split/${item?._id}`}
+          key={item?._id}
         />
       ))}
 

@@ -17,14 +17,14 @@ import { IconSquare, IconSquareFilled } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
 
 const Analysis = ({ groups, group, setGroup }) => {
-  const getPaidBy = useQuery(api.expense.getPaidBy, { group: group });
-  const getSplitAmong = useQuery(api.expense.getSplitAmong, { group: group });
-  const users = useQuery(api.split.getUsers, { group: group });
+  const getPaidBy = useQuery(api.expense?.getPaidBy, { group: group });
+  const getSplitAmong = useQuery(api.expense?.getSplitAmong, { group: group });
+  const users = useQuery(api.split?.getUsers, { group: group });
   const loadingAnalysis = !getSplitAmong || !getPaidBy || !users;
   const userColors =
     users &&
-    users.map((user, i) => ({
-      user: user.userId,
+    users?.map((user, i) => ({
+      user: user?.userId,
       color: colors[i],
     }));
   return (
@@ -41,92 +41,99 @@ const Analysis = ({ groups, group, setGroup }) => {
         }))}
         styles={{ dropdown: { borderRadius: 16 } }}
       />
-      <Skeleton visible={loadingAnalysis}>
-        <Group justify="space-evenly" wrap="nowrap">
-          {users && getPaidBy && (
-            <RingProgress
-              size={150}
-              thickness={20}
-              roundCaps
-              label={
-                <Text
-                  ta="center"
-                  px="xs"
-                  fw={700}
-                  style={{ pointerEvents: "none" }}
-                >
-                  Paid
-                </Text>
-              }
-              sections={users?.map((item, i) => {
-                const userTotalAmountPaid = getPaidBy
-                  ?.filter(({ user }) => user === item.userId)
-                  ?.reduce((n, { amount }) => n + amount, 0);
-                const totalAmountPaid = getPaidBy?.reduce(
-                  (n, { amount }) => n + amount,
-                  0
-                );
+      {(getPaidBy?.length || getSplitAmong?.length) && users?.length ? (
+        <Skeleton visible={loadingAnalysis}>
+          <Group justify="space-evenly" wrap="nowrap">
+            {users && getPaidBy && (
+              <RingProgress
+                size={150}
+                thickness={20}
+                roundCaps
+                label={
+                  <Text
+                    ta="center"
+                    px="xs"
+                    fw={700}
+                    style={{ pointerEvents: "none" }}
+                  >
+                    Paid
+                  </Text>
+                }
+                sections={users?.map((item, i) => {
+                  const userTotalAmountPaid = getPaidBy
+                    ?.filter(({ user }) => user === item?.userId)
+                    ?.reduce((n, { amount }) => n + amount, 0);
+                  const totalAmountPaid = getPaidBy?.reduce(
+                    (n, { amount }) => n + amount,
+                    0
+                  );
 
-                return {
-                  value: (userTotalAmountPaid / totalAmountPaid) * 100,
-                  color: userColors?.find(({ user }) => user === item.userId)
-                    .color,
-                  tooltip: `${item.name} – ₹${userTotalAmountPaid}`,
-                };
-              })}
-            />
-          )}
-          {users && getSplitAmong && (
-            <RingProgress
-              size={150}
-              thickness={20}
-              roundCaps
-              label={
-                <Text
-                  ta="center"
-                  px="xs"
-                  fw={700}
-                  style={{ pointerEvents: "none" }}
-                >
-                  Split
-                </Text>
-              }
-              sections={users?.map((item, i) => {
-                const userTotalAmountSplit = getSplitAmong
-                  ?.filter(({ user }) => user === item.userId)
-                  ?.reduce((n, { amount }) => n + amount, 0);
-                const totalAmountSplit = getSplitAmong?.reduce(
-                  (n, { amount }) => n + amount,
-                  0
-                );
-                return {
-                  value: (userTotalAmountSplit / totalAmountSplit) * 100,
-                  color: userColors?.find(({ user }) => user === item.userId)
-                    ?.color,
-                  tooltip: `${item.name} – ₹${userTotalAmountSplit}`,
-                };
-              })}
-            />
-          )}
-        </Group>
-        <Stack gap={0}>
-          {users?.map((item, i) => (
+                  return {
+                    value: (userTotalAmountPaid / totalAmountPaid) * 100,
+                    color: userColors?.find(({ user }) => user === item?.userId)
+                      .color,
+                    tooltip: `${item?.name} – ₹${userTotalAmountPaid}`,
+                  };
+                })}
+              />
+            )}
+            {users && getSplitAmong && (
+              <RingProgress
+                size={150}
+                thickness={20}
+                roundCaps
+                label={
+                  <Text
+                    ta="center"
+                    px="xs"
+                    fw={700}
+                    style={{ pointerEvents: "none" }}
+                  >
+                    Split
+                  </Text>
+                }
+                sections={users?.map((item, i) => {
+                  const userTotalAmountSplit = getSplitAmong
+                    ?.filter(({ user }) => user === item?.userId)
+                    ?.reduce((n, { amount }) => n + amount, 0);
+                  const totalAmountSplit = getSplitAmong?.reduce(
+                    (n, { amount }) => n + amount,
+                    0
+                  );
+                  return {
+                    value: (userTotalAmountSplit / totalAmountSplit) * 100,
+                    color: userColors?.find(({ user }) => user === item?.userId)
+                      ?.color,
+                    tooltip: `${item?.name} – ₹${userTotalAmountSplit}`,
+                  };
+                })}
+              />
+            )}
+          </Group>
+          <Stack gap={0}>
+            {users?.map((item, i) => (
               <Group>
                 <ThemeIcon
                   radius="xs"
                   variant="transparent"
                   color={
-                    userColors?.find(({ user }) => user === item.userId)?.color
+                    userColors?.find(({ user }) => user === item?.userId)?.color
                   }
                 >
                   <IconSquareFilled />
                 </ThemeIcon>
-                <Text>{item.name}</Text>
+                <Text>{item?.name}</Text>
               </Group>
-            )
-          )}
-        </Stack>
-      </Skeleton>
+            ))}
+          </Stack>
+        </Skeleton>
+      ) : (
+        <>
+          <Text ta="center" mt="xl" c="gray">
+            Nothing to show
+          </Text>
+        </>
+      )}
     </>
   );
 };

@@ -47,7 +47,7 @@ export const remove = mutation({
       .collect();
 
     todos.forEach(async (item) => {
-      await ctx.db.delete(item._id);
+      await ctx.db.delete(item?._id);
     });
 
     await ctx.db.delete(args._id);

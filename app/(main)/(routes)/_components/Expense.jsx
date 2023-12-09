@@ -23,8 +23,8 @@ const Expenses = ({
   setSelectedExpense,
 }) => {
   const remaining =
-    (paidBy?.find((item) => item.user === user?.subject)?.amount || 0) -
-    (splitAmong?.find((item) => item.user === user?.subject)?.amount || 0);
+    (paidBy?.find((item) => item?.user === user?.subject)?.amount || 0) -
+    (splitAmong?.find((item) => item?.user === user?.subject)?.amount || 0);
   return (
     <>
       <Paper
@@ -32,7 +32,7 @@ const Expenses = ({
         mt="sm"
         onClick={() => setSelectedExpense(expense)}
       >
-        <Text size="xs">{dayjs(expense.date).format("MMM DD")}</Text>
+        <Text size="xs">{dayjs(expense?.date).format("MMM DD")}</Text>
         <Group justify="space-between">
           <Group>
             <ThemeIcon variant="light">
@@ -49,7 +49,7 @@ const Expenses = ({
                     {paidBy[0]?.user === user?.subject
                       ? "You"
                       : users
-                          .find((item) => item.userId === paidBy[0]?.user)
+                          .find((item) => item?.userId === paidBy[0]?.user)
                           ?.name.split(" ")[0]}
                   </Text>
                   <Text>Paid</Text>
@@ -57,7 +57,7 @@ const Expenses = ({
                     {splitAmong[0]?.user === user?.subject
                       ? "You"
                       : users
-                          .find((item) => item.userId === splitAmong[0]?.user)
+                          .find((item) => item?.userId === splitAmong[0]?.user)
                           ?.name.split(" ")[0]}
                   </Text>
                 </Group>
@@ -71,7 +71,7 @@ const Expenses = ({
                   {paidBy?.length > 1
                     ? `${paidBy?.length} people`
                     : users
-                        .find((item) => item.userId === paidBy[0]?.user)
+                        .find((item) => item?.userId === paidBy[0]?.user)
                         ?.name.split(" ")[0]}{" "}
                   paid $ {expense?.amount}
                 </Text>

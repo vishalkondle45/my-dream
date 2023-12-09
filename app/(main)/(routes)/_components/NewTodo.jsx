@@ -50,7 +50,7 @@ const NewTodo = ({ object }) => {
       return;
     }
     const id = notifications.show({
-      title: "Creating a todo...",
+      title: "Creating a todo?...",
       loading: true,
       withBorder: true,
       autoClose: false,

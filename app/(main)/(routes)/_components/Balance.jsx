@@ -31,7 +31,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 
 const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
-  const settle = useMutation(api.expense.settle);
+  const settle = useMutation(api.expense?.settle);
   const create = useMutation(api.notifications.create);
   const [opened, { close, open }] = useDisclosure(false);
 
@@ -46,33 +46,34 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
 
   let myRemaining =
     paidBy
-      .filter((i) => i.user === user.subject)
+      .filter((i) => i?.user === user?.subject)
       .reduce((n, { amount }) => n + amount, 0) -
     splitAmong
-      .filter((i) => i.user === user.subject)
+      .filter((i) => i?.user === user?.subject)
       .reduce((n, { amount }) => n + amount, 0);
 
   let userRemaining =
     splitAmong
-      .filter((i) => i.user === item.userId)
+      .filter((i) => i?.user === item?.userId)
       .reduce((n, { amount }) => n + amount, 0) -
     paidBy
-      .filter((i) => i.user === item.userId)
+      .filter((i) => i?.user === item?.userId)
       .reduce((n, { amount }) => n + amount, 0);
 
   const youWill = expenses
     .map((expense) => {
-      let paidUsers = paidBy.filter((paid) => paid.expense === expense._id);
-      let splitPaidUser = splitAmong.filter(
+      let paidUsers = paidBy.filter((paid) => paid?.expense === expense?._id);
+      let splitPaidUser = splitAmong?.filter(
         (split) =>
-          split.expense === expense._id &&
+          split?.expense === expense?._id &&
           paidBy.find(
-            (paid) => paid.user === split.user && paid.expense === expense._id
+            (paid) =>
+              paid?.user === split?.user && paid?.expense === expense?._id
           )
       );
 
-      let paidUsersSum = paidUsers.reduce((n, { amount }) => n + amount, 0);
-      let splitPaidUserSum = splitPaidUser.reduce(
+      let paidUsersSum = paidUsers?.reduce((n, { amount }) => n + amount, 0);
+      let splitPaidUserSum = splitPaidUser?.reduce(
         (n, { amount }) => n + amount,
         0
       );
@@ -80,10 +81,10 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
       let extraPaidTotal = paidUsersSum - splitPaidUserSum;
 
       let selectedUserPaidAmount =
-        paidUsers.find((paid) => paid.user === item.userId)?.amount || 0;
+        paidUsers?.find((paid) => paid?.user === item?.userId)?.amount || 0;
 
       let selectedUserSplitAmount =
-        splitPaidUser.find((paid) => paid.user === item.userId)?.amount || 0;
+        splitPaidUser?.find((paid) => paid?.user === item?.userId)?.amount || 0;
 
       let selectedUserExtraPaidAmount =
         selectedUserPaidAmount - selectedUserSplitAmount;
@@ -92,23 +93,25 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
         (selectedUserExtraPaidAmount / extraPaidTotal) * 100;
 
       let x =
-        splitAmong.find(
+        splitAmong?.find(
           (split) =>
-            split.expense === expense._id && split.user === user.subject
+            split?.expense === expense?._id && split?.user === user?.subject
         )?.amount || 0;
 
       let y =
         paidBy.find(
-          (paid) => paid.expense === expense._id && paid.user === user.subject
+          (paid) =>
+            paid?.expense === expense?._id && paid?.user === user?.subject
         )?.amount || 0;
 
       let thisUserNeedsToPay = x - y;
 
       let thisUserPaidAmount =
-        paidUsers.find((paid) => paid.user === user.subject)?.amount || 0;
+        paidUsers?.find((paid) => paid?.user === user?.subject)?.amount || 0;
 
       let thisUserSplitAmount =
-        splitPaidUser.find((paid) => paid.user === user.subject)?.amount || 0;
+        splitPaidUser?.find((paid) => paid?.user === user?.subject)?.amount ||
+        0;
 
       let thisUserExtraPaidAmount = thisUserPaidAmount - thisUserSplitAmount;
 
@@ -116,13 +119,15 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
         (thisUserExtraPaidAmount / extraPaidTotal) * 100;
 
       let a =
-        splitAmong.find(
-          (split) => split.expense === expense._id && split.user === item.userId
+        splitAmong?.find(
+          (split) =>
+            split?.expense === expense?._id && split?.user === item?.userId
         )?.amount || 0;
 
       let b =
         paidBy.find(
-          (paid) => paid.expense === expense._id && paid.user === item.userId
+          (paid) =>
+            paid?.expense === expense?._id && paid?.user === item?.userId
         )?.amount || 0;
 
       let selectedUserNeedsToPay = a - b;
@@ -147,8 +152,8 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   const submitSettle = () => {
     settle({
       amount: form.values.amount,
-      sender: user.subject,
-      receiver: item.userId,
+      sender: user?.subject,
+      receiver: item?.userId,
       group: expenses[0].group,
       date: dayjs().format("MM-DD-YYYY"),
     })
@@ -156,7 +161,7 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
         showNotification({
           color: "green",
           icon: <IconCheck />,
-          message: `You settled ₹ ${form.values.amount} with ${item.name}`,
+          message: `You settled ₹ ${form.values.amount} with ${item?.name}`,
         });
         close();
       })
@@ -166,15 +171,15 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   const notify = () => {
     create({
       title: "Please settle",
-      message: `You have pending settlement with ${item.name} of ₹ ${form.values.amount}`,
-      receiver: item.userId,
+      message: `You have pending settlement with ${item?.name} of ₹ ${form.values.amount}`,
+      receiver: item?.userId,
       date: dayjs().format("MM-DD-YYYY"),
     })
       .then(() => {
         showNotification({
           color: "green",
           icon: <IconCheck />,
-          message: `You notified to ${item.name}`,
+          message: `You notified to ${item?.name}`,
         });
       })
       .catch((error) => {
@@ -189,24 +194,24 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
   return (
     <>
       {Boolean(myRemaining) && youWill !== 0 && (
-        <Paper key={item._id} p="xs" shadow="xl" withBorder>
+        <Paper key={item?._id} p="xs" shadow="xl" withBorder>
           <Grid align="center">
             <Grid.Col span={3}>
               <Stack
-                title={youWill > 0 ? item.name : user?.name}
+                title={youWill > 0 ? item?.name : user?.name}
                 style={{ alignItems: "center" }}
                 gap={0}
               >
                 <Avatar
                   size="md"
                   color={
-                    colors[sumAscii(youWill > 0 ? item.name : user?.name) - 1]
+                    colors[sumAscii(youWill > 0 ? item?.name : user?.name) - 1]
                   }
                 >
-                  {getInitials(youWill > 0 ? item.name : user?.name)}
+                  {getInitials(youWill > 0 ? item?.name : user?.name)}
                 </Avatar>
                 <Text style={{ whiteSpace: "nowrap" }} size="xs">
-                  {youWill > 0 ? item.name.slice(0, 8) : "You"}
+                  {youWill > 0 ? item?.name.slice(0, 8) : "You"}
                 </Text>
               </Stack>
             </Grid.Col>
@@ -231,17 +236,17 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             </Grid.Col>
             <Grid.Col span={3}>
               <Stack
-                title={youWill > 0 ? user.name : item?.name}
+                title={youWill > 0 ? user?.name : item?.name}
                 style={{ alignItems: "center" }}
                 gap={0}
               >
                 <Avatar
                   size="md"
                   color={
-                    colors[sumAscii(youWill > 0 ? user.name : item?.name) - 1]
+                    colors[sumAscii(youWill > 0 ? user?.name : item?.name) - 1]
                   }
                 >
-                  {getInitials(youWill > 0 ? user.name : item?.name)}
+                  {getInitials(youWill > 0 ? user?.name : item?.name)}
                 </Avatar>
                 <Text style={{ whiteSpace: "nowrap" }} size="xs">
                   {youWill > 0 ? "You" : item?.name.slice(0, 6)}
@@ -313,7 +318,7 @@ const Balance = ({ item, user, paidBy, splitAmong, expenses }) => {
             {/* <List.Item>
               <Text size="sm">
                 This option is intended for recording payments made outside
-                mySplit.
+                mysplit?.
               </Text>
             </List.Item> */}
           </List>

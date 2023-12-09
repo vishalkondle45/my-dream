@@ -286,7 +286,7 @@ const Page = () => {
                       close={close}
                       edit={edit}
                       setEdit={setEdit}
-                      key={note._id}
+                      key={note?._id}
                       note={note}
                       value={value}
                     />
@@ -316,7 +316,7 @@ const Page = () => {
                   close={close}
                   edit={edit}
                   setEdit={setEdit}
-                  key={note._id}
+                  key={note?._id}
                   note={note}
                   value={value}
                 />

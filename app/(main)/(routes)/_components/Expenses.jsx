@@ -13,12 +13,12 @@ const Expenses = ({
     <Box mt="xs">
       {expenses?.map((expense) => (
         <Expense
-          key={expense._id}
+          key={expense?._id}
           expense={expense}
           splitAmong={splitAmong?.filter(
-            (item) => item.expense === expense._id
+            (item) => item?.expense === expense?._id
           )}
-          paidBy={paidBy?.filter((item) => item.expense === expense._id)}
+          paidBy={paidBy?.filter((item) => item?.expense === expense?._id)}
           users={users}
           user={user}
           setSelectedExpense={setSelectedExpense}

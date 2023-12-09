@@ -193,7 +193,7 @@ const Page = () => {
               {checkDate ? "Today" : selectedDateFormat}
             </Text>
             {todos
-              ?.filter((todo) => dayjs(todo.date).isSame(date, "day"))
+              ?.filter((todo) => dayjs(todo?.date).isSame(date, "day"))
               ?.map((todo) => (
                 <Alert
                   px={12}
@@ -202,13 +202,13 @@ const Page = () => {
                   variant="filled"
                   color="dark.4"
                   icon={
-                    todo.completedOn ? (
+                    todo?.completedOn ? (
                       <IconCircleCheckFilled />
                     ) : (
                       <IconCircleCheck />
                     )
                   }
-                  title={todo.todo}
+                  title={todo?.todo}
                 />
               ))}
             <Timeline

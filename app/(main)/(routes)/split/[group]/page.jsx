@@ -43,12 +43,12 @@ import ViewExpense from "../../_components/ViewExpense";
 const Page = ({ params }) => {
   const group = useQuery(api.groups.getGroup, { group: params.group });
   const deleteGroup = useMutation(api.groups.deleteGroup);
-  const users = useQuery(api.split.getUsers, { group: params?.group });
-  const expenses = useQuery(api.expense.getExpenses, { group: params?.group });
-  const splitAmong = useQuery(api.expense.getSplitAmong, {
+  const users = useQuery(api.split?.getUsers, { group: params?.group });
+  const expenses = useQuery(api.expense?.getExpenses, { group: params?.group });
+  const splitAmong = useQuery(api.expense?.getSplitAmong, {
     group: params?.group,
   });
-  const paidBy = useQuery(api.expense.getPaidBy, { group: params?.group });
+  const paidBy = useQuery(api.expense?.getPaidBy, { group: params?.group });
   const router = useRouter();
   const [groupSettingsOpened, { open, close }] = useDisclosure(false);
   const [addExpenseOpened, addExpenseHandlers] = useDisclosure(false);
@@ -214,10 +214,10 @@ const Page = ({ params }) => {
             users={users}
             selectedExpense={selectedExpense}
             paidBy={paidBy?.filter(
-              (item) => item.expense === selectedExpense?._id
+              (item) => item?.expense === selectedExpense?._id
             )}
             splitAmong={splitAmong?.filter(
-              (item) => item.expense === selectedExpense?._id
+              (item) => item?.expense === selectedExpense?._id
             )}
             editExpenseHandlers={editExpenseHandlers}
             setSelectedExpense={setSelectedExpense}

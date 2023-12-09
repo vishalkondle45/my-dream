@@ -14,10 +14,12 @@ import { useRouter } from "next/navigation";
 
 const GrouItem = ({ group }) => {
   const user = useQuery(api.users?.getCurrentUser);
-  // const users = useQuery(api.split.getUsers, { group: group?._id });
-  const expenses = useQuery(api.expense.getExpenses, { group: group?._id });
-  const splitAmong = useQuery(api.expense.getSplitAmong, { group: group?._id });
-  const paidBy = useQuery(api.expense.getPaidBy, { group: group?._id });
+  // const users = useQuery(api.split?.getUsers, { group: group?._id });
+  const expenses = useQuery(api.expense?.getExpenses, { group: group?._id });
+  const splitAmong = useQuery(api.expense?.getSplitAmong, {
+    group: group?._id,
+  });
+  const paidBy = useQuery(api.expense?.getPaidBy, { group: group?._id });
   const router = useRouter();
 
   const nonSettlementExpenses = expenses
@@ -28,7 +30,7 @@ const GrouItem = ({ group }) => {
     paidBy
       ?.filter(
         (item) =>
-          item.user === userId && nonSettlementExpenses.includes(item.expense)
+          item?.user === userId && nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -36,7 +38,8 @@ const GrouItem = ({ group }) => {
     paidBy
       ?.filter(
         (item) =>
-          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+          item?.user === userId &&
+          !nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -44,7 +47,7 @@ const GrouItem = ({ group }) => {
     splitAmong
       ?.filter(
         (item) =>
-          item.user === userId && nonSettlementExpenses.includes(item.expense)
+          item?.user === userId && nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -52,7 +55,8 @@ const GrouItem = ({ group }) => {
     splitAmong
       ?.filter(
         (item) =>
-          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+          item?.user === userId &&
+          !nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 

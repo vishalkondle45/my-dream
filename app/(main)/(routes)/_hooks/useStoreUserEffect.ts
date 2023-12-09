@@ -9,7 +9,7 @@ export default function useStoreUserEffect() {
   const { isAuthenticated } = useConvexAuth();
   const { user } = useUser();
   // When this state is set we know the server
-  // has stored the user.
+  // has stored the user?.
   const [userId, setUserId] = useState<Id<"users"> | null>(null);
   const storeUser = useMutation(api.users?.store);
   // Call the `storeUser` mutation function to store

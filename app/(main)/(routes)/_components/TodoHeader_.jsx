@@ -350,7 +350,7 @@ const TodoHeader_ = ({ queryParams, list, setSort }) => {
         <Menu.Dropdown>
           {sortMap?.map((item) => (
             <Menu.Item
-              key={item.value}
+              key={item?.value}
               onClick={() =>
                 setSort((sort) => ({ ...sort, sortBy: item?.value }))
               }

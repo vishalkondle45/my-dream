@@ -20,7 +20,7 @@ import { showNotification } from "@mantine/notifications";
 const GroupUsers = ({ users, group, splitAmong, paidBy }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [loading, handlers] = useDisclosure(false);
-  const addUser = useMutation(api.split.addUser);
+  const addUser = useMutation(api.split?.addUser);
   const getUserByEmail = useMutation(api.users?.getUserByEmail);
   const [email, setEmail] = useState("");
   const addUserToArray = async () => {

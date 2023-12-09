@@ -19,10 +19,10 @@ const NotesSidebar = ({ data }) => {
     >
       {data.map((item) => (
         <SidebarItem
-          icon={item.icon}
-          text={item.text}
-          route={item.route}
-          key={item.route}
+          icon={item?.icon}
+          text={item?.text}
+          route={item?.route}
+          key={item?.route}
         />
       ))}
     </Box>

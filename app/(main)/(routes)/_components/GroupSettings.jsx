@@ -9,7 +9,7 @@ import GroupMoreSettings from "./GroupMoreSettings";
 import GroupUsers from "./GroupUsers";
 
 const GroupSettings = ({ group, splitAmong, paidBy }) => {
-  const users = useQuery(api.split.getUsers, { group: group?._id });
+  const users = useQuery(api.split?.getUsers, { group: group?._id });
   const changeGroupType = useMutation(api.groups.changeGroupType);
   const updateGroupName = useMutation(api.groups.updateGroupName);
 
@@ -43,13 +43,13 @@ const GroupSettings = ({ group, splitAmong, paidBy }) => {
             <Menu.Dropdown>
               {getGroups?.map((item) => (
                 <Menu.Item
-                  key={item.name}
+                  key={item?.name}
                   onClick={() =>
-                    changeGroupType({ group: group._id, type: item.name })
+                    changeGroupType({ group: group._id, type: item?.name })
                   }
-                  leftSection={item.icon}
+                  leftSection={item?.icon}
                 >
-                  {item.name}
+                  {item?.name}
                 </Menu.Item>
               ))}
             </Menu.Dropdown>

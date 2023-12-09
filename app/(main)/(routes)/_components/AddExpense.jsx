@@ -33,7 +33,7 @@ import AddExpenseUser from "../_components/AddExpenseUser";
 
 const AddExpense = ({ group, user, users, close }) => {
   const [opened, setOpened] = useState(false);
-  const add = useMutation(api.expense.add);
+  const add = useMutation(api.expense?.add);
 
   const form = useForm({
     initialValues: {
@@ -69,7 +69,7 @@ const AddExpense = ({ group, user, users, close }) => {
       form.setFieldValue(
         "paidBy",
         users?.map((item) => ({
-          user: item.userId,
+          user: item?.userId,
           amount: 0,
         }))
       );
@@ -81,7 +81,7 @@ const AddExpense = ({ group, user, users, close }) => {
     form.setFieldValue(
       "splitAmong",
       users?.map((item) => ({
-        user: item.userId,
+        user: item?.userId,
         amount: form.values?.amount / users?.length,
       }))
     );
@@ -300,7 +300,7 @@ const AddExpense = ({ group, user, users, close }) => {
                       }
                       onChange={(value) => {
                         let index = form.values.splitAmong?.findIndex(
-                          (item) => item.user === user.userId
+                          (item) => item?.user === user?.userId
                         );
                         let newArr = [...form.values.splitAmong];
                         newArr[index].amount = value;

@@ -145,7 +145,10 @@ const Page = () => {
               </Skeleton>
               <Skeleton visible={loading}>
                 <Text fw={700}>
-                  {cities.find((item) => item.Key === debounced)?.LocalizedName}
+                  {
+                    cities.find((item) => item?.Key === debounced)
+                      ?.LocalizedName
+                  }
                 </Text>
               </Skeleton>
               <Skeleton visible={loading}>
@@ -171,13 +174,13 @@ const Page = () => {
                   <ThemeIcon size="sm" variant="transparent" color="green">
                     <IconCaretUpFilled />
                   </ThemeIcon>
-                  <Text size="xs">{item.Temperature.Maximum.Value}° C</Text>
+                  <Text size="xs">{item?.Temperature.Maximum.Value}° C</Text>
                 </Group>
                 <Group align="center" gap={0}>
                   <ThemeIcon size="sm" variant="transparent" color="red">
                     <IconCaretDownFilled />
                   </ThemeIcon>
-                  <Text size="xs">{item.Temperature.Minimum.Value}° C</Text>
+                  <Text size="xs">{item?.Temperature.Minimum.Value}° C</Text>
                 </Group>
               </Group>
               <Group wrap="nowrap" mt="sm" justify="space-between">

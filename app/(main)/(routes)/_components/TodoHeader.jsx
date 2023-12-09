@@ -83,7 +83,7 @@ const TodoHeader = ({ icon, setSort, sortMap, header }) => {
           <Menu.Dropdown>
             {sortMap?.map((item) => (
               <Menu.Item
-                key={item.value}
+                key={item?.value}
                 onClick={() =>
                   setSort((sort) => ({ ...sort, sortBy: item?.value }))
                 }

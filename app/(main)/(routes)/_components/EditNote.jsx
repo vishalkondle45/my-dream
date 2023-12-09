@@ -22,7 +22,7 @@ const EditNote = ({ edit, setEdit, close, opened }) => {
   const onUpdate = async () => {
     if (!edit._id) return;
     const id = notifications.show({
-      title: "Updating a note...",
+      title: "Updating a note?...",
       loading: true,
       withBorder: true,
       autoClose: false,

@@ -17,7 +17,7 @@ const Sorting = ({ setSort, sort }) => {
           {sort.reverse ? <IconChevronDown /> : <IconChevronUp />}
         </ActionIcon>
         <Text size="xs">
-          Sorted by {sortMap.find((item) => item.value === sort.sortBy).label}
+          Sorted by {sortMap.find((item) => item?.value === sort.sortBy).label}
         </Text>
       </Group>
     </div>

@@ -62,10 +62,10 @@ const TodoSidebar = ({ data }) => {
     >
       {data.map((item) => (
         <TodoSidebarItem
-          icon={item.icon}
-          text={item.text}
-          route={item.route}
-          key={item.route}
+          icon={item?.icon}
+          text={item?.text}
+          route={item?.route}
+          key={item?.route}
         />
       ))}
 

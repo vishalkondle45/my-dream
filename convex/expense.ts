@@ -27,16 +27,16 @@ export const add = mutation({
     args.paidBy?.forEach(async (item: { user: string; amount: number }) => {
       await ctx.db.insert("paidBy", {
         expense: expense,
-        user: item.user,
-        amount: item.amount,
+        user: item?.user,
+        amount: item?.amount,
         group: args.group,
       });
     });
     args.splitAmong?.forEach(async (item: { user: string; amount: number }) => {
       await ctx.db.insert("splitAmong", {
         expense: expense,
-        user: item.user,
-        amount: item.amount,
+        user: item?.user,
+        amount: item?.amount,
         group: args.group,
       });
     });
@@ -50,7 +50,7 @@ export const add = mutation({
       .collect();
 
     paidBy?.forEach(async (item) => {
-      await ctx.db.delete(item._id);
+      await ctx.db.delete(item?._id);
     });
 
     return expense;
@@ -87,21 +87,21 @@ export const update = mutation({
       .collect();
 
     args.paidBy?.forEach(async (item: { user: string; amount: number }) => {
-      if (!paidBy?.find((user) => user.user === item.user)) {
+      if (!paidBy?.find((user) => user?.user === item?.user)) {
         await ctx.db.insert("paidBy", {
           expense: args._id,
-          user: item.user,
-          amount: item.amount,
+          user: item?.user,
+          amount: item?.amount,
           group: args.group,
         });
       }
     });
 
     paidBy?.forEach(async (item) => {
-      await ctx.db.patch(item._id, {
+      await ctx.db.patch(item?._id, {
         amount:
           args.paidBy?.find(
-            (i: { user: string; amount: number }) => i.user === item.user
+            (i: { user: string; amount: number }) => i?.user === item?.user
           )?.amount || 0,
       });
     });
@@ -115,7 +115,7 @@ export const update = mutation({
       .collect();
 
     paidBy?.forEach(async (item) => {
-      await ctx.db.delete(item._id);
+      await ctx.db.delete(item?._id);
     });
 
     let splitAmong = await ctx.db
@@ -125,10 +125,10 @@ export const update = mutation({
       .collect();
 
     splitAmong?.forEach(async (item) => {
-      await ctx.db.patch(item._id, {
+      await ctx.db.patch(item?._id, {
         amount:
           args.splitAmong?.find(
-            (i: { user: string; amount: number }) => i.user === item.user
+            (i: { user: string; amount: number }) => i?.user === item?.user
           )?.amount || 0,
       });
     });
@@ -211,7 +211,7 @@ export const deleteExpense = mutation({
       ?.filter((q) => q.eq(q.field("expense"), args.expense))
       .collect();
     paidBy?.forEach(async (item) => {
-      await ctx.db.delete(item._id);
+      await ctx.db.delete(item?._id);
     });
 
     let splitAmong = await ctx.db
@@ -219,7 +219,7 @@ export const deleteExpense = mutation({
       ?.filter((q) => q.eq(q.field("expense"), args.expense))
       .collect();
     splitAmong?.forEach(async (item) => {
-      await ctx.db.delete(item._id);
+      await ctx.db.delete(item?._id);
     });
 
     return expense;

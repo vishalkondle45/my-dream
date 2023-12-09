@@ -185,11 +185,11 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
       ref={ref}
       shadow={hovered && "xl"}
     >
-      {(hovered || value?.includes(note._id)) && value && (
+      {(hovered || value?.includes(note?._id)) && value && (
         <Checkbox
-          key={note._id}
+          key={note?._id}
           styles={{ root: { position: "relative", left: -24, top: -24 } }}
-          value={note._id}
+          value={note?._id}
           mb={"-lg"}
         />
       )}
@@ -204,8 +204,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
           <ActionIcon
             onClick={note?.isPinned ? onUnPin : onPin}
             radius="xl"
-            variant={note.color ? "filled" : "transparent"}
-            color={note.color}
+            variant={note?.color ? "filled" : "transparent"}
+            color={note?.color}
             title={note?.isPinned ? "Unpin" : "Pin"}
           >
             {note?.isPinned ? <IconPinnedFilled /> : <IconPinned />}
@@ -218,8 +218,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
             <ActionIcon
               radius="xl"
               onClick={onRestore}
-              variant={note.color ? "filled" : "transparent"}
-              color={note.color}
+              variant={note?.color ? "filled" : "transparent"}
+              color={note?.color}
               title="Restore"
             >
               <IconRestore />
@@ -229,8 +229,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
               <ActionIcon
                 onClick={onEdit}
                 radius="xl"
-                variant={note.color ? "filled" : "transparent"}
-                color={note.color}
+                variant={note?.color ? "filled" : "transparent"}
+                color={note?.color}
                 title="Edit"
               >
                 <IconPencil />
@@ -238,8 +238,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
               <ActionIcon
                 onClick={() => onClone(note?.title, note?.note, note?.color)}
                 radius="xl"
-                variant={note.color ? "filled" : "transparent"}
-                color={note.color}
+                variant={note?.color ? "filled" : "transparent"}
+                color={note?.color}
                 title="Clone"
               >
                 <IconCopy />
@@ -247,8 +247,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
               <ActionIcon
                 onClick={() => {}}
                 radius="xl"
-                variant={note.color ? "filled" : "transparent"}
-                color={note.color}
+                variant={note?.color ? "filled" : "transparent"}
+                color={note?.color}
                 title="Copy to docs"
               >
                 <IconFileText />
@@ -257,8 +257,8 @@ const Note = ({ note, setEdit, edit, open, close, value }) => {
           )}
           <ActionIcon
             radius="xl"
-            variant={note.color ? "filled" : "transparent"}
-            color={note.color}
+            variant={note?.color ? "filled" : "transparent"}
+            color={note?.color}
             title={note?.isTrashed ? "Delete permanently" : "Move to trash"}
             onClick={note?.isTrashed ? onRemove : onTrash}
           >

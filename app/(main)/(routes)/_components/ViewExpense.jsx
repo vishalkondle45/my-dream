@@ -31,7 +31,7 @@ const ViewExpense = ({
   setSelectedExpense,
   user,
 }) => {
-  const deleteExpense = useMutation(api.expense.deleteExpense);
+  const deleteExpense = useMutation(api.expense?.deleteExpense);
 
   return (
     <>
@@ -48,7 +48,7 @@ const ViewExpense = ({
                     {paidBy[0]?.user === user?.subject
                       ? "You"
                       : users
-                          .find((item) => item.userId === paidBy[0]?.user)
+                          .find((item) => item?.userId === paidBy[0]?.user)
                           ?.name.split(" ")[0]}
                   </Text>
                   <Text>Paid</Text>
@@ -56,7 +56,7 @@ const ViewExpense = ({
                     {splitAmong[0]?.user === user?.subject
                       ? "You"
                       : users
-                          .find((item) => item.userId === splitAmong[0]?.user)
+                          .find((item) => item?.userId === splitAmong[0]?.user)
                           ?.name.split(" ")[0]}
                   </Text>
                 </Group>
@@ -114,33 +114,33 @@ const ViewExpense = ({
           Paid By
         </Text>
         {paidBy
-          ?.filter((item) => item.expense === selectedExpense?._id)
+          ?.filter((item) => item?.expense === selectedExpense?._id)
           ?.map((item) => (
-            <Group mb="xs" key={item._id} justify="space-between">
+            <Group mb="xs" key={item?._id} justify="space-between">
               <Group gap="xs">
                 <Avatar
                   size="sm"
                   color={
                     colors[
                       sumAscii(
-                        users?.find((user) => user.userId === item?.user).name
+                        users?.find((user) => user?.userId === item?.user).name
                       ) - 1
                     ]
                   }
                 >
                   {getInitials(
-                    users?.find((user) => user.userId === item?.user).name
+                    users?.find((user) => user?.userId === item?.user).name
                   )}
                 </Avatar>
                 <Text>
                   {item?.user === user?.subject
                     ? "You"
-                    : users?.find((user) => user.userId === item?.user).name}
+                    : users?.find((user) => user?.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter
                 allowNegative={false}
-                value={item.amount}
+                value={item?.amount}
                 prefix="₹ "
                 thousandsGroupStyle="lakh"
                 thousandSeparator
@@ -152,33 +152,33 @@ const ViewExpense = ({
           Split Among
         </Text>
         {splitAmong
-          ?.filter((item) => item.expense === selectedExpense?._id)
+          ?.filter((item) => item?.expense === selectedExpense?._id)
           ?.map((item) => (
-            <Group mb="xs" key={item._id} justify="space-between">
+            <Group mb="xs" key={item?._id} justify="space-between">
               <Group gap="xs">
                 <Avatar
                   size="sm"
                   color={
                     colors[
                       sumAscii(
-                        users?.find((user) => user.userId === item?.user).name
+                        users?.find((user) => user?.userId === item?.user).name
                       ) - 1
                     ]
                   }
                 >
                   {getInitials(
-                    users?.find((user) => user.userId === item?.user).name
+                    users?.find((user) => user?.userId === item?.user).name
                   )}
                 </Avatar>
                 <Text>
                   {item?.user === user?.subject
                     ? "You"
-                    : users?.find((user) => user.userId === item?.user).name}
+                    : users?.find((user) => user?.userId === item?.user).name}
                 </Text>
               </Group>
               <NumberFormatter
                 allowNegative={false}
-                value={item.amount}
+                value={item?.amount}
                 prefix="₹ "
                 thousandsGroupStyle="lakh"
                 thousandSeparator

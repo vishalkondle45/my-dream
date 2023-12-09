@@ -13,7 +13,7 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
     paidBy
       ?.filter(
         (item) =>
-          item.user === userId && nonSettlementExpenses.includes(item.expense)
+          item?.user === userId && nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -21,7 +21,8 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
     paidBy
       ?.filter(
         (item) =>
-          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+          item?.user === userId &&
+          !nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -29,7 +30,7 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
     splitAmong
       ?.filter(
         (item) =>
-          item.user === userId && nonSettlementExpenses.includes(item.expense)
+          item?.user === userId && nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -37,7 +38,8 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
     splitAmong
       ?.filter(
         (item) =>
-          item.user === userId && !nonSettlementExpenses.includes(item.expense)
+          item?.user === userId &&
+          !nonSettlementExpenses.includes(item?.expense)
       )
       ?.reduce((n, { amount }) => n + amount, 0) || 0;
 
@@ -70,14 +72,14 @@ const Summary = ({ expenses, splitAmong, paidBy, users, user, group }) => {
           </Accordion.Control>
           <Accordion.Panel mb="md">
             {users
-              ?.filter((item) => item.userId !== user.subject)
+              ?.filter((item) => item?.userId !== user?.subject)
               ?.map((user) => (
                 <SpendingItem
-                  key={user._id}
-                  name={user.name}
-                  spendings={getSpendings(user.userId)}
+                  key={user?._id}
+                  name={user?.name}
+                  spendings={getSpendings(user?.userId)}
                   paids={getPaids(user?.userId)}
-                  share={getShare(user.userId)}
+                  share={getShare(user?.userId)}
                   received={getReceived(user?.subject)}
                   color="orange"
                 />

@@ -138,7 +138,7 @@ const Page = () => {
           styles={{ root: { alignItems: "flex-start" } }}
         >
           {notes?.map((note) => (
-            <Note key={note._id} note={note} />
+            <Note key={note?._id} note={note} />
           ))}
         </SimpleGrid>
       ) : (

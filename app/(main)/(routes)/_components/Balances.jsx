@@ -10,7 +10,7 @@ const Balances = ({ expenses, paidBy, splitAmong, users, user }) => {
           ?.filter(({ userId }) => userId !== user?.subject)
           .map((item) => (
             <Balance
-              key={item._id}
+              key={item?._id}
               expenses={expenses}
               paidBy={paidBy}
               splitAmong={splitAmong}

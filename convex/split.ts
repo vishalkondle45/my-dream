@@ -20,7 +20,7 @@ export const addUser = mutation({
         )
       )
       .collect();
-    if (user.length) {
+    if (user?.length) {
       return { message: "User already exist in this group." };
     }
     const document = await ctx.db.insert("groupUsers", {

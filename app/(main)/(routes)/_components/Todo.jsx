@@ -55,7 +55,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
 
   const openModal = () =>
     modals.openConfirmModal({
-      title: `"${todo.todo}" will be permanently deleted.`,
+      title: `"${todo?.todo}" will be permanently deleted.`,
       children: <Text size="sm">You wont be able to undo this action.</Text>,
       labels: { confirm: "Confirm", cancel: "Cancel" },
       confirmProps: { color: "red" },
@@ -314,7 +314,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
             size={isMobile ? "xs" : "md"}
             variant="transparent"
             color={color}
-            onClick={() => onUpdate({ isImportant: !todo.isImportant })}
+            onClick={() => onUpdate({ isImportant: !todo?.isImportant })}
           >
             {todo?.isImportant ? <IconStarFilled /> : <IconStar />}
           </ActionIcon>
@@ -339,7 +339,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                   )
                 }
                 onClick={() =>
-                  onUpdate({ isAddedToMyDay: !todo.isAddedToMyDay })
+                  onUpdate({ isAddedToMyDay: !todo?.isAddedToMyDay })
                 }
               >
                 {todo?.isAddedToMyDay ? "Remove from" : "Add to"} My Day
@@ -352,7 +352,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                     <IconStar size={20} stroke={1} />
                   )
                 }
-                onClick={() => onUpdate({ isImportant: !todo.isImportant })}
+                onClick={() => onUpdate({ isImportant: !todo?.isImportant })}
               >
                 {todo?.isImportant ? "Remove importance" : "Mark as important"}
               </Menu.Item>
@@ -366,7 +366,7 @@ const Todo = ({ todo, setEdit, edit, color, hide }) => {
                 }
                 onClick={() =>
                   onUpdate({
-                    completedOn: todo.completedOn
+                    completedOn: todo?.completedOn
                       ? ""
                       : dayjs().format("MM-DD-YYYY"),
                   })

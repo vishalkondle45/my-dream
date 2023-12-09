@@ -43,7 +43,7 @@ const EditExpense = ({
   setSelectedExpense,
 }) => {
   const [opened, setOpened] = useState(false);
-  const update = useMutation(api.expense.update);
+  const update = useMutation(api.expense?.update);
 
   const form = useForm({
     initialValues: {
@@ -78,7 +78,7 @@ const EditExpense = ({
     if (paidBy && splitAmong) {
       form.setFieldValue("paidBy", paidBy);
       form.setFieldValue("splitAmong", splitAmong);
-      if (paidBy?.filter((item) => item.amount > 0).length > 0) {
+      if (paidBy?.filter((item) => item?.amount > 0).length > 0) {
         form.setFieldValue("payer", "multiple");
       } else {
         form.setFieldValue("payer", "single");
@@ -87,8 +87,8 @@ const EditExpense = ({
   }, [paidBy, splitAmong]);
 
   const editExpense = (values) => {
-    values.paidBy = values.paidBy?.filter((item) => item.amount > 0);
-    values.splitAmong = values.splitAmong?.filter((item) => item.amount > 0);
+    values.paidBy = values.paidBy?.filter((item) => item?.amount > 0);
+    values.splitAmong = values.splitAmong?.filter((item) => item?.amount > 0);
     update({
       ...values,
       group: group._id,
@@ -172,7 +172,7 @@ const EditExpense = ({
               form.setFieldValue(
                 "splitAmong",
                 users?.map((item) => ({
-                  user: item.userId,
+                  user: item?.userId,
                   amount: value / users?.length,
                 }))
               );
@@ -320,7 +320,7 @@ const EditExpense = ({
                       }
                       onChange={(value) => {
                         let index = form.values.splitAmong?.findIndex(
-                          (item) => item.user === user.userId
+                          (item) => item?.user === user?.userId
                         );
                         let newArr = [...form.values.splitAmong];
                         newArr[index].amount = value;
