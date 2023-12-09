@@ -77,7 +77,7 @@ const SplitSidebar = () => {
       pr="xl"
       w={rem(200)}
     >
-      {sidebarDatasplit?.map((item) => (
+      {sidebarDataSplit?.map((item) => (
         <TodoSidebarItem
           icon={item?.icon}
           text={item?.text}
